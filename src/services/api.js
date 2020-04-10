@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://server.zware.com.br/',
+  baseURL: 'https://server.zware.com.br/',
 });
 
 export default api;
