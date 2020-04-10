@@ -29,6 +29,9 @@ export default function Routes() {
 
       <Route path="/cadastros/view/:id" component={Detalhes} isPrivate />
       <Route path="/cadastros/:id" component={NovoCadastro} isPrivate />
+      <Route path="/" exact component={SignIn} />
+
+
     </Switch>
   );
 }
