@@ -302,7 +302,7 @@ export default function NovoCadastro(props) {
       setErroRazao(true);
       retorno = true;
     }
-    console.tron.log({ cep, cep_tamanho: cep.length });
+    
     if (cep.length !== 8) {
       setErroCep(true);
       retorno = true;
