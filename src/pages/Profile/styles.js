@@ -10,6 +10,11 @@ export const Container = styled.div`
     flex-direction: column;
     margin-top: 30px;
 
+    
+
+
+
+
     div {
       display: flex;
       justify-content: space-between;
@@ -110,4 +115,9 @@ export const Container = styled.div`
       font-weight: 500;
     }
   }
+
+  @media only screen and (max-width: 500px) {
+      padding-right: 15px;
+      padding-left: 15px;
+    }
 `;

@@ -12,6 +12,11 @@ export const AppList = styled.ul`
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 20px;
 
+  @media only screen and (max-width: 500px) {
+    display:block;        
+  }
+  
+
   li {
     background: #fff;
     padding: 10px 20px 15px;
@@ -20,6 +25,12 @@ export const AppList = styled.ul`
     border-radius: 8px;
     position: relative;
     box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.2);
+
+    @media only screen and (max-width: 500px) {
+      &:not(:first-child){
+        margin-top: 20px;
+      }
+    }
 
     a {
       text-decoration: none;
