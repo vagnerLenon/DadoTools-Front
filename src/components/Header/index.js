@@ -90,11 +90,12 @@ export default function Header() {
             </div>
           ))}
         </nav>
-          
+          <div className="notification">
             <Notification />
+
+          </div>
           
-        <aside>
-          
+        <aside>          
 
         <button type="button" className="hamburger" onClick={toggleSidebarVisible}>
         <FaBars size={30}/>

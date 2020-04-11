@@ -126,6 +126,19 @@ export const Content = styled.div`
   align-items: center;
   justify-content: space-between;
 
+  div.notification{
+    display:absolute;
+    margin-left: auto;
+    z-index: 80;
+    @media only screen and (max-width: 500px) {      
+        margin: 0;
+      }
+  }
+
+
+
+
+
   button.hamburger{
   display:none;
   }
@@ -133,9 +146,10 @@ export const Content = styled.div`
   @media only screen and (max-width: 500px) {
     div.not{            
       display:block;
-      margin: auto;
-            
+      margin: auto;            
     }
+
+    
 
 
     button.hamburger{
