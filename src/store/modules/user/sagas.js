@@ -2,7 +2,7 @@ import { takeLatest, call, put, all } from 'redux-saga/effects';
 import { toast } from 'react-toastify';
 
 import api from '~/services/api';
-import { updateProfileSuccess, updateProfileFailure } from './actions';
+import { updateProfileSuccess, updateProfileFailure, updateProfileAvatar } from './actions';
 
 export function* updateProfile({ payload }) {
   try {
@@ -11,8 +11,7 @@ export function* updateProfile({ payload }) {
     const profile = {
       nome,
       sobrenome,
-      email,
-      avatar_id,
+      email,      
       ...(rest.oldPassword ? rest : {}),
     };
 
@@ -23,6 +22,18 @@ export function* updateProfile({ payload }) {
     yield put(updateProfileSuccess(response.data));
   } catch (err) {
     toast.error('Erro ao atualizar perfil. Verifique seus dados.');
+    yield put(updateProfileFailure());
+  }
+}
+export function* updateAvatar({payload}){
+  try {
+    const { url, id, path, ...rest } = payload.data;    
+
+    toast.success('Avatar alterado com sucesso');
+
+    yield put(updateProfileAvatar({url, id, path}));
+  } catch (err) {
+    toast.error('Erro ao atualizar avatar.');
     yield put(updateProfileFailure());
   }
 }

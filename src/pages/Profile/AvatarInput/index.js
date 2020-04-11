@@ -2,10 +2,17 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useField } from '@rocketseat/unform';
 import api from '~/services/api';
 
+import { useDispatch, useSelector } from 'react-redux';
+
+import { updateProfileAvatar } from '~/store/modules/user/actions';
+
 import { Container } from './styles';
 
 export default function AvatarInput() {
   const { defaultValue, registerField } = useField('avatar');
+
+  const dispatch = useDispatch();
+  const profile = useSelector(state => state.user.profile.avatar);
 
   const [file, setFile] = useState(defaultValue && defaultValue.id);
   const [preview, setPreview] = useState(defaultValue && defaultValue.url);
@@ -24,13 +31,34 @@ export default function AvatarInput() {
 
   async function handleChange(e) {
     const data = new FormData();
-    data.append('file', e.target.files[0]);
+    console.log(e.target.files[0]);
 
-    const response = await api.post('files', data);
-    const { id, url } = response.data;
+    const re = /(?:\.([^.]+))?$/;
 
-    setFile(id);
-    setPreview(url);
+    const permitidas = ['jpg', 'jpeg', 'png'];
+    try{
+    const ext = re.exec(e.target.files[0].name)[1];
+    
+    if(ext === 'jpg' || ext === 'jpeg'|| ext === 'png' ){
+      data.append('file', e.target.files[0]);
+
+      const response = await api.post('files', data);
+      dispatch(updateProfileAvatar(response.data));
+
+      const { id, url } = response.data;
+  
+      setFile(id);
+      setPreview(url);
+    }else{
+      alert('Você selecionou uma imagem inválida. Só são permitidas imagens .jpg, .jpeg ou .png')
+    }
+    // undefined
+  }catch(err){
+
+  }
+
+
+    
   }
 
   return (
@@ -47,7 +75,7 @@ export default function AvatarInput() {
           name=""
           id="avatar"
           data-file={file}
-          accept="image/*"
+          accept=".jpg, .jpeg, .png"
           onChange={handleChange}
           ref={ref}
         />
