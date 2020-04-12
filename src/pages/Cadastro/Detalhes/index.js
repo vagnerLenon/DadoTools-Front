@@ -134,6 +134,19 @@ export default function Detalhes(props) {
     }
   }
 
+  function handleAvatar(message){
+    if(message.avatar){      
+        if(message.avatar.url){
+          return message.avatar.url;
+        }else{
+          return 'https://api.adorable.io/avatars/120/abott@adorable.png';
+        }
+      
+    }else{
+      return 'https://api.adorable.io/avatars/120/abott@adorable.png';
+    }
+  }
+
   return (
     <Container>
       {loading ? (
@@ -314,14 +327,14 @@ export default function Detalhes(props) {
             <Messages key={String(mensagemAtual.id)}>
               <header>
                 <div>
+                  {console.log(mensagemAtual)}
+                  
                   <img
-                    src={
-                      !mensagemAtual.avatar
-                        ? 'https://api.adorable.io/avatars/120/abott@adorable.png'
-                        : mensagemAtual.avatar.url
-                    }
-                    alt="Nome"
-                  />
+                        src={handleAvatar(mensagemAtual)}
+                        alt={mensagemAtual.nome}
+                      />
+                  
+                  
                   <div>
                     <strong>{mensagemAtual.nome}</strong>
                     <span>{mensagemAtual.cargo}</span>
