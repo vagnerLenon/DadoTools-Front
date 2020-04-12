@@ -17,11 +17,6 @@ export default function user(state = INITIAL_STATE, action) {
         break;
       }
 
-      case '@user/UPDATE_PROFILE_AVATAR_SUCCESS': {
-        draft.profile.avatar = action.payload.avatar;
-        break;
-      }
-
       case '@auth/SIGN_OUT': {
         draft.profile = null;
         break;

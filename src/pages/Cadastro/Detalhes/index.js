@@ -29,8 +29,8 @@ export default function Detalhes(props) {
     async function InicializaTela() {
       const id =
         props.match.params.id === undefined ? 0 : props.match.params.id;
-      const response = await api.get(`detalhes_cadastros_empresas/${id}`);
-      console.tron.log(response.data);
+      const response = await api.get(`detalhes_cadastros_empresas/${id}`);      
+      
       if (!response.data) {
         history.push('/cadastros');
       }
