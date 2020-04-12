@@ -27,8 +27,7 @@ export default function AvatarInput() {
     console.log(e.target.files[0]);
 
     const re = /(?:\.([^.]+))?$/;
-
-    const permitidas = ['jpg', 'jpeg', 'png'];
+   
     try{
     const ext = re.exec(e.target.files[0].name)[1];
     
