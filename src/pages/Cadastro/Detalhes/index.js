@@ -111,15 +111,15 @@ export default function Detalhes(props) {
         id_cadastro: dados.id,
         mensagem,
       });
-
+      
       const dadosRetorno = {
         id: retorno.data.mensagem.id,
         id_usuario: retorno.data.mensagem.id_usuario,
         nome: retorno.data.usuario.nome,
         cargo: retorno.data.usuario.cargo,
         avatar: {
-          url: retorno.data.usuario.avatar.url,
-          path: retorno.data.usuario.avatar.path,
+          url: retorno.data.usuario.avatar? retorno.data.usuario.avatar.url:'https://api.adorable.io/avatars/120/abott@adorable.png',
+          path: retorno.data.usuario.avatar?retorno.data.usuario.avatar.path:'',
         },
         id_cadastro: retorno.data.mensagem.id_cadastro,
         mensagem: retorno.data.mensagem.mensagem,
@@ -326,8 +326,7 @@ export default function Detalhes(props) {
           {dataMessages.map(mensagemAtual => (
             <Messages key={String(mensagemAtual.id)}>
               <header>
-                <div>
-                  {console.log(mensagemAtual)}
+                <div>                 
                   
                   <img
                         src={handleAvatar(mensagemAtual)}
