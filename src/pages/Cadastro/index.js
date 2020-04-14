@@ -40,7 +40,7 @@ export default function Cadastro() {
         )
       );
       setCadastrosFinalizados(
-        response.data.filter(cad => cad.status === 'R' && cad.status === 'F')
+        response.data.filter(cad => cad.status === 'R' || cad.status === 'F')
       );
       setLoading(false);
     }
