@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {FaBars} from 'react-icons/fa'
+import Avatar from '~/components/Avatar';
 
 import Notification from '~/components/Notifications';
 
@@ -16,10 +17,11 @@ export default function Header() {
   const [apps, setApps] = useState([]);
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
-  useEffect(() => {
+  useEffect(() => {    
     async function CarregaApps() {
       const retorno = await api.get('userapps');
       setApps(retorno.data);
+      console.log(profile.avatar === null || typeof profile.avatar.url === 'undefined');
     }
 
     CarregaApps();
@@ -38,6 +40,7 @@ export default function Header() {
   }
 
   return (
+    
     <Container>
 
     <Sidebar visible={sidebarVisible}>
@@ -48,19 +51,18 @@ export default function Header() {
 
             <Link to="/profile" onClick={hideSideBar}>
       <header>
+        <div className="avatar_g">
         
-        <div>
-            <img
-              src={
-                !profile.avatar
-                  ? 'https://api.adorable.io/avatars/120/abott@adorable.png'
-                  : profile.avatar.url
+            {              
+              (profile.avatar === null || typeof profile.avatar.url === 'undefined')?                
+                Avatar(profile)
+              :<img src={profile.avatar.url} alt={profile.nome}/>
+               
               }
-              alt="Vágner Lenon"
-            />
+          </div>           
+              
               <strong>{profile.nome}</strong>
               <span>{profile.cargo}</span>            
-          </div>           
       </header>
           </Link>
           <div className="line"/>
@@ -109,14 +111,14 @@ export default function Header() {
               </Link>
             </div>
             <Link to="/profile">
-              <img
-                src={
-                  !profile.avatar
-                    ? 'https://api.adorable.io/avatars/120/abott@adorable.png'
-                    : profile.avatar.url
-                }
-                alt="Vágner Lenon"
-              />
+              <div className="avatar_p">
+              {
+              profile.avatar === null || typeof profile.avatar.url === 'undefined'?              
+              
+              Avatar(profile)
+            :<img src={profile.avatar.url} alt={profile.nome} />
+            }               
+            </div>
             </Link>
           </Profile>
         </aside>

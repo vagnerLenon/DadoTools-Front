@@ -6,6 +6,7 @@ import { MdNotifications } from 'react-icons/md';
 import { parseISO, formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import api from '~/services/api';
+import history from '~/services/history';
 import {
   Container,
   Badge,
@@ -57,6 +58,11 @@ export default function Notifications() {
   function handleToggleVisible() {
     setVisible(!visible);
   }
+  function handleLink(to)
+  {
+    setVisible(false);
+    history.push(`/${to}`);
+  }
 
   return (
     <Container>
@@ -68,12 +74,13 @@ export default function Notifications() {
           {notifications.map(notification => (
             <Notification unread={!notification.read} key={notification._id}>
               <div>
-                <p>{notification.content}</p>
+                <button type="button"  className="mensagem" onClick={() => handleLink(notification.link)}>{notification.content}</button>               
                 <div>
                   <time>{notification.timeDistance}</time>
                   {!notification.read && (
                     <button
                       type="button"
+                      className="lida"
                       onClick={() => handleMarkAsRead(notification._id)}
                     >
                       Marcar como lida

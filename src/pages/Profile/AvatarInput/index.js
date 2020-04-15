@@ -1,11 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useField } from '@rocketseat/unform';
 import api from '~/services/api';
+import Avatar from '~/components/Avatar';
 
 import { Container } from './styles';
 
-export default function AvatarInput() {
-  const { defaultValue, registerField } = useField('avatar');
+export default function AvatarInput(props) {
+  const { defaultValue, registerField } = useField('avatar');  
+
+  const profile = props.profile;
 
   const [file, setFile] = useState(defaultValue && defaultValue.id);
   const [preview, setPreview] = useState(defaultValue && defaultValue.url);
@@ -13,6 +16,7 @@ export default function AvatarInput() {
   const ref = useRef();
 
   useEffect(() => {
+    console.log(profile)
     if (ref.current) {
       registerField({
         name: 'avatar_id',
@@ -53,12 +57,17 @@ export default function AvatarInput() {
   return (
     <Container>
       <label htmlFor="avatar">
-        <img
-          src={
-            preview || 'https://api.adorable.io/avatars/120/abott@adorable.png'
+
+      <div className="avatar_g">
+        
+        {
+          !preview?                           
+            Avatar(profile)
+          :<img src={preview} alt="Alterar avatar"/>
+           
           }
-          alt=""
-        />
+      </div> 
+       
         <input
           type="file"
           name=""

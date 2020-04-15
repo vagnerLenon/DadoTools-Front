@@ -50,7 +50,7 @@ export const NotificationList = styled.div`
     height: 0;
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
-    border-bottom: 20px solid rgba(0, 0, 0, 0.6);
+    border-bottom: 20px solid rgba(0, 0, 0, 0.8);
   }
 
   display: ${props => (props.visible ? 'block' : 'none')};
@@ -77,9 +77,20 @@ export const Notification = styled.div`
     border-bottom: 0;
   }
 
-  p {
+  button.mensagem {
     font-size: 13px;
     line-height: 18px;
+    background: none;
+    color: #fff;
+    display: flex;
+    margin-right: 10px;
+    border: 0;
+    transition: color 0.1s;
+
+    &:hover{
+      color:${lighten(0.2, '#7159c1')};
+    }
+
   }
 
   time {
@@ -88,7 +99,7 @@ export const Notification = styled.div`
     opacity: 0.6;
   }
 
-  button {
+  button.lida {
     font-size: 10px;
     margin-top: 5px;
     border: 0;

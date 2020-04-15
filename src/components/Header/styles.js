@@ -4,68 +4,95 @@ export const Sidebar = styled.div`
   display: none;
 
   @media only screen and (max-width: 500px) {
-        position: absolute;
-        display:none;
+    position: absolute;
+    display:none;
 
-        ${props =>
+    ${props =>
       props.visible &&
       css`     
           display: inline-block;      
-      `}  
+    `}  
       
       /* For mobile phones: */     
 
-      border-radius: 0 0 0 8px;
-      height: 500px;
-      background: #fff;
-      top: 0;
-      right: 0;
-      width: 250px;      
-      z-index: 99;
-      box-shadow: 0 4px 4px 2px rgba(0,0,0,0.2); 
+    border-radius: 0 0 0 8px;
+    height: 500px;
+    background: #fff;
+    top: 0;
+    right: 0;
+    width: 250px;      
+    z-index: 99;
+    box-shadow: 0 4px 4px 2px rgba(0,0,0,0.2); 
 
-      button.hamburger{
-        background: transparent;
-        border: 0;
-        position: absolute;
-        left: 5px;
-        top: 5px;
-        opacity: 0.6;       
-      }
+    button.hamburger{
+      background: transparent;
+      border: 0;
+      position: absolute;
+      left: 5px;
+      top: 5px;
+      opacity: 0.6;       
+    }
 
-      header{
-        margin-top: 20px;        
-        display: flex;        
-        justify-content: center;
-        align-items: center;
-        align-content: center;
-        text-align:center;
+    header{
+      margin-top: 20px;        
+      display: flex;        
+      flex-direction:column;
+      justify-content: center;
+      align-items: center;
+      align-content: center;
+      text-align:center;
+      width:250px;
+      height: auto + 64px;        
 
-        img {
-          margin: auto;
-          display:block;
-          padding: 0;          
+        .avatar_g{          
           width: 64px;
           height: 64px;
-          border-radius: 50%;
-          box-shadow: 0 2px 2px 2px rgba(0,0,0,0.2); 
-          border: solid 2px rgba(0,0,0,0.4);       
-          margin-bottom: 10px;    
-        }
-
-        strong{
-          margin: auto;
+          margin-bottom: 10px;
           display:block;
-          font-size: 16px;
-          font-weight: bold;
-        }
-        span{
-          margin: auto;
-          display:block;
-          font-size: 14px;
           
+            img{
+              margin: auto;
+              display:block;
+              width:64px;
+              height:64px;
+              border-radius: 50%;
+              box-shadow: 0 2px 2px 2px rgba(0,0,0,0.3);
+            }
+
+            .circle {
+              margin: auto;
+              display:block;
+              background-color: #27ae60;
+              border-radius: 50%;  
+              text-align: center;  
+              width:64px;
+              height:64px;
+              box-shadow: 0 2px 2px 1px rgba(0,0,0,0.2);
+
+              .initials  {
+                color:#fff;
+                font-size: calc(64px / 2); /* 50% of parent */
+                line-height: 1;
+                position: relative;
+                top: calc(64px / 4); /* 25% of parent */
+              }
+            }
+          }
+          strong{
+            margin: auto;
+            display:block;
+            margin: 0;
+            width: 100%;
+          }
+
+          span{
+            margin: auto;
+            display:block;
+            font-size: 14px;
+          }
+            margin-bottom: 10px;            
         }
-    }
+        
         div.line{
           display: block;
           margin: 10px auto;
@@ -166,6 +193,12 @@ export const Content = styled.div`
   }
   margin: 0 auto;
       
+  .avatar {
+      margin-right: 20px;
+      height: 40px;
+      width: 40px;
+    }
+
 
   nav {
     
@@ -173,10 +206,10 @@ export const Content = styled.div`
     align-items: center;
 
     img {
+      width: 60px;
       margin-right: 20px;
       padding-right: 20px;
       border-right: 1px solid #eee;
-      height: 40px;
 
     }
 
@@ -218,6 +251,9 @@ export const Content = styled.div`
 `;
 
 export const Profile = styled.div`
+
+  $width:100px;
+
   display: flex;
   margin-left: 20px;
   padding-left: 20px;
@@ -226,6 +262,41 @@ export const Profile = styled.div`
   @media only screen and (max-width: 500px) {      
       display: none;
   }
+
+
+
+  .avatar_p{
+    
+    width: 40px;
+    height: 40px;
+
+
+   
+    img{
+    width:100%;
+    height:100%;
+    border-radius: 50%;
+    box-shadow: 0 2px 2px 1px rgba(0,0,0,0.2);
+    }
+
+    .circle {
+      background-color: #27ae60;
+      border-radius: 50%;  
+      text-align: center;  
+      width:100%;
+      height:100%;
+      box-shadow: 0 2px 2px 1px rgba(0,0,0,0.2);
+
+      .initials  {
+        color:#fff;
+        font-size: calc(40px / 2); /* 50% of parent */
+        line-height: 1;
+        position: relative;
+        top: calc(40px / 4); /* 25% of parent */
+      }
+  }
+
+}
 
   div {
     text-align: right;
@@ -243,11 +314,5 @@ export const Profile = styled.div`
       color: #999;
     }
   }
-
-  img {
-    height: 40px;
-    width: 40px;
-    border-radius: 50%;
-    border: 1px solid rgba(0, 0, 0, 0.6);
-  }
+ 
 `;
