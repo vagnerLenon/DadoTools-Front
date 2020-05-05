@@ -13,9 +13,8 @@ export const AppList = styled.ul`
   grid-gap: 20px;
 
   @media only screen and (max-width: 500px) {
-    display:block;        
+    display: block;
   }
-  
 
   li {
     background: #fff;
@@ -27,13 +26,14 @@ export const AppList = styled.ul`
     box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.2);
 
     @media only screen and (max-width: 500px) {
-      &:not(:first-child){
+      &:not(:first-child) {
         margin-top: 20px;
       }
     }
 
     a {
       text-decoration: none;
+      position: relative;
 
       h1 {
         font-size: 20px;
@@ -41,9 +41,16 @@ export const AppList = styled.ul`
         color: #333;
         display: flex;
         align-items: center;
+      }
 
+      span.badge {
+        position: absolute;
+        top: 0;
+        right: 0;
+        img,
         svg {
-          margin-left: 5px;
+          width: 20px;
+          height: auto;
         }
       }
 

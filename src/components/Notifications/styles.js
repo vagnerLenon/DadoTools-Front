@@ -78,6 +78,7 @@ export const Notification = styled.div`
   }
 
   button.mensagem {
+    text-align: left;
     font-size: 13px;
     line-height: 18px;
     background: none;
@@ -87,10 +88,9 @@ export const Notification = styled.div`
     border: 0;
     transition: color 0.1s;
 
-    &:hover{
-      color:${lighten(0.2, '#7159c1')};
+    &:hover {
+      color: ${lighten(0.2, '#7159c1')};
     }
-
   }
 
   time {

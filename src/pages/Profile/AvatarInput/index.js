@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState, useRef, useEffect } from 'react';
 import { useField } from '@rocketseat/unform';
 import api from '~/services/api';
@@ -6,9 +7,9 @@ import Avatar from '~/components/Avatar';
 import { Container } from './styles';
 
 export default function AvatarInput(props) {
-  const { defaultValue, registerField } = useField('avatar');  
+  const { defaultValue, registerField } = useField('avatar');
 
-  const profile = props.profile;
+  const { profile } = props;
 
   const [file, setFile] = useState(defaultValue && defaultValue.id);
   const [preview, setPreview] = useState(defaultValue && defaultValue.url);
@@ -16,7 +17,6 @@ export default function AvatarInput(props) {
   const ref = useRef();
 
   useEffect(() => {
-    console.log(profile)
     if (ref.current) {
       registerField({
         name: 'avatar_id',
@@ -28,46 +28,40 @@ export default function AvatarInput(props) {
 
   async function handleChange(e) {
     const data = new FormData();
-    console.log(e.target.files[0]);
 
     const re = /(?:\.([^.]+))?$/;
-   
-    try{
-    const ext = re.exec(e.target.files[0].name)[1];
-    
-    if(ext === 'jpg' || ext === 'jpeg'|| ext === 'png' ){
-      data.append('file', e.target.files[0]);
 
-      const response = await api.post('files', data);
-      const { id, url } = response.data;
-  
-      setFile(id);
-      setPreview(url);
-      
-    }else{
-      alert('Você selecionou uma imagem inválida. Só são permitidas imagens .jpg, .jpeg ou .png')
-    }
-    // undefined
-  }catch(err){}
+    try {
+      const ext = re.exec(e.target.files[0].name)[1];
 
+      if (ext === 'jpg' || ext === 'jpeg' || ext === 'png') {
+        data.append('file', e.target.files[0]);
 
-    
+        const response = await api.post('files', data);
+        const { id, url } = response.data;
+
+        setFile(id);
+        setPreview(url);
+      } else {
+        alert(
+          'Você selecionou uma imagem inválida. Só são permitidas imagens .jpg, .jpeg ou .png'
+        );
+      }
+      // undefined
+    } catch (err) {}
   }
 
   return (
     <Container>
       <label htmlFor="avatar">
+        <div className="avatar_g">
+          {!preview ? (
+            Avatar(profile.nome, profile.sobrenome)
+          ) : (
+            <img src={preview} alt="Alterar avatar" />
+          )}
+        </div>
 
-      <div className="avatar_g">
-        
-        {
-          !preview?                           
-            Avatar(profile)
-          :<img src={preview} alt="Alterar avatar"/>
-           
-          }
-      </div> 
-       
         <input
           type="file"
           name=""

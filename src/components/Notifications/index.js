@@ -58,10 +58,17 @@ export default function Notifications() {
   function handleToggleVisible() {
     setVisible(!visible);
   }
-  function handleLink(to)
-  {
+  async function handleLink(to, id) {
     setVisible(false);
     history.push(`/${to}`);
+
+    await api.put(`notifications/${id}`);
+
+    setNotifications(
+      notifications.map(notification =>
+        notification._id === id ? { ...notification, read: true } : notification
+      )
+    );
   }
 
   return (
@@ -74,7 +81,15 @@ export default function Notifications() {
           {notifications.map(notification => (
             <Notification unread={!notification.read} key={notification._id}>
               <div>
-                <button type="button"  className="mensagem" onClick={() => handleLink(notification.link)}>{notification.content}</button>               
+                <button
+                  type="button"
+                  className="mensagem"
+                  onClick={() =>
+                    handleLink(notification.link, notification._id)
+                  }
+                >
+                  {notification.content}
+                </button>
                 <div>
                   <time>{notification.timeDistance}</time>
                   {!notification.read && (

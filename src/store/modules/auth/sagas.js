@@ -13,10 +13,6 @@ export function* signIn({ payload }) {
     });
     const { token, user } = response.data;
 
-    if (!user.is_sales) {
-      toast.error('Usuário não é vendedor');
-    }
-
     api.defaults.headers.Authorization = `Bearer ${token}`;
 
     yield put(signInSuccess(token, user));

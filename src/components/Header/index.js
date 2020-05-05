@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import {FaBars} from 'react-icons/fa'
+import { FaBars } from 'react-icons/fa';
 import Avatar from '~/components/Avatar';
 
 import Notification from '~/components/Notifications';
@@ -17,11 +17,10 @@ export default function Header() {
   const [apps, setApps] = useState([]);
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
-  useEffect(() => {    
+  useEffect(() => {
     async function CarregaApps() {
       const retorno = await api.get('userapps');
       setApps(retorno.data);
-      console.log(profile.avatar === null || typeof profile.avatar.url === 'undefined');
     }
 
     CarregaApps();
@@ -31,53 +30,52 @@ export default function Header() {
     setSidebarVisible(false);
     history.push(`/${to}`);
   }
-  function toggleSidebarVisible(){
+  function toggleSidebarVisible() {
     setSidebarVisible(!sidebarVisible);
   }
 
-  function hideSideBar(){
+  function hideSideBar() {
     setSidebarVisible(false);
   }
 
   return (
-    
     <Container>
+      <Sidebar visible={sidebarVisible}>
+        <button
+          type="button"
+          className="hamburger"
+          onClick={toggleSidebarVisible}
+        >
+          <FaBars size={30} />
+        </button>
 
-    <Sidebar visible={sidebarVisible}>
+        <Link to="/profile" onClick={hideSideBar}>
+          <header>
+            <div className="avatar_g">
+              {profile.avatar === null ||
+              typeof profile.avatar.url === 'undefined' ? (
+                Avatar(profile.nome, profile.sobrenome)
+              ) : (
+                <img src={profile.avatar.url} alt={profile.nome} />
+              )}
+            </div>
 
-    <button type="button" className="hamburger" onClick={toggleSidebarVisible}>
-    <FaBars size={30}/>
-    </button>
+            <strong>{profile.nome}</strong>
+            <span>{profile.cargo}</span>
+          </header>
+        </Link>
+        <div className="line" />
 
-            <Link to="/profile" onClick={hideSideBar}>
-      <header>
-        <div className="avatar_g">
-        
-            {              
-              (profile.avatar === null || typeof profile.avatar.url === 'undefined')?                
-                Avatar(profile)
-              :<img src={profile.avatar.url} alt={profile.nome}/>
-               
-              }
-          </div>           
-              
-              <strong>{profile.nome}</strong>
-              <span>{profile.cargo}</span>            
-      </header>
-          </Link>
-          <div className="line"/>
-
-              <ul>
-              {apps.map(app => (
-                <li key={app.Apps.rota}>
+        <ul>
+          {apps.map(app => (
+            <li key={app.Apps.rota}>
               <button type="button" onClick={() => handleLink(app.Apps.rota)}>
                 {app.Apps.nome}
               </button>
             </li>
           ))}
-          </ul>                
-
-    </Sidebar>
+        </ul>
+      </Sidebar>
 
       <Content>
         <nav>
@@ -92,16 +90,18 @@ export default function Header() {
             </div>
           ))}
         </nav>
-          <div className="notification">
-            <Notification />
+        <div className="notification">
+          <Notification />
+        </div>
 
-          </div>
-          
-        <aside>          
-
-        <button type="button" className="hamburger" onClick={toggleSidebarVisible}>
-        <FaBars size={30}/>
-        </button>
+        <aside>
+          <button
+            type="button"
+            className="hamburger"
+            onClick={toggleSidebarVisible}
+          >
+            <FaBars size={30} />
+          </button>
 
           <Profile>
             <div>
@@ -112,13 +112,13 @@ export default function Header() {
             </div>
             <Link to="/profile">
               <div className="avatar_p">
-              {
-              profile.avatar === null || typeof profile.avatar.url === 'undefined'?              
-              
-              Avatar(profile)
-            :<img src={profile.avatar.url} alt={profile.nome} />
-            }               
-            </div>
+                {profile.avatar === null ||
+                typeof profile.avatar.url === 'undefined' ? (
+                  Avatar(profile.nome, profile.sobrenome)
+                ) : (
+                  <img src={profile.avatar.url} alt={profile.nome} />
+                )}
+              </div>
             </Link>
           </Profile>
         </aside>

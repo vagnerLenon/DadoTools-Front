@@ -302,7 +302,7 @@ export default function NovoCadastro(props) {
       setErroRazao(true);
       retorno = true;
     }
-    
+
     if (cep.length !== 8) {
       setErroCep(true);
       retorno = true;

@@ -7,6 +7,8 @@ import SignUp from '~/pages/SignUp';
 import Dashboard from '~/pages/Dashboard';
 import Profile from '~/pages/Profile';
 import Tickets from '~/pages/Tickets';
+import Ticket from '~/pages/Tickets/Ticket';
+import TicketEncerrado from '~/pages/Tickets/TicketEncerrado';
 import Cadastro from '~/pages/Cadastro';
 import NovoCadastro from '~/pages/Cadastro/NovoCadastro';
 import Detalhes from '~/pages/Cadastro/Detalhes';
@@ -23,6 +25,22 @@ export default function Routes() {
       {/** Rotas de Apps */}
 
       <Route path="/tickets" exact component={Tickets} isPrivate />
+      <Route
+        path="/tickets/inbox/:id"
+        component={() => Ticket('inbox')}
+        isPrivate
+      />
+      <Route
+        path="/tickets/enviados/:id"
+        component={() => Ticket('enviados')}
+        isPrivate
+      />
+
+      <Route
+        path="/tickets/concluidos/:id"
+        component={TicketEncerrado}
+        isPrivate
+      />
 
       <Route path="/cadastros/novo" exact component={NovoCadastro} isPrivate />
       <Route path="/cadastros" exact component={Cadastro} isPrivate />
@@ -30,8 +48,6 @@ export default function Routes() {
       <Route path="/cadastros/view/:id" component={Detalhes} isPrivate />
       <Route path="/cadastros/:id" component={NovoCadastro} isPrivate />
       <Route path="/" exact component={SignIn} />
-
-
     </Switch>
   );
 }

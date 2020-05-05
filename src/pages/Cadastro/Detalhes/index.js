@@ -29,8 +29,8 @@ export default function Detalhes(props) {
     async function InicializaTela() {
       const id =
         props.match.params.id === undefined ? 0 : props.match.params.id;
-      const response = await api.get(`detalhes_cadastros_empresas/${id}`);      
-      
+      const response = await api.get(`detalhes_cadastros_empresas/${id}`);
+
       if (!response.data) {
         history.push('/cadastros');
       }
@@ -41,7 +41,7 @@ export default function Detalhes(props) {
     }
 
     InicializaTela();
-  }, []);
+  }, [props.match.params.id]);
 
   function IconeStatus(status) {
     switch (status) {
@@ -111,15 +111,19 @@ export default function Detalhes(props) {
         id_cadastro: dados.id,
         mensagem,
       });
-      
+
       const dadosRetorno = {
         id: retorno.data.mensagem.id,
         id_usuario: retorno.data.mensagem.id_usuario,
         nome: retorno.data.usuario.nome,
         cargo: retorno.data.usuario.cargo,
         avatar: {
-          url: retorno.data.usuario.avatar? retorno.data.usuario.avatar.url:'https://api.adorable.io/avatars/120/abott@adorable.png',
-          path: retorno.data.usuario.avatar?retorno.data.usuario.avatar.path:'',
+          url: retorno.data.usuario.avatar
+            ? retorno.data.usuario.avatar.url
+            : 'https://api.adorable.io/avatars/120/abott@adorable.png',
+          path: retorno.data.usuario.avatar
+            ? retorno.data.usuario.avatar.path
+            : '',
         },
         id_cadastro: retorno.data.mensagem.id_cadastro,
         mensagem: retorno.data.mensagem.mensagem,
@@ -134,17 +138,14 @@ export default function Detalhes(props) {
     }
   }
 
-  function handleAvatar(message){
-    if(message.avatar){      
-        if(message.avatar.url){
-          return message.avatar.url;
-        }else{
-          return 'https://api.adorable.io/avatars/120/abott@adorable.png';
-        }
-      
-    }else{
+  function handleAvatar(message) {
+    if (message.avatar) {
+      if (message.avatar.url) {
+        return message.avatar.url;
+      }
       return 'https://api.adorable.io/avatars/120/abott@adorable.png';
     }
+    return 'https://api.adorable.io/avatars/120/abott@adorable.png';
   }
 
   return (
@@ -326,14 +327,12 @@ export default function Detalhes(props) {
           {dataMessages.map(mensagemAtual => (
             <Messages key={String(mensagemAtual.id)}>
               <header>
-                <div>                 
-                  
+                <div>
                   <img
-                        src={handleAvatar(mensagemAtual)}
-                        alt={mensagemAtual.nome}
-                      />
-                  
-                  
+                    src={handleAvatar(mensagemAtual)}
+                    alt={mensagemAtual.nome}
+                  />
+
                   <div>
                     <strong>{mensagemAtual.nome}</strong>
                     <span>{mensagemAtual.cargo}</span>

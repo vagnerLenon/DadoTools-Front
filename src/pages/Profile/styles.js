@@ -6,14 +6,13 @@ export const Container = styled.div`
   margin: 50px auto;
 
   form {
+    p {
+      color: #fff;
+      margin-bottom: 10px;
+    }
     display: flex;
     flex-direction: column;
     margin-top: 30px;
-
-    
-
-
-
 
     div {
       display: flex;
@@ -23,15 +22,11 @@ export const Container = styled.div`
         width: 100%;
         margin-left: 5px;
 
-        &:first-child{
-          margin-right:5px;
+        &:first-child {
+          margin-right: 5px;
           margin-left: 0;
         }
-
-        &
       }
-
-      input
     }
 
     hr {
@@ -117,7 +112,7 @@ export const Container = styled.div`
   }
 
   @media only screen and (max-width: 500px) {
-      padding-right: 15px;
-      padding-left: 15px;
-    }
+    padding-right: 15px;
+    padding-left: 15px;
+  }
 `;

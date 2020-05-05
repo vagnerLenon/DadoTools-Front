@@ -1,0 +1,306 @@
+div.flex{
+display: flex;
+width: 100%;
+}
+
+.col-12{
+  display: flex;
+  width: 100% !important;
+}
+.col-11{
+  width: 92% !important;
+}
+.col-10{
+  width: 83% !important;
+}
+.col-9{
+  width: 75% !important;
+}
+.col-8{
+  width: 67% !important;
+}
+.col-7{
+
+  width: 58% !important;
+}
+.col-6{
+  width: 50% !important;
+}
+.col-5{
+  width: 42% !important;
+}
+.col-4{
+  width: 33% !important;
+}
+.col-3{
+  width: 25% !important;
+}
+.col-2{
+  width: 17% !important;
+}
+.col-1{
+  width: 8% !important;
+}
+
+div.criar-usuarios{
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+div.header{
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+  background: #4d5b6b;
+  color: #eee;
+  height: 35px;
+  border-radius: 4px 4px 0 0;
+  padding: 0 10px;
+}
+div.footer{
+  background: #4d5b6b;
+  color: #eee;
+  height: 15px;
+  border-radius: 0 0 4px 4px;
+  padding: 0 10px;
+}
+
+div.criar-usuarios form{
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border-left: 1px solid #4d5b6b;
+  border-right: 1px solid #4d5b6b;
+}
+
+div.criar-usuarios form label{
+  display: flex;
+  flex-direction: column;
+  color: #666;
+}
+
+div.criar-usuarios form label:not(:first-child){
+  margin-top: 10px;
+}
+div.criar-usuarios form label input, div.criar-usuarios form label select{
+  padding: 3px;
+  border-radius: 4px;
+border: 1px solid #999;
+background: #f5f5f5;
+}
+
+div.criar-usuarios form label input::placeholder{
+  color: #999;
+  font-size: 0.9em;
+
+}
+
+div.criar-usuarios form div.button-group{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+
+}
+
+div.criar-usuarios button{
+  margin-top: 10px;
+  padding: 5px;
+  border-radius: 4px;
+  border: 0;
+  transition: background 0.1s;
+}
+
+div.criar-usuarios button + button{
+  margin-left: 10px;
+}
+
+button.green{
+  background: #28a745;
+  color: #fff;
+}
+button.green:hover{
+  background: #218838;
+}
+button.white{
+  background: #f8f9fa;
+  color: #444;
+
+}
+button.white:hover{
+  background: #e9ecef;
+}
+
+div.usuarios div.grupos{
+  margin-left: 20px;
+}
+
+div.body{
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border-left: 1px solid #4d5b6b;
+  border-right: 1px solid #4d5b6b;
+}
+div.grupos button{
+
+  display: flex;
+  justify-content: center;
+  border-radius: 4px;
+  border:0;
+  width: 30px;
+  height: 30px;
+  padding: 0 auto;
+  background: transparent;
+}
+div.grupos div.header button:hover{
+  background: rgba(0, 0, 0, 0.1);
+}
+
+
+div.grupos div.header button svg{
+  width: 20px;
+  height: auto;
+  color: #eee;
+}
+
+div.ReactModal__Overlay{
+  background: rgba(0, 0, 0,0.75)!important;
+  z-index: 100;
+}
+
+div.titulo-modal{
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  align-items: baseline;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #eee;
+  margin-bottom: 20px;
+}
+
+div.titulo-modal h1{
+  font-size: 1.5em;
+}
+div.titulo-modal button{
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid #dc3545;
+  background: #dc3545;
+  color:#fff;
+  transition: background 0.1s;
+}
+div.titulo-modal button:hover{
+  border: 1px solid #bd2130;
+  background: #c82333;
+}
+div.titulo-modal .confirm-delete button{
+  margin-right: 10px;
+}
+
+.form-formatado form{
+  display: flex;
+  flex-direction: column;
+}
+.form-formatado form label{
+  display: flex;
+  flex-direction: column;
+}
+.form-formatado form label textarea, .form-formatado form label input{
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #999;
+  background: #f5f5f5;
+  resize: none;
+}
+
+.form-formatado form label:not(:first-child){
+  margin-top: 10px;
+}
+
+.form-formatado form .button-group{
+  margin-top: 20px;
+  display: flex;
+
+}
+
+.form-formatado form .button-group button{
+  width: 100%;
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
+}
+
+.form-formatado form .button-group button:first-child{
+  margin-right: 10px;
+}
+div.body{
+  padding: 0;
+}
+div.body li{
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background: #fff;
+}
+
+div.body li.li-clickable{
+cursor: pointer;
+}
+div.body li.li-clickable:hover{
+  background: #f8f8f8;
+}
+div.body li:nth-child(even){
+  background: #fafafa;
+}
+div.body li:nth-child(even):hover{
+  background: #f5f5f5;
+}
+
+div.edicao-grupo{
+  height: 80%;
+  display: flex;
+
+}
+
+div.edicao-grupo div.row{
+  width: 100%;
+}
+div.edicao-grupo div.row:not(:first-child){
+  margin-left: 20px;
+}
+
+div.edicao-grupo div.row li{
+  padding: 10px;
+}
+
+div.edicao-grupo div.row ul{
+  padding: 0;
+}
+
+div.edicao-grupo{
+  height: 80%;
+  display: flex;
+
+}
+
+div.modal-footer button{
+  padding: 5px 10px;
+  border: 0;
+  border-radius: 4px;
+  width: 80px;
+}
+
+li button{
+  border: 1px solid #aaa;
+  padding: 3px 10px;
+  width: 40px;
+  border-radius: 4px;
+
+}
+

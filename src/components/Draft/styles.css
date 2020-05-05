@@ -1,0 +1,40 @@
+div.editorContainer .buttons{
+
+  border: 1px solid #ccc;
+  background: #ccc;
+  padding: 5px;
+  border-radius: 4px 4px 0 0;
+
+
+
+}
+
+div.editorContainer .editors{
+
+  background: #fff;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 0 0 4px 4px;
+}
+
+
+
+  button{
+ font-size: 12px;
+ padding: 2px;
+ border: 1PX solid #aaa;
+ background:#eee;
+}
+button:hover{
+  background: #ccc;
+ }
+
+  button:first-child{
+border-radius: 4px 0 0 4px;
+border-right:0;
+}
+
+  button:last-child{
+  border-radius: 0 4px 4px 0;
+  border-left:0;
+  }
