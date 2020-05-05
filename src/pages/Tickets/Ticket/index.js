@@ -282,7 +282,7 @@ export default function Ticket(tipo) {
         const NovocontentState = novoEditorState.getCurrentContent();
         dados = stateToHTML(NovocontentState);
       } catch (err) {
-        console.tron.log(err);
+        toast.error('Erro');
       }
 
       if (update.id_usuario === criador.id) {
@@ -510,8 +510,6 @@ export default function Ticket(tipo) {
 
       const updatesNovos = updates;
 
-      console.tron.log(retornoComAnexos.data);
-
       updatesNovos.push(retornoComAnexos.data);
       if (ordemDesc) {
         setUpdates(
@@ -526,7 +524,6 @@ export default function Ticket(tipo) {
           )
         );
       }
-      console.tron.log(updates);
     }
     closeModal();
   }
