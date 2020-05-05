@@ -543,7 +543,12 @@ export default function Novo() {
           </div>
           <div className="responsivo">
             <div className="uploads">
-              <label htmlFor="upload">
+              <label
+                htmlFor="aaa"
+                onClick={() => {
+                  toast.info('Upload será possível em futuras atualizações');
+                }}
+              >
                 <MdCloudUpload />{' '}
                 <div>
                   <strong>Upload</strong> <span>(Máx. 3 arquiv.)</span>
