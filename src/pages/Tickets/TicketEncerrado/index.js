@@ -471,7 +471,7 @@ export default function Ticket(tipo) {
               contentLabel="Example Modal"
             >
               <ModalEncerramento>
-                <div className="header">
+                <div className="modal-header">
                   <h1>Finalizar o Ticket</h1>
                   <p>
                     Este ticket foi encerrado pelo seu destinatário.

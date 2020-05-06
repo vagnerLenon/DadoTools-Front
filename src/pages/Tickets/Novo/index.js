@@ -351,7 +351,11 @@ export default function Novo() {
 
   function GetMailList() {
     const mails = [];
-    destinatariosDisp.filter(filtraDest).map(dest => mails.push(dest.email));
+    destinatariosDisp
+      .filter(d => {
+        return d.email !== profile.email;
+      })
+      .map(dest => mails.push(dest.email));
 
     return mails;
   }
