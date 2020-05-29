@@ -3,7 +3,7 @@ import { Switch } from 'react-router-dom';
 
 import Route from './Route';
 import SignIn from '~/pages/SignIn';
-import SignUp from '~/pages/SignUp';
+import Recovery from '~/pages/Recovery';
 import Dashboard from '~/pages/Dashboard';
 import Profile from '~/pages/Profile';
 import Tickets from '~/pages/Tickets';
@@ -17,7 +17,9 @@ export default function Routes() {
   return (
     <Switch>
       <Route path="/" exact component={SignIn} />
-      <Route path="/register" exact component={SignUp} />
+
+      <Route path="/recovery/" exact component={Recovery} />
+      <Route path="/recovery/:token" exact component={Recovery} />
 
       <Route path="/dashboard" exact component={Dashboard} isPrivate />
       <Route path="/profile" exact component={Profile} isPrivate />
