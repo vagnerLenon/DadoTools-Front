@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
 import React from 'react';
 import './styles.css';
-import { Circle, Initials } from './styles';
+import { Circle } from './styles';
 
 export default function Avatar(nome, sobrenome, tamanho = 64, quantLetras = 2) {
   const tudojunto = `${nome} ${sobrenome}`;
