@@ -52,10 +52,8 @@ import { Body } from '../Inbox/styles';
 import { Sidebar, Container } from '../resource/global_ticket_styles';
 
 import {
-  RetornaExtensaoDoNome,
   RetornaIconeDaExtensao,
   ExtensaoValidaUpload,
-  extensoesValidas as ext,
   FormataFileSize,
 } from '~/Utils';
 
@@ -90,7 +88,7 @@ export default function Enviados() {
   const [texto, setTexto] = useState('');
 
   const [anexos, setAnexos] = useState([]);
-  const [extensoesValidas, setExtensoesValidas] = useState([]);
+  // const [extensoesValidas, setExtensoesValidas] = useState([]);
 
   const profile = useSelector(state => state.user.profile);
   const [tickets, setTickets] = useState([]);
@@ -108,7 +106,7 @@ export default function Enviados() {
 
   const [avaliacao, setAvaliacao] = useState(0);
 
-  const [upload, setUpload] = useState([]);
+  // const [upload, setUpload] = useState([]);
 
   const [textoEncerramento, setTextoEncerramento] = useState('');
 
@@ -331,7 +329,7 @@ export default function Enviados() {
       case 'atualizado':
         if (colunaOrdAsc) {
           setTickets(
-            tickets_.sort(function (a, b) {
+            tickets_.sort((a, b) => {
               if (a.updates[0] && b.updates[0]) {
                 return a.updates[0].createdAt < b.updates[0].createdAt ? -1 : 1;
               }
@@ -340,7 +338,7 @@ export default function Enviados() {
           );
         } else {
           setTickets(
-            tickets_.sort(function (a, b) {
+            tickets_.sort((a, b) => {
               if (a.updates[0] && b.updates[0]) {
                 return a.updates[0].createdAt < b.updates[0].createdAt ? 1 : -1;
               }
@@ -835,7 +833,7 @@ export default function Enviados() {
 
   function LimparDadosUpdate() {
     setTexto('');
-    setUpload([]);
+    // setUpload([]);
     setEstado(EditorState.createEmpty());
     setCharacteresDisp(tamanhoLimiteTexto);
   }
@@ -1418,7 +1416,7 @@ export default function Enviados() {
                             onChange={AdicionaAnexos}
                             type="file"
                             id="upload"
-                            accept={extensoesValidas}
+                            // accept={extensoesValidas}
                             style={{ display: 'none' }}
                           />
                         </button>

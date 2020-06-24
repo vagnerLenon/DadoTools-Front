@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable react/prop-types */
@@ -48,7 +49,6 @@ import { Container, Sidebar, Body } from './styles';
 import './styles.css';
 
 import {
-  RetornaExtensaoDoNome,
   RetornaIconeDaExtensao,
   ExtensaoValidaUpload,
   extensoesValidas as ext,
@@ -119,6 +119,84 @@ export default function Inbox() {
     prazo_curto: 0,
     prioritario: 0,
   });
+
+  async function updateResumos(dados) {
+    const array = [];
+    dados.forEach(t => {
+      array.push({
+        categoria: t.categoria,
+        subcategoria: `${t.categoria}@#${t.subcategoria}`,
+      });
+    });
+
+    const resumo = await {
+      vencidos: dados.filter(t => {
+        if (t.prazo) {
+          return new Date(t.prazo) < new Date();
+        }
+        return false;
+      }).length,
+      prazo_curto: dados.filter(t => {
+        if (t.prazo && new Date(t.prazo) >= new Date()) {
+          if (new Date(t.prazo) === new Date()) {
+            return true;
+          }
+          const diffTime_p = Math.abs(
+            new Date(t.prazo) - new Date(t.createdAt)
+          );
+          const diffDays_p = Math.ceil(diffTime_p / (1000 * 60 * 60 * 24));
+
+          const diffTime_d = Math.abs(new Date() - new Date(t.createdAt));
+          const diffDays_d = Math.ceil(diffTime_d / (1000 * 60 * 60 * 24));
+
+          if (diffDays_d / diffDays_p > 0.8) {
+            return true;
+          }
+          return false;
+        }
+
+        return false;
+      }).length,
+      prioritario: dados.filter(t => {
+        return t.prioridade === 'A' || t.prioridade === 'U';
+      }).length,
+    };
+    setResumoDados(resumo);
+
+    const categ = await Object.values(
+      array.reduce((c, { categoria }) => {
+        c[categoria] = c[categoria] || {
+          name: categoria,
+          value: 0,
+        };
+        c[categoria].value++;
+        return c;
+      }, {})
+    );
+    setCategorias(categ);
+
+    const subcateg = await Object.values(
+      array.reduce((c, { subcategoria }) => {
+        c[subcategoria] = c[subcategoria] || {
+          name: subcategoria,
+          value: 0,
+        };
+        c[subcategoria].value++;
+        return c;
+      }, {})
+    );
+
+    const sub = [];
+    subcateg.forEach(valor => {
+      const [categoria_, subcategoria_] = String(valor.name).split('@#');
+      sub.push({
+        categoria: categoria_,
+        subcategoria: subcategoria_,
+        quant: valor.value,
+      });
+    });
+    setSubcategorias(sub);
+  }
 
   useEffect(() => {
     async function atualizaInbox() {
@@ -248,84 +326,6 @@ export default function Inbox() {
       default:
         break;
     }
-  }
-
-  async function updateResumos(dados) {
-    const array = [];
-    dados.forEach(t => {
-      array.push({
-        categoria: t.categoria,
-        subcategoria: `${t.categoria}@#${t.subcategoria}`,
-      });
-    });
-
-    const resumo = await {
-      vencidos: dados.filter(t => {
-        if (t.prazo) {
-          return new Date(t.prazo) < new Date();
-        }
-        return false;
-      }).length,
-      prazo_curto: dados.filter(t => {
-        if (t.prazo && new Date(t.prazo) >= new Date()) {
-          if (new Date(t.prazo) === new Date()) {
-            return true;
-          }
-          const diffTime_p = Math.abs(
-            new Date(t.prazo) - new Date(t.createdAt)
-          );
-          const diffDays_p = Math.ceil(diffTime_p / (1000 * 60 * 60 * 24));
-
-          const diffTime_d = Math.abs(new Date() - new Date(t.createdAt));
-          const diffDays_d = Math.ceil(diffTime_d / (1000 * 60 * 60 * 24));
-
-          if (diffDays_d / diffDays_p > 0.8) {
-            return true;
-          }
-          return false;
-        }
-
-        return false;
-      }).length,
-      prioritario: dados.filter(t => {
-        return t.prioridade === 'A' || t.prioridade === 'U';
-      }).length,
-    };
-    setResumoDados(resumo);
-
-    const categ = await Object.values(
-      array.reduce((c, { categoria }) => {
-        c[categoria] = c[categoria] || {
-          name: categoria,
-          value: 0,
-        };
-        c[categoria].value++;
-        return c;
-      }, {})
-    );
-    setCategorias(categ);
-
-    const subcateg = await Object.values(
-      array.reduce((c, { subcategoria }) => {
-        c[subcategoria] = c[subcategoria] || {
-          name: subcategoria,
-          value: 0,
-        };
-        c[subcategoria].value++;
-        return c;
-      }, {})
-    );
-
-    const sub = [];
-    subcateg.forEach(valor => {
-      const [categoria_, subcategoria_] = String(valor.name).split('@#');
-      sub.push({
-        categoria: categoria_,
-        subcategoria: subcategoria_,
-        quant: valor.value,
-      });
-    });
-    setSubcategorias(sub);
   }
 
   async function closeModal() {
