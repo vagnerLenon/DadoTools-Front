@@ -7,6 +7,7 @@ import {
   MdSend,
   MdSettings,
   MdAssignment,
+  MdWork,
 } from 'react-icons/md';
 import { Container, Menus, Conteudo, MenuItem } from './styles';
 
@@ -16,13 +17,15 @@ import Novo from './Novo';
 import Concluidos from './Concluidos';
 import Historico from './Historico';
 import Configs from './Configs';
+import Gestao from './Gestao';
 
 export default function Tickets() {
-  const [inbox, setInbox] = useState(true);
-  const [novo, setNovo] = useState(false);
+  const [inbox, setInbox] = useState(false);
+  const [novo, setNovo] = useState(true);
   const [concluidos, setConcluidos] = useState(false);
   const [historico, setHistorico] = useState(false);
   const [enviados, setEnviados] = useState(false);
+  const [gestao, setGestao] = useState(false);
   const [configs, setConfigs] = useState(false);
 
   function handleSelectMenu(nome) {
@@ -32,6 +35,7 @@ export default function Tickets() {
     setHistorico(false);
     setEnviados(false);
     setConfigs(false);
+    setGestao(false);
 
     switch (nome) {
       case 'inbox':
@@ -51,6 +55,9 @@ export default function Tickets() {
         break;
       case 'configs':
         setConfigs(true);
+        break;
+      case 'gestao':
+        setGestao(true);
         break;
       default:
         break;
@@ -75,6 +82,9 @@ export default function Tickets() {
     }
     if (configs) {
       return <Configs />;
+    }
+    if (gestao) {
+      return <Gestao />;
     }
     handleSelectMenu('inbox');
     return <Inbox />;
@@ -128,6 +138,14 @@ export default function Tickets() {
           >
             <MdAssignment size={15} />
             <p>Histórico</p>
+          </MenuItem>
+          <MenuItem
+            name="gestao"
+            ativo={gestao}
+            onClick={() => handleSelectMenu('gestao')}
+          >
+            <MdWork size={15} />
+            <p>Gestão</p>
           </MenuItem>
           <MenuItem
             name="configs"

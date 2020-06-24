@@ -12,6 +12,10 @@ import TicketEncerrado from '~/pages/Tickets/TicketEncerrado';
 import Cadastro from '~/pages/Cadastro';
 import NovoCadastro from '~/pages/Cadastro/NovoCadastro';
 import Detalhes from '~/pages/Cadastro/Detalhes';
+import GestaoInbox from '~/pages/Tickets/Gestao/Inbox';
+import GestaoEnviados from '~/pages/Tickets/Gestao/Enviados';
+import GestaoConcluidos from '~/pages/Tickets/Gestao/Concluidos';
+import GestaoHistorico from '~/pages/Tickets/Gestao/Historico';
 
 export default function Routes() {
   return (
@@ -49,6 +53,27 @@ export default function Routes() {
 
       <Route path="/cadastros/view/:id" component={Detalhes} isPrivate />
       <Route path="/cadastros/:id" component={NovoCadastro} isPrivate />
+      <Route
+        path="/tickets/group/inbox/:id"
+        component={GestaoInbox}
+        isPrivate
+      />
+      <Route
+        path="/tickets/group/enviados/:id"
+        component={GestaoEnviados}
+        isPrivate
+      />
+      <Route
+        path="/tickets/group/concluidos/:id"
+        component={GestaoConcluidos}
+        isPrivate
+      />
+      <Route
+        path="/tickets/group/historico/:id"
+        component={GestaoHistorico}
+        isPrivate
+      />
+
       <Route path="/" exact component={SignIn} />
     </Switch>
   );

@@ -1,8 +1,9 @@
 /* eslint-disable prefer-destructuring */
 import React from 'react';
 import './styles.css';
+import { Circle, Initials } from './styles';
 
-export default function Avatar(nome, sobrenome, quantLetras = 2) {
+export default function Avatar(nome, sobrenome, tamanho = 64, quantLetras = 2) {
   const tudojunto = `${nome} ${sobrenome}`;
 
   const todasIniciais = [];
@@ -58,8 +59,8 @@ export default function Avatar(nome, sobrenome, quantLetras = 2) {
   }
 
   return (
-    <div className="circle">
+    <Circle tamanho={`${tamanho}px`}>
       <span className="initials">{iniciais}</span>
-    </div>
+    </Circle>
   );
 }

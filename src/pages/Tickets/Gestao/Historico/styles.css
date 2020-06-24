@@ -274,7 +274,6 @@ div.registros .body-table tbody tr td.assunto svg:not(:first-child){
 
   div.body{
     width: 100%;
-    height: fit-content;
     margin-right: 10px;
     display: flex;
     flex-direction: column;

@@ -370,7 +370,7 @@ export default function Ticket(tipo) {
     }
   }
 
-  // //#region Editor
+  // #region Editor
 
   function onChange(editorState) {
     setEstado(editorState);
@@ -815,7 +815,8 @@ export default function Ticket(tipo) {
             </div>
 
             <div className="texto-ticket">
-              {ReactHtmlParser(jsonToHtml(ticket.formatado.texto_json))}
+              {ticket.formatado &&
+                ReactHtmlParser(jsonToHtml(ticket.formatado.texto_json))}
             </div>
             <div className="botoes-acao">
               <button type="button" className="add-update" onClick={openModal}>

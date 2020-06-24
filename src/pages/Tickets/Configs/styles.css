@@ -86,11 +86,12 @@ div.criar-usuarios form label{
 div.criar-usuarios form label:not(:first-child){
   margin-top: 10px;
 }
+
 div.criar-usuarios form label input, div.criar-usuarios form label select{
   padding: 3px;
   border-radius: 4px;
-border: 1px solid #999;
-background: #f5f5f5;
+  border: 1px solid #999;
+  background: #f5f5f5;
 }
 
 div.criar-usuarios form label input::placeholder{
@@ -123,9 +124,11 @@ button.green{
   background: #28a745;
   color: #fff;
 }
+
 button.green:hover{
   background: #218838;
 }
+
 button.white{
   background: #f8f9fa;
   color: #444;
@@ -147,6 +150,7 @@ div.body{
   border-left: 1px solid #4d5b6b;
   border-right: 1px solid #4d5b6b;
 }
+
 div.grupos button{
 
   display: flex;
@@ -158,10 +162,10 @@ div.grupos button{
   padding: 0 auto;
   background: transparent;
 }
+
 div.grupos div.header button:hover{
   background: rgba(0, 0, 0, 0.1);
 }
-
 
 div.grupos div.header button svg{
   width: 20px;
@@ -187,6 +191,7 @@ div.titulo-modal{
 div.titulo-modal h1{
   font-size: 1.5em;
 }
+
 div.titulo-modal button{
   padding: 5px 10px;
   border-radius: 4px;
@@ -195,10 +200,12 @@ div.titulo-modal button{
   color:#fff;
   transition: background 0.1s;
 }
+
 div.titulo-modal button:hover{
   border: 1px solid #bd2130;
   background: #c82333;
 }
+
 div.titulo-modal .confirm-delete button{
   margin-right: 10px;
 }
@@ -207,10 +214,12 @@ div.titulo-modal .confirm-delete button{
   display: flex;
   flex-direction: column;
 }
+
 .form-formatado form label{
   display: flex;
   flex-direction: column;
 }
+
 .form-formatado form label textarea, .form-formatado form label input{
   padding: 5px;
   border-radius: 4px;
@@ -239,9 +248,11 @@ div.titulo-modal .confirm-delete button{
 .form-formatado form .button-group button:first-child{
   margin-right: 10px;
 }
+
 div.body{
   padding: 0;
 }
+
 div.body li{
   display: flex;
   justify-content: space-between;
@@ -250,14 +261,17 @@ div.body li{
 }
 
 div.body li.li-clickable{
-cursor: pointer;
+  cursor: pointer;
 }
+
 div.body li.li-clickable:hover{
   background: #f8f8f8;
 }
+
 div.body li:nth-child(even){
   background: #fafafa;
 }
+
 div.body li:nth-child(even):hover{
   background: #f5f5f5;
 }
@@ -271,6 +285,7 @@ div.edicao-grupo{
 div.edicao-grupo div.row{
   width: 100%;
 }
+
 div.edicao-grupo div.row:not(:first-child){
   margin-left: 20px;
 }
@@ -303,4 +318,47 @@ li button{
   border-radius: 4px;
 
 }
+
+ul.tab-menu{
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  align-content: center;
+  background-color: #f1f1f1;
+  height: 38px;
+  line-height: 1.5;
+  border: 1px solid #ccc;
+
+}
+
+ul.tab-menu li{
+  display: inline-block;
+  padding: 8px 16px;
+  height: 100%;
+  cursor: pointer;
+  background-color: #f1f1f1;
+  color:#000;
+}
+
+
+ul.tab-menu li.selected{
+  background-color: #616161;
+  color:#fff;
+}
+
+ul.tab-menu li:hover{
+  background-color: #ccc;
+  color:#000;
+}
+
+div.conteudo{
+  border: 1px solid #ccc;
+  border-top: 0;
+  padding: 10px;
+}
+
+
+
+
 

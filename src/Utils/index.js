@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable spaced-comment */
 import React from 'react';
 import {
@@ -63,6 +64,25 @@ export function RetornaExtensaoDoNome(nome) {
   const re = /(?:\.([^.]+))?$/;
 
   return re.exec(nome)[1];
+}
+
+export function AddWorkingDays(inicialDate, days) {
+  const newDate = inicialDate;
+
+  for (let i = 0; i < days; i++) {
+    switch (newDate.getDate()) {
+      case 5:
+        newDate.setDate(newDate.getDate() + 3);
+        break;
+      case 6:
+        newDate.setDate(newDate.getDate() + 2);
+        break;
+      default:
+        newDate.setDate(newDate.getDate() + 1);
+        break;
+    }
+  }
+  return newDate;
 }
 
 export function RetornaIconeDaExtensao(ext) {

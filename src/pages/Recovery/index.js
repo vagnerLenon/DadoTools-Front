@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import api from '~/services/api';
 
 import { Container } from './styles';
 import logo from '~/assets/logoDaDo_vermelho.svg';
+
+import history from '~/services/history';
 
 function Recovery() {
   const { token = '' } = useParams();
   const [email, setEmail] = useState('');
   const [novaSenha, setNovaSenha] = useState('');
   const [repetirNovaSenha, setRepetirNovaSenha] = useState('');
-  const [emailEnviado, setEmailEnviado] = useState(false);
   const [modo, setModo] = useState('I');
 
   useEffect(() => {
@@ -20,18 +22,52 @@ function Recovery() {
         const { sucesso } = response.data;
         if (sucesso) {
           setModo('A');
+        } else {
+          toast.warn('Token inválido. Solicite a recuperação novamente.');
+          history.push('/recovery');
         }
       }
     }
     ValidaToken();
   }, [token]);
 
+  async function handleRecover(e) {
+    e.preventDefault();
+    await api.post('/recovery', { email });
+    toast.success(
+      'Um e-mail de recuperação foi enviado para você. Verifique também na caixa de span.'
+    );
+    history.push('/');
+  }
+
+  async function HandleChangePass(e) {
+    e.preventDefault();
+    if (novaSenha.length < 6) {
+      toast.warn('A senha deve ter ao menos 6 caracteres.');
+      return;
+    }
+
+    if (novaSenha !== repetirNovaSenha) {
+      toast.warn('As duas senhas devem ser iguais.');
+      return;
+    }
+
+    const retorno = await api.put('/recovery', { token, password: novaSenha });
+
+    if (retorno.data.sucesso) {
+      toast.success('Senha alterada com sucesso!');
+      history.push('/');
+    } else {
+      toast.error('A senha não pode ser alterada.');
+    }
+  }
+
   function returnTexto() {
     switch (modo) {
       case 'I':
         return (
           <div className="base">
-            <form>
+            <form onSubmit={handleRecover}>
               <input
                 type="email"
                 placeholder="Seu E-mail"
@@ -52,7 +88,7 @@ function Recovery() {
       case 'A':
         return (
           <div className="base">
-            <form>
+            <form onSubmit={HandleChangePass}>
               <input
                 type="password"
                 placeholder="Nova senha"

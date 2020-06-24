@@ -8,9 +8,9 @@ div.circle {
 }
 div.circle span.initials{
   color: #fff;
-  font-size: calc(64px / 2); /* 50% of parent */
+  font-size: calc(100% / 2); /* 50% of parent */
   line-height: 1;
   position: relative;
-  top: calc(64px / 4); /* 25% of parent */
+  top: calc(100% / 4); /* 25% of parent */
 }
 

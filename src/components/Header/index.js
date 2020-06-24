@@ -114,7 +114,7 @@ export default function Header() {
               <div className="avatar_p">
                 {profile.avatar === null ||
                 typeof profile.avatar.url === 'undefined' ? (
-                  Avatar(profile.nome, profile.sobrenome)
+                  Avatar(profile.nome, profile.sobrenome, 42)
                 ) : (
                   <img src={profile.avatar.url} alt={profile.nome} />
                 )}

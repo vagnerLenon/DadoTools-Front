@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState, useEffect } from 'react';
 import { Editor, EditorState, RichUtils, convertToRaw } from 'draft-js';
@@ -6,6 +8,9 @@ import { addDays } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { MdCloudUpload, MdClear } from 'react-icons/md';
+import { FaSpinner } from 'react-icons/fa';
+
+import Modal from 'react-modal';
 
 import { ComboBoxComponent } from '@syncfusion/ej2-react-dropdowns';
 
@@ -16,6 +21,7 @@ import {
   FormataFileSize,
   RetornaIconeDaExtensao,
   ExtensaoValidaUpload,
+  AddWorkingDays,
   extensoesValidas as ext,
 } from '~/Utils';
 
@@ -23,7 +29,7 @@ import Negrito from '~/assets/Negrito.svg';
 import Italico from '~/assets/Italico.svg';
 import Sublinhado from '~/assets/Sublinhado.svg';
 
-import { Container } from './styles';
+import { Container, LoadingDiv } from './styles';
 import './styles.css';
 
 import api from '~/services/api';
@@ -31,6 +37,17 @@ import api from '~/services/api';
 registerLocale('pt-BR', pt);
 
 const tamanhoLimiteTexto = 1000;
+
+const customStyles = {
+  content: {
+    width: '500px',
+    height: '200px',
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    marginRight: 'auto',
+    marginLeft: 'auto',
+  },
+};
 
 export default function Novo() {
   const profile = useSelector(state => state.user.profile);
@@ -40,6 +57,7 @@ export default function Novo() {
   const [subcategorias, setSubcategorias] = useState([]);
   const [destinatariosDisp, setDestinatariosDisp] = useState([]);
   const [destinatarioValido, setDestinatarioValido] = useState(true);
+  const [minDate, setMinDate] = useState(new Date());
 
   const [erroAssunto, setErroAssunto] = useState(false);
   const [erroCategoria, setErroCategoria] = useState(false);
@@ -56,6 +74,7 @@ export default function Novo() {
   const [selectedPrioridade, setSelectedPrioridade] = useState('N');
   const [anexos, setAnexos] = useState([]);
   const [extensoesValidas, setExtensoesValidas] = useState('');
+  const [loadingCriar, setLoadingCriar] = useState(false);
 
   useEffect(() => {
     async function atualizaDadosIniciais() {
@@ -74,11 +93,83 @@ export default function Novo() {
       const categoria = categorias.filter(
         cat => cat.nome === selectedCategory
       )[0];
+
       setSubcategorias(categoria.subcategorias);
+
+      const { subcategorias: scats } = categoria;
+
+      let dias = 1;
+      if (scats && scats.length > 0) {
+        scats.forEach(subcat => {
+          if (subcat.dias_prazo > dias) {
+            dias = subcat.dias_prazo;
+          }
+        });
+      }
+      const data = AddWorkingDays(new Date(), dias);
+
+      setMinDate(data);
+      if (prazo !== '' && data > prazo) {
+        setPrazo(data);
+      }
     } else {
       setSubcategorias([]);
+      const data = AddWorkingDays(new Date(), 1);
+      setMinDate(data);
+      if (prazo !== '' && data > prazo) {
+        setPrazo(data);
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory, categorias]);
+
+  useEffect(() => {
+    async function AtualizaPrazo() {
+      if (subcategorias.length > 0 && selectedSubcategory !== '') {
+        const subcategoria = subcategorias.filter(
+          scat => scat.nome === selectedSubcategory
+        )[0];
+
+        const dias = subcategoria.dias_prazo;
+        const data = AddWorkingDays(new Date(), dias);
+        setMinDate(data);
+        if (prazo !== '' && data > prazo) {
+          setPrazo(data);
+        }
+        console.tron.log(subcategoria);
+      } else if (selectedCategory !== '') {
+        const categoria = categorias.filter(
+          cat => cat.nome === selectedCategory
+        )[0];
+        const { subcategorias: scats } = categoria;
+
+        let dias = 1;
+        if (scats && scats.length > 0) {
+          scats.forEach(subcat => {
+            if (subcat.dias_prazo > dias) {
+              dias = subcat.dias_prazo;
+            }
+          });
+        }
+        const data = await AddWorkingDays(new Date(), dias);
+        setMinDate(data);
+        console.tron.log(data);
+
+        if (prazo !== '' && data > prazo) {
+          setPrazo(data);
+        }
+      } else {
+        const newdata = AddWorkingDays(new Date(), 1);
+        setMinDate(newdata);
+        if (prazo !== '' && newdata > prazo) {
+          setPrazo(newdata);
+        }
+      }
+    }
+
+    AtualizaPrazo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSubcategory]);
 
   function onChange(editorState) {
     setEstado(editorState);
@@ -188,7 +279,7 @@ export default function Novo() {
     setAssunto(valor);
   }
 
-  async function handleChangeCategoria(e) {
+  function handleChangeCategoria(e) {
     const valor = e.target.value;
     setErroCategoria(false);
     setSelectedCategory(valor);
@@ -199,7 +290,7 @@ export default function Novo() {
     setSelectedPrioridade(e.target.value);
   }
 
-  async function handleChangeSubcategoria(e) {
+  function handleChangeSubcategoria(e) {
     const valor = e.target.value;
     setSelectedSubcategory(valor);
   }
@@ -210,9 +301,9 @@ export default function Novo() {
       dataAtual.getFullYear(),
       dataAtual.getMonth(),
       dataAtual.getDate(),
-      18,
-      0,
-      0,
+      23,
+      59,
+      59,
       0
     );
 
@@ -264,8 +355,13 @@ export default function Novo() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (loadingCriar) {
+      return;
+    }
+
     if (validaCampos()) {
       // envia as informações para o banco
+      setLoadingCriar(true);
 
       const destinat = destinatariosDisp.filter(
         dest => dest.email === destinatario
@@ -309,22 +405,6 @@ export default function Novo() {
       // Depois envia os arquivos juntamente do id do ticket que retornar
       window.location.reload();
     }
-  }
-
-  function filtraDest(dest) {
-    let retorno = true;
-
-    const quantLetras = destinatario.length;
-
-    if (dest.email === profile.email) {
-      retorno = false;
-    }
-
-    if (destinatario !== String(dest.email).substring(0, quantLetras)) {
-      retorno = false;
-    }
-
-    return retorno;
   }
 
   // Funções do editor
@@ -399,24 +479,42 @@ export default function Novo() {
       );
       return;
     }
-    data.append('file', arquivo);
 
-    await setAnexos(
-      anexos.concat({
-        nome,
-        tamanho,
-        data,
-      })
-    );
+    data.append('file', arquivo);
+    const anexoAtual = {
+      nome,
+      tamanho,
+      data,
+      nomeServer: '',
+      loading: true,
+    };
+
+    setAnexos(anexos.concat(anexoAtual));
+
+    const response = await api.post('tickets/anexos/', anexoAtual.data);
+
+    if (response.data.sucesso) {
+      anexoAtual.loading = false;
+      anexoAtual.nomeServer = response.data.file.path;
+    }
+
+    const outrosAnexos = anexos.filter(a => {
+      return a.nome !== anexoAtual.nome;
+    });
+
+    setAnexos(outrosAnexos.concat(anexoAtual));
 
     // const ext = re.exec(e.target.files[0].name)[1];
     // console.log(ext);
   }
 
-  function RemoveAnexo(nome) {
+  async function RemoveAnexo(nome) {
+    await api.delete(
+      `http://localhost:3333/tickets/anexos?nome_arquivo=${nome}`
+    );
     setAnexos(
       anexos.filter(a => {
-        return a.nome !== nome;
+        return a.nomeServer !== nome;
       })
     );
   }
@@ -499,11 +597,9 @@ export default function Novo() {
                 locale="pt-BR"
                 selected={prazo}
                 timeFormat="p"
-                timeIntervals={30}
-                dateFormat="dd/MM/yyyy HH:mm"
-                minDate={new Date()}
-                timeInputLabel="Hora:"
-                showTimeInput
+                dateFormat="dd/MM/yyyy"
+                minDate={minDate}
+                peekNextMonth
                 className="prazo"
               />
             </div>
@@ -547,12 +643,7 @@ export default function Novo() {
           </div>
           <div className="responsivo">
             <div className="uploads">
-              <label
-                htmlFor="aaa"
-                onClick={() => {
-                  toast.info('Upload será possível em futuras atualizações');
-                }}
-              >
+              <label htmlFor="upload">
                 <MdCloudUpload />{' '}
                 <div>
                   <strong>Upload</strong> <span>(Máx. 3 arquiv.)</span>
@@ -568,6 +659,33 @@ export default function Novo() {
               <div className="files">
                 {anexos.map(anexo => (
                   <div className="file" key={anexo.nome}>
+                    {anexo.loading && (
+                      <div className="loading-overlay">
+                        <FaSpinner color="#666" className="rotating" />
+                      </div>
+                    )}
+
+                    {IconeAnexo(anexo.nome)}
+                    <div>
+                      <span>{FormataFileSize(anexo.tamanho)}</span>
+                      <p>{anexo.nome}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        RemoveAnexo(anexo.nomeServer);
+                      }}
+                    >
+                      <MdClear />
+                    </button>
+                  </div>
+                ))}
+
+                {/* anexos.map(anexo => (
+
+
+
+                  <div className="file" key={anexo.nome}>
                     {IconeAnexo(anexo.nome)}
                     <div>
                       <span>{FormataFileSize(anexo.tamanho, false)}</span>
@@ -580,7 +698,8 @@ export default function Novo() {
                       <MdClear />
                     </button>
                   </div>
-                ))}
+
+                )) */}
               </div>
             </div>
           </div>
@@ -628,6 +747,27 @@ export default function Novo() {
           <button type="submit">Criar ticket</button>
         </div>
       </form>
+
+      <Modal
+        shouldCloseOnOverlayClick={false}
+        isOpen={loadingCriar}
+        style={customStyles}
+        contentLabel="Example Modal"
+      >
+        <LoadingDiv>
+          <p>Criando ticket, aguarde.</p>
+          <div className="lds-roller">
+            <div />
+            <div />
+            <div />
+            <div />
+            <div />
+            <div />
+            <div />
+            <div />
+          </div>
+        </LoadingDiv>
+      </Modal>
     </Container>
   );
 }

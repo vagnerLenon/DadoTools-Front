@@ -1,11 +1,30 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  height: 100%;
+  height: auto;
+  margin-top: 10px;
 
   width: 100%;
   display: flex;
+  flex-direction: column;
   vertical-align: top;
+  div.title-header {
+    height: 40px;
+    margin-bottom: 10px;
+    align-content: center;
+    align-items: center;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 10px;
+    background: #f0f0f0;
+    border-radius: 8px;
+    display: flex;
+  }
+  div.content-page {
+    height: auto;
+    width: 100%;
+    display: flex;
+  }
 `;
 
 export const Sidebar = styled.div`
@@ -27,6 +46,7 @@ export const Sidebar = styled.div`
 
       tr {
         background: #4d5b6b;
+        height: 36px;
         text-align: left;
         border-bottom: 1px solid #e9e9e9;
 
@@ -37,6 +57,7 @@ export const Sidebar = styled.div`
           padding: 0 10px;
           padding-top: 6px;
           padding-bottom: 6px;
+          font-size: 12px;
           display: flex;
           justify-content: space-between;
           height: 25px;
@@ -299,13 +320,14 @@ export const Body = styled.div`
         border-bottom: 1px solid #e9e9e9;
 
         th {
-          flex-direction: row;
           color: #9a9a9a;
+          font-size: 12px;
           font-weight: 400;
           padding: 0 10px;
           padding-top: 6px;
           padding-bottom: 6px;
-          height: 35px;
+          font-size: 10px;
+          height: 25px;
         }
       }
     }
@@ -347,7 +369,7 @@ export const Body = styled.div`
               display: flex;
               align-items: center;
               align-content: center;
-               {
+
                 svg {
                   margin-right: 5px;
                 }

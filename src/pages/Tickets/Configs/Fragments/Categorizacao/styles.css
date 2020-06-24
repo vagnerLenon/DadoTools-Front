@@ -1,0 +1,247 @@
+div.content{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+div.content div.categoria{
+  border: 1px solid #ccc;
+}
+
+div.content div.cat{
+  display: flex;
+  flex-direction: column;
+}
+
+.inativo{
+  text-decoration:line-through;
+  color: #555;
+}
+
+div.content div.categoria div.categoria-header{
+  display: flex;
+  height: 35px;
+  text-align: center;
+  justify-content: space-between;
+  background-color: #ccc;
+}
+
+
+div.content div.categoria div.categoria-header h2{
+  width: 100%;
+  font-size: 16px;
+  font-weight: 800;
+  padding-top: 5px;
+  cursor: pointer;
+}
+
+div.content div.categoria div.categoria-header h2:hover{
+  background-color: #bbb;
+}
+
+
+div.content div.categoria div.categoria-header button{
+
+  height: 100%;
+  width: 40px;
+  padding: 0 10px;
+  border: 0;
+  padding:0;
+  background: transparent;
+
+}
+
+div.content div.categoria div.categoria-header button:hover{
+  background: #bbb;
+}
+
+div.content div.categoria div.cat {
+  display: flex;
+}
+
+div.content div.categoria div.cat table{
+  width: 100%;
+  border-spacing: 0;
+  font-weight: 400 !important;
+
+}
+
+div.content div.categoria div.cat table tr.tableHeader th{
+  height: 20px;
+  background: #ccc;
+  font-size: 14px;
+  font-weight: 400;
+
+
+}
+
+div.content div.categoria div.cat table tr.subcateg{
+  cursor: pointer;
+}
+
+div.content div.categoria div.cat table tr.subcateg:hover{
+  background-color: #eee;
+}
+
+div.content div.categoria div.cat table tr td{
+  padding: 5px;
+}
+
+div.content div.categoria div.cat table tr td.subcat{
+  text-align: left;
+}
+
+div.content div.categoria div.cat table td.prazo{
+  text-align: center;
+}
+
+.col_20{
+  width: 20%;
+}
+.col_80{
+  width: 80%;
+}
+
+div.content div.criar-categoria{
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+div.content div.criar-categoria:hover{
+  background: #ccc;
+}
+
+div.content div.criar-categoria div{
+  display: block;
+  margin: auto;
+}
+
+.modal-title{
+  font-size: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form label {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+
+form label input, textarea {
+  resize: none;
+  padding: 5px;
+  margin-top: 5px;
+  background: #eee;
+  border: 1px solid #ccc;
+border-radius: 4px;
+}
+
+form label textarea {
+  height: 80px;
+}
+
+form div.button-group{
+  display: flex;
+  justify-content: space-between;
+}
+
+form div.button-group button{
+  padding: 5px;
+  min-width: 80px;
+  border-radius: 4px;
+}
+
+button.btn-white{
+  background: #fff;
+  border: 1px solid #eee;
+}
+button.btn-white:hover{
+  background: #f5f5f5;
+  border-color: #ddd;
+}
+
+button.btn-green{
+  background: #28a745;
+  color:#fff;
+  border: 1px solid #28a745;
+}
+button.btn-green:hover{
+  background: #218838;
+  border-color: #1e7e34;
+}
+
+button.btn-red{
+  background: #dc3545;
+  color:#fff;
+  border: 1px solid #dc3545;
+}
+button.btn-red:hover{
+  background: #c82333;
+  border-color: #bd2130;
+}
+
+button.btn-yellow{
+  background: #ffc107;
+  color:#1f2d3d;
+  border: 1px solid #ffc107;
+}
+button.btn-yellow:hover{
+  background: #e0a800;
+  border-color: #d39e00;
+}
+
+form label.checkbox {
+  display: block;
+  height: auto;
+}
+
+form label.checkbox input{
+  margin-right: 10px;
+  align-items: center;
+}
+
+form div.input-group{
+  display: flex;
+  align-items: center;
+  align-content: center;
+}
+
+td.add-subcat{
+  display: block;
+  width: 100%;
+}
+
+button.add-subcategoria{
+  display: flex;
+  margin: 5px;
+  padding: 0;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  height: 30px;
+  text-align: center;
+}
+
+button.add-subcategoria:hover{
+  background-color: #Eee;
+}
+
+button.add-subcategoria svg{
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin:auto;
+}
