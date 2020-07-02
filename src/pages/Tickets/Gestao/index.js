@@ -198,7 +198,7 @@ function Gestao() {
                         {c.avatar ? (
                           <img src={c.avatar} alt="" />
                         ) : (
-                          Avatar(c.nome, c.sobrenome)
+                          Avatar(c.nome, c.sobrenome, 48)
                         )}
                       </div>
                       <div className="info">

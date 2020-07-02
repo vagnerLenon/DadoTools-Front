@@ -1,14 +1,17 @@
+/* eslint-disable no-case-declarations */
+/* eslint-disable radix */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState, useEffect } from 'react';
 import { Editor, EditorState, RichUtils, convertToRaw } from 'draft-js';
+import { CircularProgressbar } from 'react-circular-progressbar';
+import filesize from 'filesize';
 
 import { addDays } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { MdCloudUpload, MdClear } from 'react-icons/md';
-import { FaSpinner } from 'react-icons/fa';
+import { MdCloudUpload, MdClear, MdCheckCircle, MdError } from 'react-icons/md';
 
 import Modal from 'react-modal';
 
@@ -18,7 +21,6 @@ import pt from 'date-fns/locale/pt-BR';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import {
-  FormataFileSize,
   RetornaIconeDaExtensao,
   ExtensaoValidaUpload,
   AddWorkingDays,
@@ -51,6 +53,42 @@ const customStyles = {
 
 export default function Novo() {
   const profile = useSelector(state => state.user.profile);
+
+  const [file1, setFile1] = useState({
+    file: null,
+    nome: '',
+    tamanho: 0,
+    tamanhoFormatado: '',
+    progress: 0,
+    uploaded: false,
+    error: false,
+    idupload: '',
+    url: '',
+  });
+  const [file2, setFile2] = useState({
+    file: null,
+    nome: '',
+    tamanho: 0,
+    tamanhoFormatado: '',
+    progress: 0,
+    uploaded: false,
+    error: false,
+    idupload: '',
+    url: '',
+  });
+
+  const [file3, setFile3] = useState({
+    file: null,
+    nome: '',
+    tamanho: 0,
+    tamanhoFormatado: '',
+    progress: 0,
+    uploaded: false,
+    error: false,
+    idupload: '',
+    url: '',
+  });
+
   const [estado, setEstado] = useState(EditorState.createEmpty());
   const [characteresDisp, setCharacteresDisp] = useState(tamanhoLimiteTexto);
   const [categorias, setCategorias] = useState([]);
@@ -72,7 +110,6 @@ export default function Novo() {
   const [destinatario, setDestinatario] = useState('');
   const [assunto, setAssunto] = useState('');
   const [selectedPrioridade, setSelectedPrioridade] = useState('N');
-  const [anexos, setAnexos] = useState([]);
   const [extensoesValidas, setExtensoesValidas] = useState('');
   const [loadingCriar, setLoadingCriar] = useState(false);
 
@@ -353,8 +390,23 @@ export default function Novo() {
     return ok;
   }
 
+  function existeUpload() {
+    return (
+      (file1.file && !file1.uploaded && !file1.error) ||
+      (file2.file && !file2.uploaded && !file2.error) ||
+      (file3.file && !file3.uploaded && !file3.error)
+    );
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
+
+    // Verificar se existe algum upload em andamento
+    if (existeUpload()) {
+      toast.info('Espere o upload terminar antes de salvar.');
+      return;
+    }
+
     if (loadingCriar) {
       return;
     }
@@ -381,29 +433,25 @@ export default function Novo() {
         dadosEnvio.prazo = prazo;
       }
 
-      // Primeiro envia os dados do ticket e aguarda o retorno.
-      let retornoTicket = {};
+      if (file1.file !== null) {
+        dadosEnvio.anexo1 = file1.idupload;
+      }
+      if (file2.file !== null) {
+        dadosEnvio.anexo2 = file2.idupload;
+      }
+      if (file3.file !== null) {
+        dadosEnvio.anexo3 = file3.idupload;
+      }
+
       try {
-        retornoTicket = await api.post('/tickets', dadosEnvio);
+        await api.post('/tickets', dadosEnvio);
+        toast.success('Ticket criado com sucesso');
+        window.location.reload();
       } catch (err) {
         toast.error(
           'Erro ao criar ticket. VErifique os dados e tente novamente'
         );
-        return;
       }
-
-      const { id = 0 } = retornoTicket.data;
-
-      if (id > 0) {
-        anexos.map(async anexo => {
-          await api.post(`tickets/anexos/${id}`, anexo.data);
-        });
-      }
-
-      toast.success('Ticket criado com sucesso');
-
-      // Depois envia os arquivos juntamente do id do ticket que retornar
-      window.location.reload();
     }
   }
 
@@ -448,23 +496,16 @@ export default function Novo() {
   }
 
   async function AdicionaAnexos(e) {
-    const data = new FormData();
+    if (e.target.files.length === 0) {
+      return;
+    }
+
+    const file = new FormData();
 
     const re = /(?:\.([^.]+))?$/;
     const arquivo = e.target.files[0];
     const tamanho = arquivo.size;
     const nome = arquivo.name;
-
-    if (
-      anexos.filter(a => {
-        return a.nome === nome;
-      }).length !== 0
-    ) {
-      toast.warn(
-        'Já existe um anexo com este nome. Verifique seus anexos e tente novamente'
-      );
-      return;
-    }
 
     if (!ExtensaoValidaUpload(re.exec(nome)[1])) {
       toast.warn(
@@ -473,50 +514,143 @@ export default function Novo() {
       return;
     }
 
-    if (anexos.length === 3) {
+    file.append('file', arquivo, nome);
+
+    const uploadAtual = {
+      file,
+      nome,
+      tamanho,
+      tamanhoFormatado: filesize(tamanho),
+      progress: 0,
+      uploaded: false,
+      error: false,
+      idupload: '',
+      url: '',
+    };
+
+    if (file1.file === null) {
+      const uploadFile1 = uploadAtual;
+
+      setFile1(uploadAtual);
+      api
+        .post('upload', uploadFile1.file, {
+          onUploadProgress: up => {
+            const progress = parseInt(Math.round((up.loaded * 100) / up.total));
+            setFile1({ ...uploadFile1, ...{ progress } });
+          },
+        })
+        .then(response => {
+          const { _id: idupload, url } = response.data;
+          setFile1({ ...uploadFile1, ...{ uploaded: true, idupload, url } });
+        })
+        .catch(() => {
+          uploadFile1.error = true;
+          setFile2(uploadFile1);
+        });
+    } else if (file2.file === null) {
+      const uploadFile2 = uploadAtual;
+      setFile2(uploadAtual);
+      api
+        .post('upload', uploadFile2.file, {
+          onUploadProgress: up => {
+            const progress = parseInt(Math.round((up.loaded * 100) / up.total));
+            setFile2({ ...uploadFile2, ...{ progress } });
+          },
+        })
+        .then(response => {
+          const { _id: idupload, url } = response.data;
+          setFile2({ ...uploadFile2, ...{ uploaded: true, idupload, url } });
+        })
+        .catch(() => {
+          uploadFile2.error = true;
+          setFile2(uploadFile2);
+        });
+    } else if (file3.file === null) {
+      const uploadFile3 = uploadAtual;
+      setFile3(uploadAtual);
+      api
+        .post('upload', uploadFile3.file, {
+          onUploadProgress: up => {
+            const progress = parseInt(Math.round((up.loaded * 100) / up.total));
+            setFile3({ ...uploadFile3, ...{ progress } });
+          },
+        })
+        .then(response => {
+          const { _id: idupload, url } = response.data;
+          setFile3({ ...uploadFile3, ...{ uploaded: true, idupload, url } });
+        })
+        .catch(() => {
+          uploadFile3.error = true;
+          setFile3(uploadFile3);
+        });
+    } else {
       toast.warn(
         'Você já anexou o máximo de arquivos permitidos. Você pode remover os anexos atuais clicando no "x" sobre eles'
       );
-      return;
     }
-
-    data.append('file', arquivo);
-    const anexoAtual = {
-      nome,
-      tamanho,
-      data,
-      nomeServer: '',
-      loading: true,
-    };
-
-    setAnexos(anexos.concat(anexoAtual));
-
-    const response = await api.post('tickets/anexos/', anexoAtual.data);
-
-    if (response.data.sucesso) {
-      anexoAtual.loading = false;
-      anexoAtual.nomeServer = response.data.file.path;
-    }
-
-    const outrosAnexos = anexos.filter(a => {
-      return a.nome !== anexoAtual.nome;
-    });
-
-    setAnexos(outrosAnexos.concat(anexoAtual));
-
-    // const ext = re.exec(e.target.files[0].name)[1];
-    // console.log(ext);
   }
 
-  async function RemoveAnexo(nome) {
-    await api.delete(
-      `http://localhost:3333/tickets/anexos?nome_arquivo=${nome}`
-    );
-    setAnexos(
-      anexos.filter(a => {
-        return a.nomeServer !== nome;
-      })
-    );
+  async function RemoveAnexo(anexo) {
+    switch (anexo) {
+      case 1:
+        if (file1.idupload === '') {
+          return;
+        }
+
+        const id1 = file1.idupload;
+        api.delete(`upload/${id1}`);
+        setFile1({
+          file: null,
+          nome: '',
+          tamanho: 0,
+          tamanhoFormatado: '',
+          progress: 0,
+          uploaded: false,
+          error: false,
+          idupload: '',
+          url: '',
+        });
+        break;
+      case 2:
+        if (file2.idupload === '') {
+          return;
+        }
+        const id2 = file2.idupload;
+        api.delete(`upload/${id2}`);
+        setFile2({
+          file: null,
+          nome: '',
+          tamanho: 0,
+          tamanhoFormatado: '',
+          progress: 0,
+          uploaded: false,
+          error: false,
+          idupload: '',
+          url: '',
+        });
+        break;
+      case 3:
+        if (file3.idupload === '') {
+          return;
+        }
+        const id3 = file3.idupload;
+        api.delete(`upload/${id3}`);
+        setFile3({
+          file: null,
+          nome: '',
+          tamanho: 0,
+          tamanhoFormatado: '',
+          progress: 0,
+          uploaded: false,
+          error: false,
+          idupload: '',
+          url: '',
+        });
+        break;
+
+      default:
+        break;
+    }
   }
 
   return (
@@ -657,29 +791,126 @@ export default function Novo() {
                 />
               </label>
               <div className="files">
-                {anexos.map(anexo => (
-                  <div className="file" key={anexo.nome}>
-                    {anexo.loading && (
-                      <div className="loading-overlay">
-                        <FaSpinner color="#666" className="rotating" />
-                      </div>
+                {file1.file && (
+                  <div className="file">
+                    {IconeAnexo(file1.nome)}
+                    <div>
+                      <span>{file1.tamanhoFormatado}</span>
+                      <p>{file1.nome}</p>
+                    </div>
+                    {file1.uploaded && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          RemoveAnexo(1);
+                        }}
+                      >
+                        <MdClear />
+                      </button>
                     )}
 
-                    {IconeAnexo(anexo.nome)}
-                    <div>
-                      <span>{FormataFileSize(anexo.tamanho)}</span>
-                      <p>{anexo.nome}</p>
+                    <div className="icone">
+                      {!file1.uploaded && !file1.error && (
+                        <CircularProgressbar
+                          styles={{
+                            root: { width: 32, height: 32 },
+                            path: {
+                              stroke: '#666',
+                              transformOrigin: 'center center',
+                            },
+                          }}
+                          strokeWidth={10}
+                          value={file1.progress}
+                        />
+                      )}
+                      {file1.uploaded && (
+                        <MdCheckCircle size={24} color="#2ecc71" />
+                      )}
+                      {file1.error && <MdError size={24} color="#e57878" />}
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        RemoveAnexo(anexo.nomeServer);
-                      }}
-                    >
-                      <MdClear />
-                    </button>
                   </div>
-                ))}
+                )}
+                {file2.file && (
+                  <div className="file">
+                    {IconeAnexo(file2.nome)}
+                    <div>
+                      <span>{file2.tamanhoFormatado}</span>
+                      <p>{file2.nome}</p>
+                    </div>
+
+                    {file2.uploaded && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          RemoveAnexo(2);
+                        }}
+                      >
+                        <MdClear />
+                      </button>
+                    )}
+
+                    <div className="icone">
+                      {!file2.uploaded && !file2.error && (
+                        <CircularProgressbar
+                          styles={{
+                            root: { width: 32, height: 32 },
+                            path: {
+                              stroke: '#666',
+                              transformOrigin: 'center center',
+                            },
+                          }}
+                          strokeWidth={10}
+                          value={file2.progress}
+                        />
+                      )}
+                      {file2.uploaded && (
+                        <MdCheckCircle size={24} color="#2ecc71" />
+                      )}
+                      {file2.error && <MdError size={24} color="#e57878" />}
+                    </div>
+                  </div>
+                )}
+
+                {file3.file && (
+                  <div className="file">
+                    {IconeAnexo(file3.nome)}
+                    <div>
+                      <span>{file3.tamanhoFormatado}</span>
+                      <p>{file3.nome}</p>
+                    </div>
+
+                    {file3.uploaded && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          RemoveAnexo(3);
+                        }}
+                      >
+                        <MdClear />
+                      </button>
+                    )}
+
+                    <div className="icone">
+                      {!file3.uploaded && !file3.error && (
+                        <CircularProgressbar
+                          styles={{
+                            root: { width: 32, height: 32 },
+                            path: {
+                              stroke: '#666',
+                              transformOrigin: 'center center',
+                            },
+                          }}
+                          strokeWidth={10}
+                          value={file3.progress}
+                        />
+                      )}
+                      {file3.uploaded && (
+                        <MdCheckCircle size={24} color="#2ecc71" />
+                      )}
+                      {file3.error && <MdError size={24} color="#e57878" />}
+                    </div>
+                  </div>
+                )}
 
                 {/* anexos.map(anexo => (
 

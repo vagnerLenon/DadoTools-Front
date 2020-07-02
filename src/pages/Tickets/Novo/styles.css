@@ -140,6 +140,8 @@ div.uploads div.files div.file{
   min-height: 50px;
 
 }
+
+
 div.uploads div.files div.file svg.icone{
   width: 40px;
   height: auto;
@@ -147,13 +149,19 @@ div.uploads div.files div.file svg.icone{
   z-index: 1;
 }
 
-div.uploads div.files div.file div{
+div.uploads div.files div.file div.icone{
   display: flex;
-  min-width: 70px;
-  flex-direction: column;
-justify-content: space-evenly;
 
+  min-width: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  align-content: center;
 }
+
+
 
 div.uploads div.files div.file div span{
   font-size: 0.8em;
