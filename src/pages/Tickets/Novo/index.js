@@ -173,7 +173,6 @@ export default function Novo() {
         if (prazo !== '' && data > prazo) {
           setPrazo(data);
         }
-        console.tron.log(subcategoria);
       } else if (selectedCategory !== '') {
         const categoria = categorias.filter(
           cat => cat.nome === selectedCategory
@@ -190,7 +189,6 @@ export default function Novo() {
         }
         const data = await AddWorkingDays(new Date(), dias);
         setMinDate(data);
-        console.tron.log(data);
 
         if (prazo !== '' && data > prazo) {
           setPrazo(data);
