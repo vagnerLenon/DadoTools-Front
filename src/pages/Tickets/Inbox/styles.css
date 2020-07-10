@@ -213,6 +213,19 @@ button.btn-white:hover{
   background: #f5f5f5;
   border-color: #ddd;
 }
+div.uploads label{
+  color:#aaa;
+  display: flex;
+  margin: auto 10px;
+  flex-direction: row;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  height: 100%;
+  cursor: pointer;
+  padding-right: 10px;
+}
 
 div.modal-ticket div.cabecalho-ticket div.ordenacao{
   display: flex;
@@ -250,6 +263,7 @@ div.modal-ticket div.cabecalho-ticket div.updates div.update{
   width: 100%;
 }
 
+
 div.modal-ticket div.cabecalho-ticket div.updates div.update:not(:first-child){
   margin-top: 10px;
 }
@@ -282,19 +296,52 @@ div.modal-ticket div.cabecalho-ticket div.updates div.update div.user-info.right
 
 }
 
+
 div.modal-ticket div.cabecalho-ticket div.updates div.update div.criador-update{
-    display: flex;
-    align-items: flex-start;
-    align-content: center;
-    background: #e5e5e5;
-    min-width: fit-content;
-    width: fit-content;
-    padding: 10px;
+  display: flex;
+  align-items: flex-start;
+  align-content: center;
+  background: #e5e5e5;
+  min-width: fit-content;
+  width: fit-content;
+  padding: 10px;
+}
+
+div.modal-ticket div.cabecalho-ticket div.updates div.update div.conteudo-update{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 div.modal-ticket div.cabecalho-ticket div.updates div.update div.texto-update{
   width: 100%;
   padding: 10px;
+}
+
+div.modal-ticket div.cabecalho-ticket div.updates div.update div.anexos-update{
+  width: 100%;
+  height: auto;
+  padding:5px;
+  background: #e5e5e5;
+  display: flex;
+}
+
+div.modal-ticket div.cabecalho-ticket div.updates div.update div.anexos-update a{
+  padding:5px 5px;
+  color: #666;
+  font-size: 12px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: center;
+
+}
+
+div.modal-ticket div.cabecalho-ticket div.updates div.update div.anexos-update a svg{
+  width: 15px;
+  height: auto;
+  margin-right: 5px;
 }
 
 div.modal-ticket div.cabecalho-ticket div.updates div.criador-update{
@@ -476,3 +523,40 @@ div.avaliacao div label {
   font-size: 25px;
 }
 
+div.anexos{
+  display: flex;
+}
+div.anexos a +a{
+  margin-left: 10px;
+}
+div.anexos a{
+  display: flex;
+  background: #eee;
+  border-radius: 4px;
+  padding:5px 6px;
+  max-height:50px;
+  height: 100%;
+  max-width: 250px;
+  overflow: hidden;
+  color: #666;
+}
+
+div.anexos a div.icone {
+  width: 40px;
+}
+
+div.anexos a div.icone svg{
+  width: auto;
+  height: 100%;
+margin-right: 5px;
+}
+
+div.anexos a div.info p{
+ font-size: 13px;
+}
+
+div.anexos a div.info span{
+  font-size: 12px;
+  color: #999;
+
+}

@@ -20,8 +20,8 @@ import Configs from './Configs';
 import Gestao from './Gestao';
 
 export default function Tickets() {
-  const [inbox, setInbox] = useState(false);
-  const [novo, setNovo] = useState(true);
+  const [inbox, setInbox] = useState(true);
+  const [novo, setNovo] = useState(false);
   const [concluidos, setConcluidos] = useState(false);
   const [historico, setHistorico] = useState(false);
   const [enviados, setEnviados] = useState(false);

@@ -1,7 +1,11 @@
+/* eslint-disable no-case-declarations */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable consistent-return */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-plusplus */
 import React, { useState, useEffect } from 'react';
+import filesize from 'filesize';
+import { CircularProgressbar } from 'react-circular-progressbar';
 import { useSelector } from 'react-redux';
 import { parseISO, format, formatDistance } from 'date-fns';
 import { toast } from 'react-toastify';
@@ -27,6 +31,8 @@ import {
   MdExpandLess,
   MdExpandMore,
   MdLabelOutline,
+  MdCheckCircle,
+  MdError,
 } from 'react-icons/md';
 import {
   AiOutlineLoading3Quarters,
@@ -51,11 +57,7 @@ import Sublinhado from '~/assets/Sublinhado.svg';
 import { Body } from '../Inbox/styles';
 import { Sidebar, Container } from '../resource/global_ticket_styles';
 
-import {
-  RetornaIconeDaExtensao,
-  ExtensaoValidaUpload,
-  FormataFileSize,
-} from '~/Utils';
+import { RetornaIconeDaExtensao, ExtensaoValidaUpload } from '~/Utils';
 
 const estiloModalTicket = {
   content: {
@@ -87,7 +89,41 @@ export default function Enviados() {
   const [characteresDisp, setCharacteresDisp] = useState(tamanhoLimiteTexto);
   const [texto, setTexto] = useState('');
 
-  const [anexos, setAnexos] = useState([]);
+  const [file1, setFile1] = useState({
+    file: null,
+    nome: '',
+    tamanho: 0,
+    tamanhoFormatado: '',
+    progress: 0,
+    uploaded: false,
+    error: false,
+    idupload: '',
+    url: '',
+  });
+
+  const [file2, setFile2] = useState({
+    file: null,
+    nome: '',
+    tamanho: 0,
+    tamanhoFormatado: '',
+    progress: 0,
+    uploaded: false,
+    error: false,
+    idupload: '',
+    url: '',
+  });
+
+  const [file3, setFile3] = useState({
+    file: null,
+    nome: '',
+    tamanho: 0,
+    tamanhoFormatado: '',
+    progress: 0,
+    uploaded: false,
+    error: false,
+    idupload: '',
+    url: '',
+  });
   // const [extensoesValidas, setExtensoesValidas] = useState([]);
 
   const profile = useSelector(state => state.user.profile);
@@ -529,7 +565,52 @@ export default function Enviados() {
     setModalIsOpen(false);
     setEstado(EditorState.createEmpty());
     setCharacteresDisp(tamanhoLimiteTexto);
-    setAnexos([]);
+
+    if (file1.idupload !== '') {
+      api.delete(`upload/${file1.idupload}`);
+    }
+
+    if (file2.idupload !== '') {
+      api.delete(`upload/${file2.idupload}`);
+    }
+
+    if (file3.idupload !== '') {
+      api.delete(`upload/${file3.idupload}`);
+    }
+
+    setFile1({
+      file: null,
+      nome: '',
+      tamanho: 0,
+      tamanhoFormatado: '',
+      progress: 0,
+      uploaded: false,
+      error: false,
+      idupload: '',
+      url: '',
+    });
+    setFile2({
+      file: null,
+      nome: '',
+      tamanho: 0,
+      tamanhoFormatado: '',
+      progress: 0,
+      uploaded: false,
+      error: false,
+      idupload: '',
+      url: '',
+    });
+    setFile3({
+      file: null,
+      nome: '',
+      tamanho: 0,
+      tamanhoFormatado: '',
+      progress: 0,
+      uploaded: false,
+      error: false,
+      idupload: '',
+      url: '',
+    });
     setTexto('');
 
     const retorno = await api.get('tickets/enviados');
@@ -688,14 +769,38 @@ export default function Enviados() {
                 </span>
               </div>
             </div>
-            <div className="texto-update">{ReactHtmlParser(dados)}</div>
+            <div className="conteudo-update">
+              <div className="texto-update">{ReactHtmlParser(dados)}</div>
+              {update.anexos_update.length > 0 && (
+                <div className="anexos-update">
+                  {update.anexos_update.map(an => (
+                    <a href={an.url} key={an.id_anexo} className="anexo">
+                      {IconeAnexo(an.nome)}
+                      {an.nome}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
           </>
         );
       }
       if (update.id_usuario === destinatario.id) {
         return (
           <>
-            <div className="texto-update">{ReactHtmlParser(dados)}</div>
+            <div className="conteudo-update">
+              <div className="texto-update">{ReactHtmlParser(dados)}</div>
+              {update.anexos_update.length > 0 && (
+                <div className="anexos-update">
+                  {update.anexos_update.map(an => (
+                    <a href={an.url} key={an.id_anexo} className="anexo">
+                      {IconeAnexo(an.nome)}
+                      {an.nome}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
             <div className="criador-update">
               <div className="info-criador">
                 <div className="user-info right">
@@ -838,7 +943,20 @@ export default function Enviados() {
     setCharacteresDisp(tamanhoLimiteTexto);
   }
 
+  function existeUpload() {
+    return (
+      (file1.file && !file1.uploaded && !file1.error) ||
+      (file2.file && !file2.uploaded && !file2.error) ||
+      (file3.file && !file3.uploaded && !file3.error)
+    );
+  }
+
   async function HandleUpdate(e) {
+    if (existeUpload()) {
+      toast.info('Espere o upload terminar antes de salvar.');
+      return;
+    }
+
     if (criandoUpdate) {
       return;
     }
@@ -853,11 +971,56 @@ export default function Enviados() {
     const texto_json = JSON.stringify(convertToRaw(estado.getCurrentContent()));
     const id_ticket = ticket.id;
 
-    await api.post('/tickets/updates', {
+    const dadosEnvio = {
       id_ticket,
       texto,
       texto_json,
-    });
+    };
+
+    if (file1.file !== null) {
+      dadosEnvio.anexo1 = file1;
+      setFile1({
+        file: null,
+        nome: '',
+        tamanho: 0,
+        tamanhoFormatado: '',
+        progress: 0,
+        uploaded: false,
+        error: false,
+        idupload: '',
+        url: '',
+      });
+    }
+    if (file2.file !== null) {
+      dadosEnvio.anexo2 = file2;
+      setFile2({
+        file: null,
+        nome: '',
+        tamanho: 0,
+        tamanhoFormatado: '',
+        progress: 0,
+        uploaded: false,
+        error: false,
+        idupload: '',
+        url: '',
+      });
+    }
+    if (file3.file !== null) {
+      dadosEnvio.anexo3 = file3;
+      setFile3({
+        file: null,
+        nome: '',
+        tamanho: 0,
+        tamanhoFormatado: '',
+        progress: 0,
+        uploaded: false,
+        error: false,
+        idupload: '',
+        url: '',
+      });
+    }
+
+    await api.post('/tickets/updates', dadosEnvio);
 
     CarregarTicket(id_ticket);
     LimparDadosUpdate();
@@ -870,23 +1033,16 @@ export default function Enviados() {
   }
 
   async function AdicionaAnexos(e) {
-    const data = new FormData();
-
-    const re = /(?:\.([^.]+))?$/;
-    const arquivo = e.target.files[0];
-    const tamanho = arquivo.size;
-    const nome = arquivo.name;
-
-    if (
-      anexos.filter(a => {
-        return a.nome === nome;
-      }).length !== 0
-    ) {
-      toast.warn(
-        'Já existe um anexo com este nome. Verifique seus anexos e tente novamente'
-      );
+    if (e.target.files.length === 0) {
       return;
     }
+
+    const file = new FormData();
+
+    const re = /(?:\.([^.]+))?$/;
+    const arquivo = e.target.files[e.target.files.length - 1];
+    const tamanho = arquivo.size;
+    const nome = arquivo.name;
 
     if (!ExtensaoValidaUpload(re.exec(nome)[1])) {
       toast.warn(
@@ -895,24 +1051,145 @@ export default function Enviados() {
       return;
     }
 
-    if (anexos.length === 3) {
+    file.append('file', arquivo, nome);
+
+    const uploadAtual = {
+      file,
+      nome,
+      tamanho,
+      tamanhoFormatado: filesize(tamanho),
+      progress: 0,
+      uploaded: false,
+      error: false,
+      idupload: '',
+      url: '',
+    };
+
+    if (file1.file === null) {
+      const uploadFile1 = uploadAtual;
+
+      setFile1(uploadAtual);
+      api
+        .post('upload', uploadFile1.file, {
+          onUploadProgress: up => {
+            const progress = parseInt(Math.round((up.loaded * 100) / up.total));
+            setFile1({ ...uploadFile1, ...{ progress } });
+          },
+        })
+        .then(response => {
+          const { _id: idupload, url } = response.data;
+          setFile1({ ...uploadFile1, ...{ uploaded: true, idupload, url } });
+        })
+        .catch(() => {
+          uploadFile1.error = true;
+          setFile2(uploadFile1);
+        });
+    } else if (file2.file === null) {
+      const uploadFile2 = uploadAtual;
+
+      setFile2(uploadAtual);
+      api
+        .post('upload', uploadFile2.file, {
+          onUploadProgress: up => {
+            const progress = parseInt(Math.round((up.loaded * 100) / up.total));
+            setFile2({ ...uploadFile2, ...{ progress } });
+          },
+        })
+        .then(response => {
+          const { _id: idupload, url } = response.data;
+          setFile2({ ...uploadFile2, ...{ uploaded: true, idupload, url } });
+        })
+        .catch(() => {
+          uploadFile2.error = true;
+          setFile2(uploadFile2);
+        });
+    } else if (file3.file === null) {
+      const uploadFile3 = uploadAtual;
+
+      setFile3(uploadAtual);
+      api
+        .post('upload', uploadFile3.file, {
+          onUploadProgress: up => {
+            const progress = parseInt(Math.round((up.loaded * 100) / up.total));
+            setFile3({ ...uploadFile3, ...{ progress } });
+          },
+        })
+        .then(response => {
+          const { _id: idupload, url } = response.data;
+          setFile3({ ...uploadFile3, ...{ uploaded: true, idupload, url } });
+        })
+        .catch(() => {
+          uploadFile3.error = true;
+          setFile3(uploadFile3);
+        });
+    } else {
       toast.warn(
         'Você já anexou o máximo de arquivos permitidos. Você pode remover os anexos atuais clicando no "x" sobre eles'
       );
-      return;
     }
-    data.append('file', arquivo);
+  }
 
-    await setAnexos(
-      anexos.concat({
-        nome,
-        tamanho,
-        data,
-      })
-    );
+  async function RemoveAnexo(anexo) {
+    switch (anexo) {
+      case 1:
+        if (file1.idupload === '') {
+          return;
+        }
 
-    // const ext = re.exec(e.target.files[0].name)[1];
-    // console.log(ext);
+        const id1 = file1.idupload;
+        api.delete(`upload/${id1}`);
+        setFile1({
+          file: null,
+          nome: '',
+          tamanho: 0,
+          tamanhoFormatado: '',
+          progress: 0,
+          uploaded: false,
+          error: false,
+          idupload: '',
+          url: '',
+        });
+        break;
+      case 2:
+        if (file2.idupload === '') {
+          return;
+        }
+        const id2 = file2.idupload;
+        api.delete(`upload/${id2}`);
+        setFile2({
+          file: null,
+          nome: '',
+          tamanho: 0,
+          tamanhoFormatado: '',
+          progress: 0,
+          uploaded: false,
+          error: false,
+          idupload: '',
+          url: '',
+        });
+        break;
+      case 3:
+        if (file3.idupload === '') {
+          return;
+        }
+        const id3 = file3.idupload;
+        api.delete(`upload/${id3}`);
+        setFile3({
+          file: null,
+          nome: '',
+          tamanho: 0,
+          tamanhoFormatado: '',
+          progress: 0,
+          uploaded: false,
+          error: false,
+          idupload: '',
+          url: '',
+        });
+        break;
+
+      default:
+        break;
+    }
   }
 
   async function handleEncerraTicket(e) {
@@ -941,14 +1218,6 @@ export default function Enviados() {
     setModalEncerramentoIsOpen(false);
     setModalIsOpen(false);
     closeModal();
-  }
-
-  function RemoveAnexo(nome) {
-    setAnexos(
-      anexos.filter(a => {
-        return a.nome !== nome;
-      })
-    );
   }
 
   return (
@@ -1398,15 +1667,7 @@ export default function Enviados() {
                     <span>{toggleLimit()}</span>
                     <form onSubmit={HandleUpdate}>
                       <div className="uploads">
-                        <button
-                          type="button"
-                          htmlFor="aaa"
-                          onClick={() => {
-                            toast.info(
-                              'Upload será possível em futuras atualizações'
-                            );
-                          }}
-                        >
+                        <label htmlFor="upload">
                           <MdCloudUpload />{' '}
                           <div>
                             <strong>Upload</strong>{' '}
@@ -1419,25 +1680,134 @@ export default function Enviados() {
                             // accept={extensoesValidas}
                             style={{ display: 'none' }}
                           />
-                        </button>
+                        </label>
                         <div className="files">
-                          {anexos.map(anexo => (
-                            <div className="file" key={anexo.nome}>
-                              {IconeAnexo(anexo.nome)}
+                          {file1.file && (
+                            <div className="file">
+                              {IconeAnexo(file1.nome)}
                               <div>
-                                <span>
-                                  {FormataFileSize(anexo.tamanho, false)}
-                                </span>
-                                <p>{anexo.nome}</p>
+                                <span>{file1.tamanhoFormatado}</span>
+                                <p>{file1.nome}</p>
                               </div>
-                              <button
-                                type="button"
-                                onClick={() => RemoveAnexo(anexo.nome)}
-                              >
-                                <MdClear />
-                              </button>
+                              {file1.uploaded && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    RemoveAnexo(1);
+                                  }}
+                                >
+                                  <MdClear />
+                                </button>
+                              )}
+
+                              <div className="icone">
+                                {!file1.uploaded && !file1.error && (
+                                  <CircularProgressbar
+                                    styles={{
+                                      root: { width: 32, height: 32 },
+                                      path: {
+                                        stroke: '#666',
+                                        transformOrigin: 'center center',
+                                      },
+                                    }}
+                                    strokeWidth={10}
+                                    value={file1.progress}
+                                  />
+                                )}
+                                {file1.uploaded && (
+                                  <MdCheckCircle size={24} color="#2ecc71" />
+                                )}
+                                {file1.error && (
+                                  <MdError size={24} color="#e57878" />
+                                )}
+                              </div>
                             </div>
-                          ))}
+                          )}
+                          {file2.file && (
+                            <div className="file">
+                              {IconeAnexo(file2.nome)}
+                              <div>
+                                <span>{file2.tamanhoFormatado}</span>
+                                <p>{file2.nome}</p>
+                              </div>
+
+                              {file2.uploaded && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    RemoveAnexo(2);
+                                  }}
+                                >
+                                  <MdClear />
+                                </button>
+                              )}
+
+                              <div className="icone">
+                                {!file2.uploaded && !file2.error && (
+                                  <CircularProgressbar
+                                    styles={{
+                                      root: { width: 32, height: 32 },
+                                      path: {
+                                        stroke: '#666',
+                                        transformOrigin: 'center center',
+                                      },
+                                    }}
+                                    strokeWidth={10}
+                                    value={file2.progress}
+                                  />
+                                )}
+                                {file2.uploaded && (
+                                  <MdCheckCircle size={24} color="#2ecc71" />
+                                )}
+                                {file2.error && (
+                                  <MdError size={24} color="#e57878" />
+                                )}
+                              </div>
+                            </div>
+                          )}
+
+                          {file3.file && (
+                            <div className="file">
+                              {IconeAnexo(file3.nome)}
+                              <div>
+                                <span>{file3.tamanhoFormatado}</span>
+                                <p>{file3.nome}</p>
+                              </div>
+
+                              {file3.uploaded && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    RemoveAnexo(3);
+                                  }}
+                                >
+                                  <MdClear />
+                                </button>
+                              )}
+
+                              <div className="icone">
+                                {!file3.uploaded && !file3.error && (
+                                  <CircularProgressbar
+                                    styles={{
+                                      root: { width: 32, height: 32 },
+                                      path: {
+                                        stroke: '#666',
+                                        transformOrigin: 'center center',
+                                      },
+                                    }}
+                                    strokeWidth={10}
+                                    value={file3.progress}
+                                  />
+                                )}
+                                {file3.uploaded && (
+                                  <MdCheckCircle size={24} color="#2ecc71" />
+                                )}
+                                {file3.error && (
+                                  <MdError size={24} color="#e57878" />
+                                )}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
 

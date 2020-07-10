@@ -201,8 +201,10 @@ export const Container = styled.div`
       align-items: center;
       align-content: center;
       margin-top: 15px;
+      }
       div.files {
         display: flex;
+
         div.file {
           &:not(:first-child) {
             margin-left: 10px;
@@ -390,9 +392,41 @@ export const Container = styled.div`
 
           div.conteudo.dest {
             border-radius: 4px 0 0 4px;
+            border: 0;
+
+            div.anexos{
+              margin-top: 10px;
+              div.file{
+                display:flex;
+                align-content:center;
+                align-items:center;
+                font-size: 13px;
+                a{
+                  svg{
+                    margin-right: 5px;
+                  }
+                }
+              }
+            }
           }
           div.conteudo.rem {
             border-radius: 0 4px 4px 0;
+            border: 0;
+
+            div.anexos{
+              margin-top: 10px;
+              div.file{
+                display:flex;
+                align-content:center;
+                align-items:center;
+                font-size: 13px;
+                a{
+                  svg{
+                    margin-right: 5px;
+                  }
+                }
+              }
+            }
           }
 
           div.remetente {

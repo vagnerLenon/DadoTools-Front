@@ -60,6 +60,81 @@ function Gestao() {
     return soma / hist.length;
   }
 
+  function recalculaInbox(grupo) {
+    let total = 0;
+    let vencidos = 0;
+
+    const { componentes } = grupo;
+
+    componentes.forEach(c => {
+      total += c.inbox.length;
+      vencidos += c.inbox.filter(i => {
+        return i.vencido;
+      }).length;
+    });
+
+    return (
+      <>
+        <p className="inbox">{total}</p>
+        {vencidos > 0 && <span className="vencido"> !{vencidos}</span>}
+      </>
+    );
+  }
+  function recalculaEnviados(grupo) {
+    let total = 0;
+    let vencidos = 0;
+
+    const { componentes } = grupo;
+
+    componentes.forEach(c => {
+      total += c.enviados.length;
+      vencidos += c.enviados.filter(i => {
+        return i.vencido;
+      }).length;
+    });
+
+    return (
+      <>
+        <p className="inbox">{total}</p>
+        {vencidos > 0 && <span className="vencido"> !{vencidos}</span>}
+      </>
+    );
+  }
+  function recalculaConcluidos(grupo) {
+    const { componentes } = grupo;
+    let quant = 0;
+    componentes.forEach(c => {
+      quant += c.concluidos.length;
+    });
+
+    return quant;
+  }
+  function recalculaHistorico(grupo) {
+    const { componentes } = grupo;
+    let quant = 0;
+    componentes.forEach(c => {
+      quant += c.historico.length;
+    });
+
+    return quant;
+  }
+  function recalculaNotaMedia(grupo) {
+    let quant = 0;
+    let nota = 0;
+    const { componentes } = grupo;
+    componentes.forEach(c => {
+      const { historico } = c;
+      historico.forEach(h => {
+        if (h.avaliacao && h.avaliacao.nota > 0) {
+          quant += 1;
+          nota += h.avaliacao.nota;
+        }
+      });
+    });
+    const notaCalculada = quant > 0 ? nota / quant : 0;
+    return notaCalculada;
+  }
+
   return (
     <div className="content-admin">
       <div className="titulo-gestao">
@@ -175,7 +250,41 @@ function Gestao() {
       {grupos.map(g => (
         <div className="agrupamento" key={String(g.id)}>
           <div className="grupo" title={g.descricao}>
-            {g.nome}
+            <table className="titulo-grupo">
+              <thead>
+                <tr>
+                  <td className="usuario">{g.nome}</td>
+                  <td className="inbox center">
+                    <div>{recalculaInbox(g)}</div>
+                  </td>
+                  <td className="enviados center">
+                    <div>{recalculaEnviados(g)}</div>
+                  </td>
+                  <td className="concluidos center">
+                    <p>{recalculaConcluidos(g)}</p>
+                  </td>
+                  <td className="historico center">
+                    <p>{recalculaHistorico(g)}</p>
+                  </td>
+                  <td className="notas center">
+                    <p>{recalculaNotaMedia(g)}</p>
+                  </td>
+                  <td className="graficos center">
+                    <Link
+                      to="/"
+                      onClick={e => {
+                        e.preventDefault();
+                        toast.info(
+                          'Gráficos estarão disponíveis em futuras atualizações.'
+                        );
+                      }}
+                    >
+                      Gráficos
+                    </Link>
+                  </td>
+                </tr>
+              </thead>
+            </table>
           </div>
           <table>
             <thead>

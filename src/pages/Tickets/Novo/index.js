@@ -434,13 +434,13 @@ export default function Novo() {
       }
 
       if (file1.file !== null) {
-        dadosEnvio.anexo1 = file1.idupload;
+        dadosEnvio.anexo1 = file1;
       }
       if (file2.file !== null) {
-        dadosEnvio.anexo2 = file2.idupload;
+        dadosEnvio.anexo2 = file2;
       }
       if (file3.file !== null) {
-        dadosEnvio.anexo3 = file3.idupload;
+        dadosEnvio.anexo3 = file3;
       }
 
       try {
@@ -830,6 +830,7 @@ export default function Novo() {
                     </div>
                   </div>
                 )}
+
                 {file2.file && (
                   <div className="file">
                     {IconeAnexo(file2.nome)}
@@ -911,26 +912,6 @@ export default function Novo() {
                     </div>
                   </div>
                 )}
-
-                {/* anexos.map(anexo => (
-
-
-
-                  <div className="file" key={anexo.nome}>
-                    {IconeAnexo(anexo.nome)}
-                    <div>
-                      <span>{FormataFileSize(anexo.tamanho, false)}</span>
-                      <p>{anexo.nome}</p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => RemoveAnexo(anexo.nome)}
-                    >
-                      <MdClear />
-                    </button>
-                  </div>
-
-                )) */}
               </div>
             </div>
           </div>
