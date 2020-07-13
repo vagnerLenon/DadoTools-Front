@@ -213,28 +213,6 @@ export default function Novo() {
     setCharacteresDisp(
       tamanhoLimiteTexto - editorState.getCurrentContent().getPlainText().length
     );
-
-    // try {
-    //   const contentState = editorState.getCurrentContent();
-
-    //   const rawContent = convertToRaw(contentState);
-    //   const string = JSON.stringify(rawContent);
-
-    //   console.tron.log(string);
-
-    //   const novoEditorState = EditorState.createWithContent(
-    //     convertFromRaw(JSON.parse(string))
-    //   );
-
-    //   const NovocontentState = novoEditorState.getCurrentContent();
-
-    //   setHtml(stateToHTML(NovocontentState));
-    //   console.tron.log(html);
-    // } catch (err) {
-    //   console.tron.log(err);
-    // }
-
-    //
   }
 
   // eslint-disable-next-line consistent-return
@@ -243,6 +221,7 @@ export default function Novo() {
       return 'handled';
     }
   }
+
   function _getLengthOfSelectedText() {
     const currentSelection = estado.getSelection();
     const isCollapsed = currentSelection.isCollapsed();

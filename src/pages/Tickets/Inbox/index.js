@@ -7,6 +7,7 @@
 /* eslint-disable no-plusplus */
 import React, { useState, useEffect } from 'react';
 import { CircularProgressbar } from 'react-circular-progressbar';
+import PropTypes from 'prop-types';
 import filesize from 'filesize';
 import { useSelector } from 'react-redux';
 import { parseISO, format, formatDistance } from 'date-fns';
@@ -95,7 +96,7 @@ const estiloModalEncerramento = {
 
 const tamanhoLimiteTexto = 1000;
 
-export default function Inbox() {
+export default function Inbox({ idTicket }) {
   const profile = useSelector(state => state.user.profile);
 
   const [file1, setFile1] = useState({
@@ -243,19 +244,42 @@ export default function Inbox() {
     setSubcategorias(sub);
   }
 
+  async function CarregarTicket(id) {
+    const response = await api.get(`tickets/inbox/${id}`);
+
+    if (response.data && response.data.id > 0) {
+      setTicket(response.data);
+      setModalIsOpen(true);
+    } else {
+      setTicket({});
+      setModalIsOpen(false);
+    }
+
+    setUpdates(
+      response.data.updates.sort((a, b) =>
+        new Date(a.createdAt) > new Date(b.createdAt) ? -1 : +1
+      )
+    );
+
+    setCriador(response.data.criador);
+    setDestinatario(response.data.destinatario);
+  }
+
   useEffect(() => {
     async function atualizaInbox() {
       const retorno = await api.get('tickets/inbox');
       setTickets(retorno.data);
       setTickets_(retorno.data);
-
       updateResumos(retorno.data);
-
       setExtensoesValidas(ext.map(i => `.${i}`).join(','));
+
+      if (idTicket !== 0) {
+        CarregarTicket(idTicket);
+      }
     }
 
     atualizaInbox();
-  }, []);
+  }, [idTicket]);
 
   function OrdenaTicket(asc) {
     switch (colunaOrd) {
@@ -338,7 +362,7 @@ export default function Inbox() {
       case 'atualizado':
         if (asc) {
           setTickets(
-            tickets_.sort(function (a, b) {
+            tickets_.sort((a, b) => {
               if (a.updates[0] && b.updates[0]) {
                 return a.updates[0].createdAt < b.updates[0].createdAt ? -1 : 1;
               }
@@ -347,7 +371,7 @@ export default function Inbox() {
           );
         } else {
           setTickets(
-            tickets_.sort(function (a, b) {
+            tickets_.sort((a, b) => {
               if (a.updates[0] && b.updates[0]) {
                 return a.updates[0].createdAt < b.updates[0].createdAt ? 1 : -1;
               }
@@ -596,27 +620,6 @@ export default function Inbox() {
   }
 
   function afterOpenModal() {}
-
-  async function CarregarTicket(id) {
-    const response = await api.get(`tickets/inbox/${id}`);
-
-    if (response.data && response.data.id > 0) {
-      setTicket(response.data);
-      setModalIsOpen(true);
-    } else {
-      setTicket({});
-      setModalIsOpen(false);
-    }
-
-    setUpdates(
-      response.data.updates.sort((a, b) =>
-        new Date(a.createdAt) > new Date(b.createdAt) ? -1 : +1
-      )
-    );
-
-    setCriador(response.data.criador);
-    setDestinatario(response.data.destinatario);
-  }
 
   function LimparDadosUpdate() {
     setTexto('');
@@ -1929,3 +1932,10 @@ export default function Inbox() {
     </>
   );
 }
+
+Inbox.propTypes = {
+  idTicket: PropTypes.number,
+};
+Inbox.defaultProps = {
+  idTicket: 0,
+};

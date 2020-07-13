@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+/* eslint-disable react/prop-types */
+/* eslint-disable react/no-typos */
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 import {
   MdInbox,
@@ -19,14 +22,56 @@ import Historico from './Historico';
 import Configs from './Configs';
 import Gestao from './Gestao';
 
-export default function Tickets() {
-  const [inbox, setInbox] = useState(true);
+export default function Tickets(props) {
+  const [inbox, setInbox] = useState(false);
   const [novo, setNovo] = useState(false);
   const [concluidos, setConcluidos] = useState(false);
   const [historico, setHistorico] = useState(false);
   const [enviados, setEnviados] = useState(false);
   const [gestao, setGestao] = useState(false);
   const [configs, setConfigs] = useState(false);
+  const { location } = props;
+  const { search } = location;
+
+  const params = new URLSearchParams(search);
+  const tela = params.get('tela') || 'inbox'; // bar
+  const id = params.get('id') || 0; // bar
+
+  useEffect(() => {
+    function InicializaTela() {
+      setInbox(false);
+      setNovo(false);
+      setConcluidos(false);
+      setHistorico(false);
+      setEnviados(false);
+      setConfigs(false);
+      setGestao(false);
+      switch (tela) {
+        case 'novo':
+          setNovo(true);
+          break;
+        case 'concluidos':
+          setConcluidos(true);
+          break;
+        case 'historico':
+          setHistorico(true);
+          break;
+        case 'enviados':
+          setEnviados(true);
+          break;
+        case 'configs':
+          setConfigs(true);
+          break;
+        case 'gestao':
+          setGestao(true);
+          break;
+        default:
+          setInbox(true);
+          break;
+      }
+    }
+    InicializaTela();
+  }, [tela]);
 
   function handleSelectMenu(nome) {
     setInbox(false);
@@ -69,10 +114,10 @@ export default function Tickets() {
       return <Novo />;
     }
     if (inbox) {
-      return <Inbox />;
+      return <Inbox idTicket={id} />;
     }
     if (enviados) {
-      return <Enviados />;
+      return <Enviados idTicket={id} />;
     }
     if (concluidos) {
       return <Concluidos />;
@@ -161,3 +206,11 @@ export default function Tickets() {
     </Container>
   );
 }
+
+Tickets.PropTypes = {
+  props: PropTypes.shape({
+    location: PropTypes.shape({
+      search: PropTypes.string,
+    }),
+  }),
+};

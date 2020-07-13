@@ -1,9 +1,11 @@
+/* eslint-disable radix */
 /* eslint-disable no-case-declarations */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable consistent-return */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-plusplus */
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import filesize from 'filesize';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import { useSelector } from 'react-redux';
@@ -85,7 +87,7 @@ const estiloModalEncerramento = {
 
 const tamanhoLimiteTexto = 1000;
 
-export default function Enviados() {
+export default function Enviados({ idTicket }) {
   const [characteresDisp, setCharacteresDisp] = useState(tamanhoLimiteTexto);
   const [texto, setTexto] = useState('');
 
@@ -237,16 +239,41 @@ export default function Enviados() {
     setSubcategorias(sub);
   }
 
+  async function CarregarTicket(id) {
+    const response = await api.get(`tickets/enviados/${id}`);
+
+    if (response.data && response.data.id > 0) {
+      setTicket(response.data);
+      setModalIsOpen(true);
+    } else {
+      setTicket({});
+      setModalIsOpen(false);
+    }
+
+    setUpdates(
+      response.data.updates.sort((a, b) =>
+        new Date(a.createdAt) > new Date(b.createdAt) ? -1 : +1
+      )
+    );
+
+    setCriador(response.data.criador);
+    setDestinatario(response.data.destinatario);
+  }
+
   useEffect(() => {
     async function atualizaInbox() {
       const retorno = await api.get('tickets/enviados');
       setTickets(retorno.data);
       setTickets_(retorno.data);
       updateResumos(retorno.data);
+
+      if (idTicket !== 0) {
+        CarregarTicket(idTicket);
+      }
     }
 
     atualizaInbox();
-  }, []);
+  }, [idTicket]);
 
   function getTipoLabel(t) {
     const idUsuario = profile.id;
@@ -536,27 +563,6 @@ export default function Enviados() {
         return t.categoria === cat && t.subcategoria === subcat;
       })
     );
-  }
-
-  async function CarregarTicket(id) {
-    const response = await api.get(`tickets/enviados/${id}`);
-
-    if (response.data && response.data.id > 0) {
-      setTicket(response.data);
-      setModalIsOpen(true);
-    } else {
-      setTicket({});
-      setModalIsOpen(false);
-    }
-
-    setUpdates(
-      response.data.updates.sort((a, b) =>
-        new Date(a.createdAt) > new Date(b.createdAt) ? -1 : +1
-      )
-    );
-
-    setCriador(response.data.criador);
-    setDestinatario(response.data.destinatario);
   }
 
   function afterOpenModal() {}
@@ -1905,3 +1911,10 @@ export default function Enviados() {
     </Container>
   );
 }
+
+Enviados.propTypes = {
+  idTicket: PropTypes.number,
+};
+Enviados.defaultProps = {
+  idTicket: 0,
+};
