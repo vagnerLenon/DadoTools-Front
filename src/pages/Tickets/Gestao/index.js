@@ -9,6 +9,7 @@ import { format } from 'date-fns';
 
 import Avatar from '~/components/Avatar';
 import api from '~/services/api';
+import history from '~/services/history';
 
 import './styles.css';
 
@@ -22,6 +23,16 @@ function Gestao() {
 
   useEffect(() => {
     async function atualizarDados() {
+      const apiResponse = await api.get('userapps');
+      const { data } = apiResponse;
+      const [resultado] = data.filter(linha => {
+        return linha.Apps.rota === 'tickets';
+      });
+
+      if (!resultado || resultado.nivel < 3) {
+        history.push('/tickets');
+      }
+
       const response = await api.post('tickets/grupos/owner', {
         data_inicial: dataInicial,
         data_final: dataFinal,

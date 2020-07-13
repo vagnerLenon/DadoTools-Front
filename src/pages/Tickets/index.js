@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-typos */
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import propTypes from 'prop-types';
 
 import {
   MdInbox,
@@ -13,6 +13,7 @@ import {
   MdWork,
 } from 'react-icons/md';
 import { Container, Menus, Conteudo, MenuItem } from './styles';
+import api from '~/services/api';
 
 import Inbox from './Inbox';
 import Enviados from './Enviados';
@@ -33,13 +34,26 @@ export default function Tickets(props) {
   const { location } = props;
   const { search } = location;
 
+  const [permissaoTicket, setPermissaoTicket] = useState(0);
+
   const params = new URLSearchParams(search);
   const tela = params.get('tela') || 'inbox'; // bar
   const id = params.get('id') || 0; // bar
 
   useEffect(() => {
-    function InicializaTela() {
-      setInbox(false);
+    async function InicializaTela() {
+      const response = await api.get('userapps');
+      const { data } = response;
+      const [resultado] = data.filter(linha => {
+        return linha.Apps.rota === 'tickets';
+      });
+
+      if (!resultado) {
+        setPermissaoTicket(0);
+      } else {
+        setPermissaoTicket(resultado.nivel);
+      }
+
       setNovo(false);
       setConcluidos(false);
       setHistorico(false);
@@ -184,22 +198,26 @@ export default function Tickets(props) {
             <MdAssignment size={15} />
             <p>Histórico</p>
           </MenuItem>
-          <MenuItem
-            name="gestao"
-            ativo={gestao}
-            onClick={() => handleSelectMenu('gestao')}
-          >
-            <MdWork size={15} />
-            <p>Gestão</p>
-          </MenuItem>
-          <MenuItem
-            name="configs"
-            ativo={configs}
-            onClick={() => handleSelectMenu('configs')}
-          >
-            <MdSettings size={15} />
-            <p>Configs</p>
-          </MenuItem>
+          {permissaoTicket >= 3 && (
+            <MenuItem
+              name="gestao"
+              ativo={gestao}
+              onClick={() => handleSelectMenu('gestao')}
+            >
+              <MdWork size={15} />
+              <p>Gestão</p>
+            </MenuItem>
+          )}
+          {permissaoTicket >= 4 && (
+            <MenuItem
+              name="configs"
+              ativo={configs}
+              onClick={() => handleSelectMenu('configs')}
+            >
+              <MdSettings size={15} />
+              <p>Configs</p>
+            </MenuItem>
+          )}
         </ul>
       </Menus>
       <Conteudo>{renderSwitch()}</Conteudo>
@@ -207,10 +225,16 @@ export default function Tickets(props) {
   );
 }
 
-Tickets.PropTypes = {
-  props: PropTypes.shape({
-    location: PropTypes.shape({
-      search: PropTypes.string,
+Tickets.propTypes = {
+  props: propTypes.shape({
+    location: propTypes.shape({
+      search: propTypes.string,
     }),
   }),
+};
+
+Tickets.defaultProps = {
+  props: {
+    location: { search: '' },
+  },
 };
