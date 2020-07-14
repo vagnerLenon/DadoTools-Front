@@ -91,6 +91,7 @@ const estiloModalEncerramento = {
     marginLeft: 'auto',
     padding: 0,
     overflow: 'none',
+    zIndex: 4,
   },
 };
 
@@ -145,6 +146,7 @@ export default function Inbox({ idTicket }) {
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalEncerramentoIsOpen, setModalEncerramentoIsOpen] = useState(false);
+  const [encerrando, setEncerrando] = useState(false);
 
   const [updates, setUpdates] = useState([]);
   const [criador, setCriador] = useState({});
@@ -1044,30 +1046,39 @@ export default function Inbox({ idTicket }) {
   }
 
   async function handleEncerraTicket(e) {
-    e.preventDefault();
+    if (!encerrando) {
+      setEncerrando(true);
+      e.preventDefault();
 
-    if (textoEncerramento.trim().length === 0) {
-      toast.warn(
-        'Você deve inserir uma mensagem para poder encerrar o ticket.'
-      );
-      return;
+      if (textoEncerramento.trim().length === 0) {
+        toast.warn(
+          'Você deve inserir uma mensagem para poder encerrar o ticket.'
+        );
+        return;
+      }
+
+      const retornoEnc = await api.post('tickets/encerramento', {
+        id_ticket: ticket.id,
+        texto: textoEncerramento,
+      });
+      if (retornoEnc.data.message === 'Solicitação enviada com sucesso!') {
+        toast.success('Solicitação enviada com sucesso!');
+      } else {
+        toast.error('Erro ao encerrar ticket!');
+      }
+
+      const retorno = await api.get('tickets/inbox');
+      setTickets_(retorno.data);
+      setTickets(retorno.data);
+      updateResumos(retorno.data);
+      OrdenaTicket();
+      setTicket({});
+      setTextoEncerramento('');
+      setModalEncerramentoIsOpen(false);
+      setModalIsOpen(false);
+      closeModal();
+      setEncerrando(false);
     }
-
-    await api.post('tickets/encerramento', {
-      id_ticket: ticket.id,
-      texto: textoEncerramento,
-    });
-
-    const retorno = await api.get('tickets/inbox');
-    setTickets_(retorno.data);
-    setTickets(retorno.data);
-    updateResumos(retorno.data);
-    OrdenaTicket();
-    setTicket({});
-    setTextoEncerramento('');
-    setModalEncerramentoIsOpen(false);
-    setModalIsOpen(false);
-    closeModal();
   }
 
   async function AdicionaAnexos(e) {
@@ -1884,12 +1895,11 @@ export default function Inbox({ idTicket }) {
         ariaHideApp={false}
         isOpen={modalEncerramentoIsOpen}
         onAfterOpen={() => {}}
-        shouldCloseOnOverlayClick
+        shouldCloseOnOverlayClick={false}
         onAfterClose={closeModalEncerramento}
         onRequestClose={closeModalEncerramento}
         style={estiloModalEncerramento}
         contentLabel="Example Modal"
-        overlayClassName="overlay"
       >
         <div className="modal">
           <div className="titulo-modal">
