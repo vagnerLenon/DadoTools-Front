@@ -126,20 +126,51 @@ export const LinhaCadastro = styled.div`
       align-content: center;
       margin-bottom: 10px;
       display: flex;
-      justify-content: space-between;
 
-      span {
-        margin-left: 10px;
-        font-size: 12px;
-        color: #222;
-        width: 150px;
+      @media only screen and (max-width: 500px) {
+        display: block;
+        flex-direction: column;
+      }
+      div.data-buttons {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        @media only screen and (max-width: 500px) {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+        }
+        div.buttons {
+          width: 100%;
+          @media only screen and (max-width: 500px) {
+            display: inline-block;
+          }
+        }
+        span {
+          margin-left: 10px;
+          width: 100%;
+          font-size: 12px;
+          color: #222;
+          width: 150px;
+          text-align: right;
+          margin-right: 5px;
+          @media only screen and (max-width: 500px) {
+            width: 100%;
+            margin-right: 0;
+          }
+        }
       }
       div {
         display: flex;
-        align-items: baseline;
+        width: fit-content;
 
         h2 {
-          font-size: 18px;
+          font-size: 16px;
+          @media only screen and (max-width: 500px) {
+            font-size: 14px;
+            display: block;
+          }
         }
 
         a {

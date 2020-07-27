@@ -12,6 +12,11 @@ export const Container = styled.div`
 
   div.responsivo {
     display: flex;
+    @media only screen and (max-width: 500px) {
+      display: block;
+      width: 100%;
+    }
+
     align-content: center;
     align-items: center;
 
@@ -27,40 +32,76 @@ export const Container = styled.div`
       }
     }
     .col-1 {
+      @media only screen and (max-width: 500px) {
+        width: 100% !important;
+      }
       width: 8.33%;
     }
     .col-2 {
       width: 16.66%;
+      @media only screen and (max-width: 500px) {
+        width: 100% !important;
+      }
     }
     .col-3 {
       width: 25%;
+      @media only screen and (max-width: 500px) {
+        width: 100% !important;
+      }
     }
     .col-4 {
       width: 33.33%;
+      @media only screen and (max-width: 500px) {
+        width: 100% !important;
+      }
     }
     .col-5 {
       width: 41.66%;
+      @media only screen and (max-width: 500px) {
+        width: 100% !important;
+      }
     }
     .col-6 {
       width: 50%;
+      @media only screen and (max-width: 500px) {
+        width: 100% !important;
+      }
     }
     .col-7 {
       width: 58.33%;
+      @media only screen and (max-width: 500px) {
+        width: 100% !important;
+      }
     }
     .col-8 {
       width: 66.66%;
+      @media only screen and (max-width: 500px) {
+        width: 100% !important;
+      }
     }
     .col-9 {
       width: 75%;
+      @media only screen and (max-width: 500px) {
+        width: 100% !important;
+      }
     }
     .col-10 {
       width: 83.33%;
+      @media only screen and (max-width: 500px) {
+        width: 100% !important;
+      }
     }
     .col-11 {
       width: 91.66%;
+      @media only screen and (max-width: 500px) {
+        width: 100% !important;
+      }
     }
     .col-12 {
       width: 100%;
+      @media only screen and (max-width: 500px) {
+        width: 100% !important;
+      }
     }
 
     textarea {
@@ -75,7 +116,7 @@ export const Container = styled.div`
       }
     }
 
-    @media only screen and (max-width: 768px) {
+    @media only screen and (max-width: 500px) {
       /* For mobile phones: */
       [class*='col-'] {
         width: 100%;

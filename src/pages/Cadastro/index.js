@@ -131,15 +131,20 @@ export default function Cadastro() {
                 <header>
                   <div>
                     <h2>{cadastro.razao_social}</h2>
-                    {cadastro.status === 'P' && (
-                      <Link to={`/cadastros/${cadastro.id}`}>[Editar]</Link>
-                    )}
-
-                    <Link to={`/cadastros/view/${cadastro.id}`}>[Ver]</Link>
                   </div>
-                  <span>
-                    {format(parseISO(cadastro.createdAt), 'dd/MM/YYY HH:mm')}
-                  </span>
+                  <div className="data-buttons">
+                    <div className="buttons">
+                      {cadastro.status === 'P' && (
+                        <Link to={`/cadastros/${cadastro.id}`}>[Editar]</Link>
+                      )}
+
+                      <Link to={`/cadastros/view/${cadastro.id}`}>[Ver]</Link>
+                    </div>
+
+                    <span>
+                      {format(parseISO(cadastro.createdAt), 'dd/MM/YYY HH:mm')}
+                    </span>
+                  </div>
                 </header>
                 <strong>CNPJ/CPF: </strong>
                 {formatCnpjCpf(cadastro.cnpj_cpf)}

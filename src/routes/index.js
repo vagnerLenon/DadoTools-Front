@@ -15,6 +15,7 @@ import GestaoInbox from '~/pages/Tickets/Gestao/Inbox';
 import GestaoEnviados from '~/pages/Tickets/Gestao/Enviados';
 import GestaoConcluidos from '~/pages/Tickets/Gestao/Concluidos';
 import GestaoHistorico from '~/pages/Tickets/Gestao/Historico';
+import Tests from '~/pages/Tests';
 
 export default function Routes() {
   return (
@@ -24,6 +25,7 @@ export default function Routes() {
       <Route path="/recovery/" exact component={Recovery} />
       <Route path="/recovery/:token" exact component={Recovery} />
 
+      <Route path="/testes" exact component={Tests} isPrivate />
       <Route path="/dashboard" exact component={Dashboard} isPrivate />
       <Route path="/profile" exact component={Profile} isPrivate />
 

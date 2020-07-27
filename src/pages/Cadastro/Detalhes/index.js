@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 /* eslint-disable operator-linebreak */
 import React, { useState, useEffect } from 'react';
 import propTypes from 'prop-types';
@@ -293,7 +294,11 @@ export default function Detalhes(props) {
                 </div>
                 <div>
                   <strong>Segmento</strong>
-                  <p>{dados.segmento.descricao}</p>
+                  <p>{dados.segmento}</p>
+                </div>
+                <div>
+                  <strong>Atividade</strong>
+                  <p>{dados.atividade}</p>
                 </div>
                 <div>
                   <strong>Forma de pagamento</strong>

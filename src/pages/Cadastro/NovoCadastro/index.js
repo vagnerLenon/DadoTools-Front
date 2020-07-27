@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable indent */
@@ -45,10 +46,16 @@ export default function NovoCadastro(props) {
   const [emailFinanceiro, setEmailFinanceiro] = useState('');
   const [rota, setRota] = useState('0');
   const [segmento, setSegmento] = useState('0');
+
+  const [opcoesSegmento, setOpcoesSegmento] = useState([]);
+  const [opcoesAtividades, setOpcoesAtividades] = useState([]);
+  const [atividade, setAtividade] = useState('0');
   const [formaPagto, setFormaPagto] = useState('0');
   const [condPagto, setCondPagto] = useState('0');
   const [valor, setValor] = useState('');
   const [obs, setObs] = useState('');
+  const [tabelaPreco, setTabelaPreco] = useState({});
+  const [tabela, setTabela] = useState('');
 
   const [erroCnpj, setErroCnpj] = useState(false);
   const [erroNascimento, setErroNascimento] = useState(false);
@@ -60,12 +67,14 @@ export default function NovoCadastro(props) {
   const [erroEmail, setErroEmail] = useState(false);
   const [erroRota, setErroRota] = useState(false);
   const [erroSegmento, setErroSegmento] = useState(false);
+  const [erroAtividade, setErroAtividade] = useState(false);
   const [erroFormaPagto, setErroFormaPagto] = useState(false);
   const [erroCondPagto, setErroCondPagto] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [configRotas, setconfigRotas] = useState([]);
-  const [configSegmento, setconfigSegmento] = useState([]);
+  const [congifFiltros, setCongigFiltros] = useState([]);
+
   const [configFormaPagto, setconfigFormaPagto] = useState([]);
   const [configCondPagto, setconfigCondPagto] = useState([]);
 
@@ -75,17 +84,7 @@ export default function NovoCadastro(props) {
   // #endregion
 
   useEffect(() => {
-    async function loadConfigs() {
-      setLoading(true);
-      const response = await api.get('configs_cadastro');
-      const { rotas, segmentos, formas_pagto, condicoes_pagto } = response.data;
-      setconfigRotas(rotas);
-      setconfigSegmento(segmentos);
-      setconfigFormaPagto(formas_pagto);
-      setconfigCondPagto(condicoes_pagto);
-      setLoading(false);
-    }
-    async function carregaEmpresa() {
+    async function carregaEmpresa(dados) {
       const id =
         props.match.params.id === undefined ? 0 : props.match.params.id;
       const response = await api.get(`cadastro_empresas/${id}`);
@@ -122,18 +121,66 @@ export default function NovoCadastro(props) {
       setFoneFiscal(response.data.fone_fiscal);
       setEmailFiscal(response.data.email_fiscal);
       setRota(response.data.rota);
-      setSegmento(response.data.segmento);
       setFormaPagto(response.data.forma_pagto);
       setCondPagto(response.data.cond_pagto);
       setValor(response.data.valor_primeira_compra);
       setObs(response.data.obs_vendedor);
+
+      // Carregar as opçoes de segmento
+
+      if (response.data.rota !== '0') {
+        const [rotaFiltrada] = dados.filter(dado => {
+          return dado.codRota === response.data.rota;
+        });
+
+        if (rotaFiltrada.segmentos !== null) {
+          const { segmentos: segmentosFiltro } = rotaFiltrada;
+          await setOpcoesSegmento(segmentosFiltro);
+
+          setSegmento(response.data.segmento);
+
+          if (response.data.segmento !== '0') {
+            const [segmentoFiltrado] = segmentosFiltro.filter(dado => {
+              return dado.nomeSegmento === response.data.segmento;
+            });
+
+            if (segmentoFiltrado.atividades !== null) {
+              setOpcoesAtividades(segmentoFiltrado.atividades);
+              setAtividade(response.data.atividade);
+            } else {
+              setOpcoesAtividades([]);
+            }
+          }
+        } else {
+          setOpcoesSegmento([]);
+        }
+      }
+
+      // Carregar as opções de atividade
+    }
+
+    async function loadConfigs() {
+      setLoading(true);
+      const response = await api.get('configs_cadastro');
+      const {
+        rotas,
+        filtrosRotas,
+        formas_pagto,
+        condicoes_pagto,
+      } = response.data;
+      setconfigRotas(rotas);
+      await setCongigFiltros(filtrosRotas);
+      setconfigFormaPagto(formas_pagto);
+      setconfigCondPagto(condicoes_pagto);
+
+      const id =
+        props.match.params.id === undefined ? 0 : props.match.params.id;
+      if (id > 0) await carregaEmpresa(filtrosRotas);
+
+      setLoading(false);
     }
 
     loadConfigs();
-    const id = props.match.params.id === undefined ? 0 : props.match.params.id;
-    if (id > 0) {
-      carregaEmpresa();
-    }
   }, [props.match.params.id]);
 
   // #region Handles de inputs
@@ -210,30 +257,93 @@ export default function NovoCadastro(props) {
   function handleChangeEmailFinanceiro(e) {
     setEmailFinanceiro(e.target.value);
   }
+
   function handleChangeRota(e) {
     e.preventDefault();
-    setRota(e.target.value);
+    const rotaAlterada = e.target.value;
+    setRota(rotaAlterada);
     setErroRota(false);
+
+    if (rotaAlterada === '0') {
+      setOpcoesSegmento([]);
+      setOpcoesAtividades([]);
+      return;
+    }
+
+    const [rotaFiltrada] = congifFiltros.filter(dado => {
+      return dado.codRota === rotaAlterada;
+    });
+
+    if (rotaFiltrada.segmentos !== null) {
+      setOpcoesSegmento(rotaFiltrada.segmentos);
+    } else {
+      setOpcoesSegmento([]);
+    }
+
+    setOpcoesAtividades([]);
   }
   function handleChangeSegmento(e) {
     e.preventDefault();
-    setSegmento(e.target.value);
+    const nomeSegmento = e.target.value;
+    setSegmento(nomeSegmento);
     setErroSegmento(false);
+
+    if (nomeSegmento === '0') {
+      setOpcoesAtividades([]);
+      setSegmento('0');
+      return;
+    }
+
+    const [segmentoFiltrado] = opcoesSegmento.filter(dado => {
+      return dado.nomeSegmento === nomeSegmento;
+    });
+
+    if (segmentoFiltrado.atividades !== null) {
+      setOpcoesAtividades(segmentoFiltrado.atividades);
+    } else {
+      setOpcoesAtividades([]);
+    }
   }
+  function handleChangeAtividade(e) {
+    e.preventDefault();
+    const nomeAtividade = e.target.value;
+    setAtividade(nomeAtividade);
+    // Fazer o augoritmo que calcula a tabela de preço
+    if (nomeAtividade === '0') {
+      setTabelaPreco({});
+    } else {
+      const [atividadeFiltrada] = opcoesAtividades.filter(dado => {
+        return dado.nomeAtividade === nomeAtividade;
+      });
+
+      if (atividadeFiltrada.tabela !== null) {
+        setTabelaPreco(atividadeFiltrada.tabela);
+        setTabela(atividadeFiltrada.tabela.codTabela);
+      } else {
+        setOpcoesAtividades([]);
+        setTabelaPreco({});
+        setTabela('');
+      }
+    }
+  }
+
   function handleChangeFormaPagto(e) {
     e.preventDefault();
     setFormaPagto(e.target.value);
     setErroFormaPagto(false);
   }
+
   function handleChangeCondPagto(e) {
     e.preventDefault();
     setCondPagto(e.target.value);
     setErroCondPagto(false);
   }
+
   function handleChangeValor(e) {
     e.preventDefault();
     setValor(e.target.value);
   }
+
   function handleChangeObs(e) {
     e.preventDefault();
     setObs(e.target.value);
@@ -332,10 +442,22 @@ export default function NovoCadastro(props) {
       setErroFormaPagto(true);
       retorno = true;
     }
+
     if (segmento === '0') {
-      setErroSegmento(true);
-      retorno = true;
+      alert(opcoesSegmento.length);
+      if (opcoesSegmento.length > 0) {
+        setErroSegmento(true);
+        retorno = true;
+      }
     }
+
+    if (atividade === '0') {
+      if (opcoesAtividades.length > 0) {
+        setErroAtividade(true);
+        retorno = true;
+      }
+    }
+
     if (condPagto === '0') {
       setErroCondPagto(true);
       retorno = true;
@@ -381,6 +503,8 @@ export default function NovoCadastro(props) {
         email_fiscal: emailFiscal,
         rota,
         segmento,
+        atividade,
+        tabela,
         forma_pagto: formaPagto,
         cond_pagto: condPagto,
         valor_primeira_compra: valor.replace('.', '').replace(',', '.'),
@@ -698,7 +822,7 @@ export default function NovoCadastro(props) {
           </div>
           <div className="responsivo">
             <select
-              className="col-6"
+              className="col-4"
               value={rota}
               onChange={handleChangeRota}
               style={erroRota ? cssErro : {}}
@@ -711,15 +835,35 @@ export default function NovoCadastro(props) {
               ))}
             </select>
             <select
-              className="col-6"
+              className="col-4"
               value={segmento}
               onChange={handleChangeSegmento}
               style={erroSegmento ? cssErro : {}}
             >
               <option value="0">Selecione o segmento</option>
-              {configSegmento.map(segmentoAtual => (
-                <option key={segmentoAtual.cod} value={segmentoAtual.cod}>
-                  {segmentoAtual.descricao}
+              {opcoesSegmento.map(segmentoAtual => (
+                <option
+                  key={segmentoAtual.nomeSegmento}
+                  value={segmentoAtual.cnomeSegmentood}
+                >
+                  {segmentoAtual.nomeSegmento}
+                </option>
+              ))}
+            </select>
+
+            <select
+              className="col-4"
+              value={atividade}
+              onChange={handleChangeAtividade}
+              style={erroAtividade ? cssErro : {}}
+            >
+              <option value="0">Selecione a atividade</option>
+              {opcoesAtividades.map(atividadeAtual => (
+                <option
+                  key={atividadeAtual.nomeAtividade}
+                  value={atividadeAtual.nomeAtividade}
+                >
+                  {atividadeAtual.nomeAtividade}
                 </option>
               ))}
             </select>

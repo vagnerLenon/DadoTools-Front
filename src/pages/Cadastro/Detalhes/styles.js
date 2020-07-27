@@ -227,10 +227,12 @@ export const Bloco = styled.div`
   form {
     display: flex;
     margin-top: 20px;
+    flex-direction: row;
 
     width: 100%;
 
     textarea {
+      margin: 0;
       padding: 5px;
       background: rgba(255, 255, 255, 0.4);
       border-radius: 8px 0 0 8px;
