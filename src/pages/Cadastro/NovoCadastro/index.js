@@ -474,7 +474,7 @@ export default function NovoCadastro(props) {
 
     if (!ValidaCampos()) {
       const nascimento_corrigido = pessoaJuridica
-        ? ''
+        ? moment(new Date(), 'DD-MM-YYYY').format('YYYY/MM/DD')
         : moment(nascimento, 'DD-MM-YYYY').format('YYYY/MM/DD');
 
       const dados = {
@@ -506,7 +506,9 @@ export default function NovoCadastro(props) {
         tabela,
         forma_pagto: formaPagto,
         cond_pagto: condPagto,
-        valor_primeira_compra: valor.replace('.', '').replace(',', '.'),
+        valor_primeira_compra: Number(
+          String(valor).replace('.', '').replace(',', '.')
+        ),
         obs_vendedor: obs,
         status: 'P',
       };
@@ -528,6 +530,7 @@ export default function NovoCadastro(props) {
         if (!erro) {
           toast.success('Cliente alterado com sucesso!');
           history.push('/cadastros');
+          return;
         }
       } else {
         await api.post('/cadastro_empresas', dados).catch(error => {
@@ -538,11 +541,11 @@ export default function NovoCadastro(props) {
         if (!erro) {
           toast.success('Cliente cadastrado com sucesso!');
           history.push('/cadastros');
+          return;
         }
       }
-    } else {
-      toast.error('Os campos em vermelho contém error. Por favor, verifique.');
     }
+    toast.error('Os campos em vermelho contém error. Por favor, verifique.');
   }
 
   const cssErro = {
