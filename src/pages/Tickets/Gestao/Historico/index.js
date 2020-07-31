@@ -85,7 +85,6 @@ export default function Concluidos(props) {
   function handlePageClick(e) {
     const { selected } = e;
     setPagina(selected + 1);
-    console.tron.log(pagina + 1);
   }
 
   function GetEncerramentoReal(t) {

@@ -225,7 +225,7 @@ export default function Ticket(tipo) {
         const NovocontentState = novoEditorState.getCurrentContent();
         dados = stateToHTML(NovocontentState);
       } catch (err) {
-        console.tron.log(err);
+        alert('Erro ao executar esta operação.');
       }
 
       if (update.id_usuario === criador.id) {

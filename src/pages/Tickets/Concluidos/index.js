@@ -97,7 +97,6 @@ export default function Concluidos() {
   function handlePageClick(e) {
     const { selected } = e;
     setPagina(selected + 1);
-    console.tron.log(pagina + 1);
   }
 
   function FiltraFechados() {
