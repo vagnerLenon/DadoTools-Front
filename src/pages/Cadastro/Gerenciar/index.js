@@ -555,7 +555,6 @@ function Gerenciar() {
   }
 
   async function handleChangeSelecionado(cadastroAtual) {
-    console.tron.log(cadastroAtual.dadosConsolidados);
     const { messages } = cadastroAtual;
     setMensagens(messages);
 
