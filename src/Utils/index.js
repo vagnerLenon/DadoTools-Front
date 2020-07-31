@@ -1,6 +1,8 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable spaced-comment */
 import React from 'react';
+import validator from 'email-validator';
+import { parseISO, format } from 'date-fns';
 import {
   AiFillFileImage,
   AiFillFileExcel,
@@ -129,4 +131,32 @@ export function RetornaIconeDaExtensao(ext) {
   } else {
     return '';
   }
+}
+export function formatCnpjCpf(value) {
+  const cnpjCpf = value.replace(/\D/g, '');
+
+  if (cnpjCpf.length === 11) {
+    return cnpjCpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, '$1.$2.$3-$4');
+  }
+
+  return cnpjCpf.replace(
+    /(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g,
+    '$1.$2.$3/$4-$5'
+  );
+}
+export function formatCep(value) {
+  const cep = String(value).replace(/\D/g, '');
+
+  if (cep.length === 8) {
+    return cep.replace(/^([\d]{2})([\d]{3})-*([\d]{3})/, '$1$2-$3');
+  }
+  return value;
+}
+
+export function FormataDataFromIso(value, formato = 'dd/MM/yyyy') {
+  return format(parseISO(value), formato);
+}
+
+export function IsEmail(email) {
+  return validator.validate(email);
 }

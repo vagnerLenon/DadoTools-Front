@@ -65,8 +65,11 @@ export const Title = styled.div`
 `;
 
 export const New = styled.div`
-  display: block;
+  display: flex;
   margin-bottom: 20px;
+  a + a {
+    margin-left: 20px;
+  }
 
   a {
     color: #333;
@@ -136,6 +139,14 @@ export const LinhaCadastro = styled.div`
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+
+        a {
+          text-decoration: none;
+          color: #ab0d0b;
+          margin-left: 10px;
+          font-size: 14px;
+        }
+
         @media only screen and (max-width: 500px) {
           display: flex;
           flex-direction: row;
@@ -161,23 +172,18 @@ export const LinhaCadastro = styled.div`
           }
         }
       }
-      div {
-        display: flex;
+      div.nome-empresa {
+        display: block;
         width: fit-content;
 
         h2 {
           font-size: 16px;
+          white-space: nowrap;
+          width: fit-content;
           @media only screen and (max-width: 500px) {
             font-size: 14px;
             display: block;
           }
-        }
-
-        a {
-          text-decoration: none;
-          color: #ab0d0b;
-          margin-left: 10px;
-          font-size: 14px;
         }
       }
     }

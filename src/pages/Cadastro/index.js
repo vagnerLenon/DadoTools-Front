@@ -10,6 +10,8 @@ import {
   FaCaretLeft,
   FaCaretDown,
   FaQuestionCircle,
+  FaCog,
+  FaShare,
 } from 'react-icons/fa';
 
 import {
@@ -28,10 +30,16 @@ export default function Cadastro() {
   const [concluidasVisible, setConcluidassVisible] = useState(false);
   const [cadastrosPendentes, setCadastrosPendentes] = useState([]);
   const [cadastrosFinalizados, setCadastrosFinalizados] = useState([]);
+  const [nivelUsuario, setNivelUsuario] = useState(0);
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    async function CarregaNivel() {
+      const response = await api.get('userapps/cadastros');
+      setNivelUsuario(response.data.nivel);
+    }
+
     async function loadCadastros() {
       const response = await api.get('cadastro_empresas');
       setCadastrosPendentes(
@@ -40,11 +48,13 @@ export default function Cadastro() {
         )
       );
       setCadastrosFinalizados(
-        response.data.filter(cad => cad.status === 'R' || cad.status === 'F')
+        response.data.filter(
+          cad => cad.status === 'R' || cad.status === 'F' || cad.status === 'E'
+        )
       );
       setLoading(false);
     }
-
+    CarregaNivel();
     loadCadastros();
   }, []);
 
@@ -66,6 +76,9 @@ export default function Cadastro() {
         return (
           <FaTimesCircle size={30} color="#c0392b" title="Cadastro negado" />
         );
+      case 'E':
+        // Status Recusado, Cadastro negado pelo setor de cadastro
+        return <FaShare size={30} color="#fa8231" title="Fila inclusão" />;
       case 'W':
         // Status Warning, Aguardando resposta do vendedor
         return (
@@ -109,7 +122,14 @@ export default function Cadastro() {
           Criar cadastro
           <FaPlusCircle size={30} color="#333" />
         </Link>
+        {nivelUsuario > 3 && (
+          <Link to="/cadastros/gerenciar">
+            Gerenciar cadastro
+            <FaCog size={30} color="#333" />
+          </Link>
+        )}
       </New>
+
       <hr />
       <Title>
         <h1>Pendentes</h1>
@@ -129,7 +149,7 @@ export default function Cadastro() {
             <LinhaCadastro key={String(cadastro.id)}>
               <div>
                 <header>
-                  <div>
+                  <div className="nome-empresa">
                     <h2>{cadastro.razao_social}</h2>
                   </div>
                   <div className="data-buttons">

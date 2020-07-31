@@ -444,7 +444,6 @@ export default function NovoCadastro(props) {
     }
 
     if (segmento === '0') {
-      alert(opcoesSegmento.length);
       if (opcoesSegmento.length > 0) {
         setErroSegmento(true);
         retorno = true;
