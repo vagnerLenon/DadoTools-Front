@@ -1588,6 +1588,23 @@ export default function Enviados({ idTicket }) {
                   {ticket.categoria}
                   {ticket.subcategoria && ` - ${ticket.subcategoria}`}
                 </div>
+
+                <div className="anexos">
+                  {ticket.anexos.map(anexo => (
+                    <a
+                      key={anexo.id_anexo}
+                      href={anexo.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <div className="icone">{IconeAnexo(anexo.nome)}</div>
+                      <div className="info">
+                        <p>{anexo.nome}</p>
+                        <span>{filesize(anexo.size)}</span>
+                      </div>
+                    </a>
+                  ))}
+                </div>
                 <div className="ticket-body">
                   {ticket.formatado &&
                     ReactHtmlParser(jsonToHtml(ticket.formatado.texto_json))}
