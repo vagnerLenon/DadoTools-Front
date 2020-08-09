@@ -28,6 +28,7 @@ export const Sidebar = styled.div`
   height: 100%;
   margin-right: 10px;
 
+
   div.config-sidebar-header {
     display: flex;
     flex-direction: column;
@@ -38,6 +39,43 @@ export const Sidebar = styled.div`
     border-radius: 8px 0 0 0;
     background: #fff;
     border-bottom: 1px solid #eee;
+    position: relative;
+
+    div.sintegra-logo{
+      position:absolute;
+      top: 5px;
+      right: 5px;
+
+      img{
+        width: 35px;
+        height: auto;
+        cursor: pointer;
+      }
+      div.sintegraDasdos{
+        transition: opacity 0.6s;
+        z-index: 3;
+        opacity: 0;
+        visibility:hidden;
+        position:absolute;
+        top: 35px;
+        transform: translateX(50%);
+        right: 25px;
+        height: auto;
+        background:#fff;
+        width: 300px;
+        padding: 10px;
+        text-align: center;
+        border-radius: 8px;
+        box-shadow: 0 4px 4px 4px rgba(0,0,0,0.2);
+        h2 {
+          font-size: 14px;
+        }
+        strong{
+          margin-right: 10px;
+        }
+      }
+
+    }
     h2 {
       padding: 10px;
       margin: auto 20px;
@@ -63,6 +101,12 @@ export const Sidebar = styled.div`
         border: 0;
       }
     }
+
+    div.sintegra-logo:hover div.sintegraDasdos{
+      opacity: 1;
+      visibility:visible;
+    }
+
   }
 
   div.config-sidebar-body {

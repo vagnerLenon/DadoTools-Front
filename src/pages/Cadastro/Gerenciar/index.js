@@ -16,6 +16,8 @@ import history from '~/services/history';
 import Avatar from '~/components/Avatar';
 import { formatCnpjCpf, formatCep, FormataDataFromIso, IsEmail } from '~/Utils';
 
+import LogoSintegra from '~/assets/logoSintegra.png'
+
 import { Container, Sidebar, Content, Scroll } from './styles';
 
 function Gerenciar() {
@@ -68,12 +70,18 @@ function Gerenciar() {
   const [editaFormaPagto, setEditaFormaPagto] = useState('');
   const [editaCondPagto, setEditaCondPagto] = useState('');
   const [editaPrimeiraCompra, setEditaPrimeiraCompra] = useState('');
+  const [consultasSintegra, setConsultasSintegra] = useState(0);
 
   // #endregion
 
   useEffect(() => {
     async function CarregaNivel() {
       const response = await api.get('userapps/cadastros');
+      const resp_sintegra = await api.get('saldo_sintegra');
+      const {status = "ERROR", qtd_consultas_disponiveis = 0 } = resp_sintegra.data;
+      if(status === "OK") setConsultasSintegra(Number(qtd_consultas_disponiveis));
+
+
       if (response.data) {
         const { nivel = 0 } = response.data;
 
@@ -802,6 +810,14 @@ function Gerenciar() {
         <Sidebar>
           <div className="config-sidebar-header">
             <h2 className="titulo-sidebar-cadastro">Solicitações</h2>
+            <div className="sintegra-logo">
+                <img src={LogoSintegra} alt="Saldo Sintegra"/>
+            <div className="sintegraDasdos">
+              <h2>Saldo de consultas Sintegra</h2>
+              <strong>Consultas disponíveis</strong>{consultasSintegra}
+            </div>
+            </div>
+
             <div className="busca">
               <input
                 placeholder="Busca"
