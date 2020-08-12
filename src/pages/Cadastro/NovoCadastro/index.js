@@ -82,6 +82,7 @@ export default function NovoCadastro(props) {
   const [empEdit, setEmpEdit] = useState({});
 
   // #endregion
+  const [salvando, setSalvando] = useState(false);
 
   useEffect(() => {
     async function carregaEmpresa(dados) {
@@ -482,6 +483,11 @@ export default function NovoCadastro(props) {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if(salvando){
+      return;
+    }
+
+    setSalvando(true);
 
     if (!ValidaCampos()) {
       const nascimento_corrigido = pessoaJuridica
@@ -541,6 +547,7 @@ export default function NovoCadastro(props) {
         if (!erro) {
           toast.success('Cliente alterado com sucesso!');
           history.push('/cadastros');
+          setSalvando(false);
           return;
         }
       } else {
@@ -552,11 +559,15 @@ export default function NovoCadastro(props) {
         if (!erro) {
           toast.success('Cliente cadastrado com sucesso!');
           history.push('/cadastros');
+          setSalvando(false);
           return;
         }
       }
     }
     toast.error('Os campos em vermelho contém error. Por favor, verifique.');
+    setSalvando(false);
+
+
   }
 
   const cssErro = {
