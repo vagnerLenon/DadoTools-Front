@@ -219,7 +219,7 @@ export const Content = styled.div`
       text-transform: uppercase;
     }
     div.botoes-header {
-      width: 25%;
+      padding-right: 20px;
       display: flex;
 
       button {
@@ -231,17 +231,26 @@ export const Content = styled.div`
         border-radius: 4px;
         color: #fff;
       }
+      div.botao{
+        width: 95px;
+      }
+
       button.salvar {
         background: #28a745;
         border: 1px solid #1e7e34;
       }
+      button.rejeitar {
+        background: #c82333;
+        border: 1px solid #bd2130;
+      }
+
 
       button.importar {
         background: #fd9644;
         border: 1px solid #fa8231;
       }
 
-      button + button {
+      div.botao + div.botao {
         margin-left: 10px;
       }
     }

@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import InputMask from 'react-input-mask';
 import NumberFormat from 'react-number-format';
 import { useSelector } from 'react-redux';
-import { MdSearch, MdSave, MdImportExport } from 'react-icons/md';
+import { MdSearch, MdSave, MdImportExport, MdClose } from 'react-icons/md';
 import { parse, parseISO, format, formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
 import stringSimilarity from 'string-similarity';
@@ -35,6 +35,7 @@ function Gerenciar() {
 
   const [mensagem, setMensagem] = useState('');
   const [mensagens, setMensagens] = useState('');
+  const [confirmaDelete, setConfirmaDelete] = useState(false);
 
   // #region Estados dos dados de Importação
 
@@ -589,13 +590,12 @@ function Gerenciar() {
   async function handleChangeSelecionado(cadastroAtual) {
     const { messages } = cadastroAtual;
     setMensagens(messages);
+    setConfirmaDelete(false);
 
     setCadastroSelecionado(cadastroAtual.id);
     setCadastroSelecionadoObj(cadastroAtual);
 
     ComparaCadastroSintegra(cadastroAtual);
-
-
   }
 
   async function handleSendMessage() {
@@ -635,7 +635,6 @@ function Gerenciar() {
       return false;
     }
 
-    console.log(editaCnpj.trim().length === 0);
     if (editaCnpj.trim().length === 0) {
       toast.error('O campo cnpj/cpf não pode ficar vazio');
       return false;
@@ -802,6 +801,11 @@ function Gerenciar() {
       })
     );
 
+    if(exporta){
+      setCadastroSelecionadoObj(null);
+      setCadastroSelecionado(0);
+    }
+
     toast.success('Dados salvos com sucesso');
     return true;
   }
@@ -843,6 +847,25 @@ function Gerenciar() {
         ids.length > 1 && 's'
       } com sucesso!`
     );
+  }
+
+  async function alterarStatus(id, status){
+    await api.put('cadastro_empresas/status', {
+      id,
+      status
+    });
+
+    const response = await api.get('cadastros/gerenciar');
+    const dados = response.data;
+    setCadastros(dados);
+    setSidebarData(
+      dados.filter(d => {
+        return d.status === 'A' || d.status === 'P';
+      })
+    );
+
+    setCadastroSelecionadoObj(null);
+    setCadastroSelecionado(0);
   }
 
   return (
@@ -924,6 +947,34 @@ function Gerenciar() {
                     cadastroSelecionadoObj.razao_social}
                 </h2>
                 <div className="botoes-header">
+                  <div className="botao">
+                    {confirmaDelete && (
+                      <button
+                          type="button"
+                          className="rejeitar"
+                          onClick={() => alterarStatus(cadastroSelecionadoObj.id, 'R')}
+                        >
+                          <MdClose syze={25} color="#fff" />
+                          <p>Confirmar</p>
+                        </button>
+                    )}
+                  </div>
+
+
+                  <div className="botao">
+                    {!confirmaDelete&&(
+                      <button
+                          type="button"
+                          className="rejeitar"
+                          onClick={() => setConfirmaDelete(true)}
+                        >
+                          <MdClose syze={25} color="#fff" />
+                          <p>Rejeitar</p>
+                        </button>
+                    )}
+                      </div>
+
+                      <div className="botao">
                   <button
                     type="button"
                     className="salvar"
@@ -932,6 +983,8 @@ function Gerenciar() {
                     <MdSave syze={25} color="#fff" />
                     <p>Salvar</p>
                   </button>
+                  </div>
+                  <div className="botao">
                   <button
                     type="button"
                     className="importar"
@@ -940,6 +993,7 @@ function Gerenciar() {
                     <MdImportExport syze={25} color="#fff" />
                     <p>Exportar</p>
                   </button>
+                  </div>
                 </div>
               </>
             )}
