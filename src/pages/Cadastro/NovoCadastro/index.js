@@ -282,6 +282,7 @@ export default function NovoCadastro(props) {
 
     setOpcoesAtividades([]);
   }
+
   function handleChangeSegmento(e) {
     e.preventDefault();
     const nomeSegmento = e.target.value;
@@ -304,6 +305,7 @@ export default function NovoCadastro(props) {
       setOpcoesAtividades([]);
     }
   }
+
   function handleChangeAtividade(e) {
     e.preventDefault();
     const nomeAtividade = e.target.value;
@@ -469,6 +471,15 @@ export default function NovoCadastro(props) {
     return texto.replace(/_|-|\(|\)/g, ' ').replace(/\s\s+/g, ' ');
   }
 
+  function cortaTexto(texto, quantChar){
+
+    let limite = quantChar;
+    if(texto.length < quantChar){
+      limite = texto.length;
+    }
+    return texto.substring(0, limite);
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -481,25 +492,25 @@ export default function NovoCadastro(props) {
         cnpj_cpf: cnpj,
         pessoa_juridica: pessoaJuridica,
         data_nascimento: nascimento_corrigido,
-        nome_fantasia: fantasia,
-        razao_social: razao,
+        nome_fantasia: cortaTexto(fantasia, 20),
+        razao_social: cortaTexto(razao, 60),
         cep,
-        logradouro: rua,
-        numero,
-        complemento,
-        bairro,
-        municipio,
+        logradouro: cortaTexto(rua, 40),
+        numero: cortaTexto(numero, 10),
+        complemento: cortaTexto(complemento, 25),
+        bairro: cortaTexto(bairro, 20),
+        municipio: cortaTexto(municipio, 30),
         estado: uf.toUpperCase(),
         pais,
         fone_principal: foneFormater(fone),
-        email_xml: email,
+        email_xml: cortaTexto(email, 65),
         fone_comprador: foneFormater(foneComprador),
-        email_comprador: emailComprador,
-        nome_comprador: nomeComprador,
+        email_comprador: cortaTexto(emailComprador,65),
+        nome_comprador: cortaTexto(nomeComprador,65),
         fone_financeiro: foneFormater(foneFinanceiro),
-        email_financeiro: emailFinanceiro,
+        email_financeiro: cortaTexto(emailFinanceiro,65),
         fone_fiscal: foneFormater(foneFiscal),
-        email_fiscal: emailFiscal,
+        email_fiscal: cortaTexto(emailFiscal,65),
         rota,
         segmento,
         atividade,
@@ -509,7 +520,7 @@ export default function NovoCadastro(props) {
         valor_primeira_compra: Number(
           String(valor).replace('.', '').replace(',', '.')
         ),
-        obs_vendedor: obs,
+        obs_vendedor: cortaTexto(obs,255),
         status: 'P',
       };
 

@@ -10,6 +10,7 @@ import { parse, parseISO, format, formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
 import stringSimilarity from 'string-similarity';
 import { toast } from 'react-toastify';
+import { cpf as VCpf, cnpj as VCnpj } from 'cpf-cnpj-validator';
 
 import api from '~/services/api';
 import history from '~/services/history';
@@ -111,6 +112,7 @@ function Gerenciar() {
   }, []);
 
   function retornaConsultaSintegra(cadastroAtivo = null) {
+
     const consultaVazia = {
       pessoa: '-',
       cnpj_cpf: '-',
@@ -147,19 +149,43 @@ function Gerenciar() {
       return consultaVazia;
     }
     const { json_obj } = dados.constultaSintegra;
+
+    if(json_obj.message !== 'Pesquisa realizada com sucesso.'){
+
+        return {
+          pessoa: '-',
+          cnpj_cpf: '-',
+          fantasia: '-',
+          razao_social: '-',
+          aniversario: '-',
+          cep: '-',
+          logradouro: '-',
+          numero: '-',
+          complemento: '-',
+          bairro: '-',
+          cidade: '-',
+          estado: '-',
+          status: '-',
+          inscricao_estadual: '-',
+          situacao_ie: '-',
+          situacao: '-',
+          cnae_principal: {},
+        }
+    }
+
     if (dados.constultaSintegra.json_obj.cpf === undefined) {
       return {
-        pessoa: 'Jurídica',
+        pessoa:'Jurídica',
         cnpj_cpf: json_obj.cnpj,
         fantasia: json_obj.nome_fantasia,
-        razao_social: json_obj.nome_empresarial,
+        razao_social: json_obj.nome_empresarial ,
         aniversario: format(
           parse(json_obj.data_inicio_atividade, 'dd-MM-yyyy', new Date()),
           'dd/MM/yyyy'
         ),
         cep: json_obj.cep,
-        logradouro: json_obj.logradouro,
-        numero: json_obj.numero,
+        logradouro: json_obj.logradouro ,
+        numero: json_obj.numero ,
         complemento: json_obj.complemento,
         bairro: json_obj.bairro,
         cidade: json_obj.municipio,
@@ -230,9 +256,7 @@ function Gerenciar() {
           cadastroAtual.cnpj_cpf ===
           retornaConsultaSintegra(cadastroAtual).cnpj_cpf,
         valorConsolidado:
-          retornaConsultaSintegra(cadastroAtual).cnpj_cpf !== '-'
-            ? retornaConsultaSintegra(cadastroAtual).cnpj_cpf
-            : cadastroAtual.cnpj_cpf,
+          retornaConsultaSintegra(cadastroAtual).cnpj_cpf,
       },
       pessoa_juridica: {
         cadastro: cadastroAtual.pessoa_juridica,
@@ -570,6 +594,8 @@ function Gerenciar() {
     setCadastroSelecionadoObj(cadastroAtual);
 
     ComparaCadastroSintegra(cadastroAtual);
+
+
   }
 
   async function handleSendMessage() {
@@ -600,6 +626,21 @@ function Gerenciar() {
 
   function ValidaCampos() {
     // #region Verifica os campos obrigatórios
+
+    if (editaPessoa === 'Física' && !VCpf.isValid(editaCnpj)) {
+      toast.error('O campo CNPJ/CPF está incorreto');
+      return false;
+    } else if(!VCnpj.isValid(editaCnpj)) {
+      toast.error('O campo CNPJ/CPF está incorreto');
+      return false;
+    }
+
+    console.log(editaCnpj.trim().length === 0);
+    if (editaCnpj.trim().length === 0) {
+      toast.error('O campo cnpj/cpf não pode ficar vazio');
+      return false;
+    }
+
 
     // Fantasia
     if (editaFantasia.trim().length === 0) {
