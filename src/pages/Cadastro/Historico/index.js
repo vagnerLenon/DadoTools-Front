@@ -2,7 +2,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useState, useEffect } from 'react';
 import { parseISO, format } from 'date-fns';
-import pt from 'date-fns/locale/pt-BR';
 
 import {
   MdSearch,
