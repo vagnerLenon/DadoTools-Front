@@ -877,7 +877,8 @@ function Gerenciar() {
               <MdSearch size={20} color="#666" />
             </div>
           </div>
-          <div className="config-sidebar-body">
+
+          <Scroll>
             <ul>
               {sidebarData.map(cadastro => (
                 <li key={String(cadastro.id)}>
@@ -918,7 +919,7 @@ function Gerenciar() {
                 </button>
               </div>
             )}
-          </div>
+          </Scroll>
         </Sidebar>
         <Content>
           <div className="body-header">

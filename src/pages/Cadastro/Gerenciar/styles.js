@@ -2,7 +2,8 @@ import styled from 'styled-components';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
 export const Scroll = styled(PerfectScrollbar)`
-  height: calc(100% - 30px);
+  height: calc(100% - 60px);
+  background: #fff;
 `;
 
 export const Checkbox = styled.input`
@@ -25,7 +26,8 @@ export const Sidebar = styled.div`
   flex-direction: column;
   max-width: 350px;
   width: 100%;
-  height: 100%;
+  overflow: hidden;
+
   margin-right: 10px;
 
   div.config-sidebar-header {
@@ -109,13 +111,11 @@ export const Sidebar = styled.div`
   div.config-sidebar-body {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    background: #fff;
+
     flex: 1;
     border-radius: 0 0 0 8px;
     ul {
       width: 100%;
-      height: 100%;
       li {
         button {
           width: 100%;
