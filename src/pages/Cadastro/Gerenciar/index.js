@@ -17,7 +17,7 @@ import history from '~/services/history';
 import Avatar from '~/components/Avatar';
 import { formatCnpjCpf, formatCep, FormataDataFromIso, IsEmail } from '~/Utils';
 
-import LogoSintegra from '~/assets/logoSintegra.png'
+import LogoSintegra from '~/assets/logoSintegra.png';
 
 import { Container, Sidebar, Content, Scroll } from './styles';
 
@@ -80,10 +80,13 @@ function Gerenciar() {
     async function CarregaNivel() {
       const response = await api.get('userapps/cadastros');
       const resp_sintegra = await api.get('saldo_sintegra');
-      const {status = "ERROR", qtd_consultas_disponiveis = 0 } = resp_sintegra.data;
-      if(status === "OK") setConsultasSintegra(Number(qtd_consultas_disponiveis));
-
-
+      const {
+        status = 'ERROR',
+        qtd_consultas_disponiveis = 0,
+      } = resp_sintegra.data;
+      if (status === 'OK') {
+        setConsultasSintegra(Number(qtd_consultas_disponiveis));
+      }
       if (response.data) {
         const { nivel = 0 } = response.data;
 
@@ -96,11 +99,7 @@ function Gerenciar() {
       const response = await api.get('cadastros/gerenciar');
       const dados = response.data;
       setCadastros(dados);
-      setSidebarData(
-        dados.filter(d => {
-          return d.status === 'A' || d.status === 'P';
-        })
-      );
+      setSidebarData(dados.filter(d => d.status === 'A' || d.status === 'P'));
       const response2 = await api.get('configs_cadastro');
       const { filtrosRotas, condicoes_pagto, formas_pagto } = response2.data;
       setConfigsRotas(filtrosRotas);
@@ -113,7 +112,6 @@ function Gerenciar() {
   }, []);
 
   function retornaConsultaSintegra(cadastroAtivo = null) {
-
     const consultaVazia = {
       pessoa: '-',
       cnpj_cpf: '-',
@@ -151,42 +149,41 @@ function Gerenciar() {
     }
     const { json_obj } = dados.constultaSintegra;
 
-    if(json_obj.message !== 'Pesquisa realizada com sucesso.'){
-
-        return {
-          pessoa: '-',
-          cnpj_cpf: '-',
-          fantasia: '-',
-          razao_social: '-',
-          aniversario: '-',
-          cep: '-',
-          logradouro: '-',
-          numero: '-',
-          complemento: '-',
-          bairro: '-',
-          cidade: '-',
-          estado: '-',
-          status: '-',
-          inscricao_estadual: '-',
-          situacao_ie: '-',
-          situacao: '-',
-          cnae_principal: {},
-        }
+    if (json_obj.message !== 'Pesquisa realizada com sucesso.') {
+      return {
+        pessoa: '-',
+        cnpj_cpf: '-',
+        fantasia: '-',
+        razao_social: '-',
+        aniversario: '-',
+        cep: '-',
+        logradouro: '-',
+        numero: '-',
+        complemento: '-',
+        bairro: '-',
+        cidade: '-',
+        estado: '-',
+        status: '-',
+        inscricao_estadual: '-',
+        situacao_ie: '-',
+        situacao: '-',
+        cnae_principal: {},
+      };
     }
 
     if (dados.constultaSintegra.json_obj.cpf === undefined) {
       return {
-        pessoa:'Jurídica',
+        pessoa: 'Jurídica',
         cnpj_cpf: json_obj.cnpj,
         fantasia: json_obj.nome_fantasia,
-        razao_social: json_obj.nome_empresarial ,
+        razao_social: json_obj.nome_empresarial,
         aniversario: format(
           parse(json_obj.data_inicio_atividade, 'dd-MM-yyyy', new Date()),
           'dd/MM/yyyy'
         ),
         cep: json_obj.cep,
-        logradouro: json_obj.logradouro ,
-        numero: json_obj.numero ,
+        logradouro: json_obj.logradouro,
+        numero: json_obj.numero,
         complemento: json_obj.complemento,
         bairro: json_obj.bairro,
         cidade: json_obj.municipio,
@@ -256,8 +253,7 @@ function Gerenciar() {
         correspondentes:
           cadastroAtual.cnpj_cpf ===
           retornaConsultaSintegra(cadastroAtual).cnpj_cpf,
-        valorConsolidado:
-          retornaConsultaSintegra(cadastroAtual).cnpj_cpf,
+        valorConsolidado: retornaConsultaSintegra(cadastroAtual).cnpj_cpf,
       },
       pessoa_juridica: {
         cadastro: cadastroAtual.pessoa_juridica,
@@ -410,12 +406,12 @@ function Gerenciar() {
         valorConsolidado: cadastroAtual.rota,
       },
       nomeRota: {
-        cadastro: configsRotas.filter(cr => {
-          return cr.codRota === cadastroAtual.rota;
-        })[0].nomeRota,
-        valorConsolidado: configsRotas.filter(cr => {
-          return cr.codRota === cadastroAtual.rota;
-        })[0].nomeRota,
+        cadastro: configsRotas.filter(
+          cr => cr.codRota === cadastroAtual.rota
+        )[0].nomeRota,
+        valorConsolidado: configsRotas.filter(
+          cr => cr.codRota === cadastroAtual.rota
+        )[0].nomeRota,
       },
       segmento: {
         cadastro: cadastroAtual.segmento,
@@ -434,24 +430,23 @@ function Gerenciar() {
         valorConsolidado: cadastroAtual.forma_pagto,
       },
       nome_forma_pagto: {
-        cadastro: formasPagto.filter(fp => {
-          return fp.cod === cadastroAtual.forma_pagto;
-        })[0].descricao,
-        valorConsolidado: formasPagto.filter(fp => {
-          return fp.cod === cadastroAtual.forma_pagto;
-        })[0].descricao,
+        cadastro: formasPagto.filter(
+          fp => fp.cod === cadastroAtual.forma_pagto
+        )[0].descricao,
+        valorConsolidado: formasPagto.filter(
+          fp => fp.cod === cadastroAtual.forma_pagto
+        )[0].descricao,
       },
       cod_cond_pagto: {
         cadastro: cadastroAtual.cond_pagto,
         valorConsolidado: cadastroAtual.cond_pagto,
       },
       nome_cond_pagto: {
-        cadastro: condPagto.filter(cp => {
-          return cp.cod === cadastroAtual.cond_pagto;
-        })[0].descricao,
-        valorConsolidado: condPagto.filter(cp => {
-          return cp.cod === cadastroAtual.cond_pagto;
-        })[0].descricao,
+        cadastro: condPagto.filter(cp => cp.cod === cadastroAtual.cond_pagto)[0]
+          .descricao,
+        valorConsolidado: condPagto.filter(
+          cp => cp.cod === cadastroAtual.cond_pagto
+        )[0].descricao,
       },
       status: {
         cadastro: cadastroAtual.status,
@@ -564,17 +559,17 @@ function Gerenciar() {
     setEditaEmailFinanceiro(base.email_financeiro.valorConsolidado);
     setEditaRota(base.codRota.valorConsolidado);
 
-    const [filtroRota] = configsRotas.filter(r => {
-      return r.codRota === base.codRota.valorConsolidado;
-    });
+    const [filtroRota] = configsRotas.filter(
+      r => r.codRota === base.codRota.valorConsolidado
+    );
 
     if (filtroRota && filtroRota.segmentos !== undefined) {
       setSegmentosFiltrados(filtroRota.segmentos);
       setEditaSegmento(base.segmento.valorConsolidado);
 
-      const [filtroSegento] = filtroRota.segmentos.filter(s => {
-        return s.nomeSegmento === base.segmento.valorConsolidado;
-      });
+      const [filtroSegento] = filtroRota.segmentos.filter(
+        s => s.nomeSegmento === base.segmento.valorConsolidado
+      );
       if (filtroSegento && filtroSegento.atividades !== undefined) {
         setAtividadesFiltrados(filtroSegento.atividades);
         setEditaAtividade(base.atividade.valorConsolidado);
@@ -630,7 +625,8 @@ function Gerenciar() {
     if (editaPessoa === 'Física' && !VCpf.isValid(editaCnpj)) {
       toast.error('O campo CNPJ/CPF está incorreto');
       return false;
-    } else if(!VCnpj.isValid(editaCnpj)) {
+    }
+    if (!VCnpj.isValid(editaCnpj)) {
       toast.error('O campo CNPJ/CPF está incorreto');
       return false;
     }
@@ -639,7 +635,6 @@ function Gerenciar() {
       toast.error('O campo cnpj/cpf não pode ficar vazio');
       return false;
     }
-
 
     // Fantasia
     if (editaFantasia.trim().length === 0) {
@@ -789,19 +784,15 @@ function Gerenciar() {
 
     const dadosSalvos = dados.data;
 
-    const cadastrosF = cadastros.filter(c => {
-      return c.id !== dadosSalvos.id;
-    });
+    const cadastrosF = cadastros.filter(c => c.id !== dadosSalvos.id);
 
     cadastrosF.push(dadosSalvos);
     setCadastros(cadastrosF);
     setSidebarData(
-      cadastrosF.filter(d => {
-        return d.status === 'A' || d.status === 'P';
-      })
+      cadastrosF.filter(d => d.status === 'A' || d.status === 'P')
     );
 
-    if(exporta){
+    if (exporta) {
       setCadastroSelecionadoObj(null);
       setCadastroSelecionado(0);
     }
@@ -812,20 +803,17 @@ function Gerenciar() {
 
   function FiltraSidebar() {
     setSidebarData(
-      cadastros.filter(cad => {
-        return (
+      cadastros.filter(
+        cad =>
           new RegExp(busca, 'i').test(cad.razao_social) ||
           new RegExp(busca, 'i').test(cad.cnpj_cpf) ||
           new RegExp(busca, 'i').test(cad.criadorCadastro.nome)
-        );
-      })
+      )
     );
   }
 
   async function ExportarCadastrosSalvos() {
-    const filtro = sidebarData.filter(sd => {
-      return sd.dadosConsolidados !== null;
-    });
+    const filtro = sidebarData.filter(sd => sd.dadosConsolidados !== null);
 
     const ids = filtro.map(a => a.id);
 
@@ -838,9 +826,7 @@ function Gerenciar() {
     setCadastroSelecionado({});
 
     setSidebarData(
-      dadosSalvos.filter(d => {
-        return d.status === 'A' || d.status === 'P';
-      })
+      dadosSalvos.filter(d => d.status === 'A' || d.status === 'P')
     );
     toast.success(
       `${ids.length} cadastro${ids.length > 1 && 's'} exportado${
@@ -849,20 +835,16 @@ function Gerenciar() {
     );
   }
 
-  async function alterarStatus(id, status){
+  async function alterarStatus(id, status) {
     await api.put('cadastro_empresas/status', {
       id,
-      status
+      status,
     });
 
     const response = await api.get('cadastros/gerenciar');
     const dados = response.data;
     setCadastros(dados);
-    setSidebarData(
-      dados.filter(d => {
-        return d.status === 'A' || d.status === 'P';
-      })
-    );
+    setSidebarData(dados.filter(d => d.status === 'A' || d.status === 'P'));
 
     setCadastroSelecionadoObj(null);
     setCadastroSelecionado(0);
@@ -875,11 +857,12 @@ function Gerenciar() {
           <div className="config-sidebar-header">
             <h2 className="titulo-sidebar-cadastro">Solicitações</h2>
             <div className="sintegra-logo">
-                <img src={LogoSintegra} alt="Saldo Sintegra"/>
-            <div className="sintegraDasdos">
-              <h2>Saldo de consultas Sintegra</h2>
-              <strong>Consultas disponíveis</strong>{consultasSintegra}
-            </div>
+              <img src={LogoSintegra} alt="Saldo Sintegra" />
+              <div className="sintegraDasdos">
+                <h2>Saldo de consultas Sintegra</h2>
+                <strong>Consultas disponíveis</strong>
+                {consultasSintegra}
+              </div>
             </div>
 
             <div className="busca">
@@ -922,9 +905,8 @@ function Gerenciar() {
                 </li>
               ))}
             </ul>
-            {sidebarData.filter(s => {
-              return s.dadosConsolidados !== null;
-            }).length > 0 && (
+            {sidebarData.filter(s => s.dadosConsolidados !== null).length >
+              0 && (
               <div className="footer-button">
                 <button
                   type="button"
@@ -950,49 +932,49 @@ function Gerenciar() {
                   <div className="botao">
                     {confirmaDelete && (
                       <button
-                          type="button"
-                          className="rejeitar"
-                          onClick={() => alterarStatus(cadastroSelecionadoObj.id, 'R')}
-                        >
-                          <MdClose syze={25} color="#fff" />
-                          <p>Confirmar</p>
-                        </button>
+                        type="button"
+                        className="rejeitar"
+                        onClick={() =>
+                          alterarStatus(cadastroSelecionadoObj.id, 'R')
+                        }
+                      >
+                        <MdClose syze={25} color="#fff" />
+                        <p>Confirmar</p>
+                      </button>
                     )}
                   </div>
-
-
                   <div className="botao">
-                    {!confirmaDelete&&(
+                    {!confirmaDelete && (
                       <button
-                          type="button"
-                          className="rejeitar"
-                          onClick={() => setConfirmaDelete(true)}
-                        >
-                          <MdClose syze={25} color="#fff" />
-                          <p>Rejeitar</p>
-                        </button>
+                        type="button"
+                        className="rejeitar"
+                        onClick={() => setConfirmaDelete(true)}
+                      >
+                        <MdClose syze={25} color="#fff" />
+                        <p>Rejeitar</p>
+                      </button>
                     )}
-                      </div>
+                  </div>
 
-                      <div className="botao">
-                  <button
-                    type="button"
-                    className="salvar"
-                    onClick={() => SalvaDados(false)}
-                  >
-                    <MdSave syze={25} color="#fff" />
-                    <p>Salvar</p>
-                  </button>
+                  <div className="botao">
+                    <button
+                      type="button"
+                      className="salvar"
+                      onClick={() => SalvaDados(false)}
+                    >
+                      <MdSave syze={25} color="#fff" />
+                      <p>Salvar</p>
+                    </button>
                   </div>
                   <div className="botao">
-                  <button
-                    type="button"
-                    className="importar"
-                    onClick={() => SalvaDados(true)}
-                  >
-                    <MdImportExport syze={25} color="#fff" />
-                    <p>Exportar</p>
-                  </button>
+                    <button
+                      type="button"
+                      className="importar"
+                      onClick={() => SalvaDados(true)}
+                    >
+                      <MdImportExport syze={25} color="#fff" />
+                      <p>Exportar</p>
+                    </button>
                   </div>
                 </div>
               </>
@@ -1472,9 +1454,9 @@ function Gerenciar() {
                     <p className="coluna campo">Rota</p>
                     <p className="coluna cadastro">
                       {
-                        configsRotas.filter(cr => {
-                          return cr.codRota === cadastroSelecionadoObj.rota;
-                        })[0].nomeRota
+                        configsRotas.filter(
+                          cr => cr.codRota === cadastroSelecionadoObj.rota
+                        )[0].nomeRota
                       }
                     </p>
                     <p className="coluna sintegra" />
@@ -1487,9 +1469,9 @@ function Gerenciar() {
                             setSegmentosFiltrados([]);
                             setAtividadesFiltrados([]);
                           } else {
-                            const [rotaF] = configsRotas.filter(r => {
-                              return r.codRota === e.target.value;
-                            });
+                            const [rotaF] = configsRotas.filter(
+                              r => r.codRota === e.target.value
+                            );
 
                             if (rotaF.segmentos !== null) {
                               setSegmentosFiltrados(rotaF.segmentos);
@@ -1521,9 +1503,9 @@ function Gerenciar() {
                           if (e.target.value === '0') {
                             setAtividadesFiltrados([]);
                           } else {
-                            const [segmentoF] = segmentosFiltrados.filter(s => {
-                              return s.nomeSegmento === e.target.value;
-                            });
+                            const [segmentoF] = segmentosFiltrados.filter(
+                              s => s.nomeSegmento === e.target.value
+                            );
 
                             if (segmentoF === undefined) {
                               setAtividadesFiltrados([]);
@@ -1558,9 +1540,7 @@ function Gerenciar() {
                           }
 
                           const [atividadesF] = atividadesFiltrados.filter(
-                            a => {
-                              return a.nomeAtividade === valorSelecionado;
-                            }
+                            a => a.nomeAtividade === valorSelecionado
                           );
 
                           if (atividadesF === undefined) {

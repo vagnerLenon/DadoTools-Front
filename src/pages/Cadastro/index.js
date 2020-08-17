@@ -12,6 +12,7 @@ import {
   FaQuestionCircle,
   FaCog,
   FaShare,
+  FaHistory
 } from 'react-icons/fa';
 
 import {
@@ -126,6 +127,12 @@ export default function Cadastro() {
           <Link to="/cadastros/gerenciar">
             Gerenciar cadastro
             <FaCog size={30} color="#333" />
+          </Link>
+        )}
+        {nivelUsuario > 3 && (
+          <Link to="/cadastros/historico">
+            Histórico de cadastros
+            <FaHistory size={30} color="#333" />
           </Link>
         )}
       </New>

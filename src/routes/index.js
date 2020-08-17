@@ -11,6 +11,7 @@ import TicketEncerrado from '~/pages/Tickets/TicketEncerrado';
 import Cadastro from '~/pages/Cadastro';
 import NovoCadastro from '~/pages/Cadastro/NovoCadastro';
 import Gerenciar from '~/pages/Cadastro/Gerenciar';
+import Historico from '~/pages/Cadastro/Historico';
 import Detalhes from '~/pages/Cadastro/Detalhes';
 import GestaoInbox from '~/pages/Tickets/Gestao/Inbox';
 import GestaoEnviados from '~/pages/Tickets/Gestao/Enviados';
@@ -45,6 +46,12 @@ export default function Routes() {
         path="/cadastros/gerenciar"
         exact
         component={Gerenciar}
+        isPrivate
+      />
+      <Route
+        path="/cadastros/historico"
+        exact
+        component={Historico}
         isPrivate
       />
       <Route path="/cadastros" exact component={Cadastro} isPrivate />

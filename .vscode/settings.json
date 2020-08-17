@@ -1,4 +1,7 @@
 {
-  "cSpell.language": ",pt,pt_BR"
+  "cSpell.language": ",pt,pt_BR",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
 
 }

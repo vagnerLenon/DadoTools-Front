@@ -133,6 +133,9 @@ export function RetornaIconeDaExtensao(ext) {
   }
 }
 export function formatCnpjCpf(value) {
+  if (value === undefined || value === '' || value === null) {
+    return '';
+  }
   const cnpjCpf = value.replace(/\D/g, '');
 
   if (cnpjCpf.length === 11) {
