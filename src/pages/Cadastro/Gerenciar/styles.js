@@ -67,6 +67,72 @@ export const Scroll = styled(PerfectScrollbar)`
   }
 `;
 
+export const ScrollBody = styled(PerfectScrollbar)`
+  height: calc(100% - 30px);
+  background: #fff;
+
+  display: flex;
+  flex-direction: column;
+
+  flex: 1;
+  border-radius: 0 0 0 8px;
+  ul {
+    width: 100%;
+    li {
+      button {
+        width: 100%;
+        background: #fff;
+        border: 0;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        div.menu {
+          display: flex;
+          text-align: left;
+          flex-direction: column;
+          p {
+            font-weight: bold;
+            color: #7159c1;
+            font-size: 14px;
+          }
+        }
+        div.menu.icones {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          align-content: center;
+        }
+      }
+      button:hover {
+        background: #f5f5f5;
+      }
+      button.selected {
+        border-left: 5px solid #7159c1;
+        border-radius: 0;
+        padding-left: 5px;
+        background: #eeeeee;
+      }
+    }
+  }
+  div.footer-button {
+    padding: 10px;
+    display: flex;
+    justify-content: flex-end;
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+      border-radius: 4px;
+      color: #fff;
+      background: #fd9644;
+      border: 1px solid #fa8231;
+    }
+  }
+`;
+
 export const Checkbox = styled.input`
   margin-left: 10px;
   width: 18px;

@@ -19,7 +19,7 @@ import { formatCnpjCpf, formatCep, FormataDataFromIso, IsEmail } from '~/Utils';
 
 import LogoSintegra from '~/assets/logoSintegra.png';
 
-import { Container, Sidebar, Content, Scroll } from './styles';
+import { Container, Sidebar, Content, Scroll, ScrollBody } from './styles';
 
 function Gerenciar() {
   const profile = useSelector(state => state.user.profile);
@@ -990,7 +990,7 @@ function Gerenciar() {
                   <p className="coluna sintegra">SINTEGRA</p>
                   <p className="coluna campo">IMPORTAÇÃO</p>
                 </div>
-                <Scroll>
+                <ScrollBody>
                   <div className="table-line subtitulo">
                     <h2>Dados básicos</h2>
                   </div>
@@ -1711,7 +1711,7 @@ function Gerenciar() {
                       Enviar
                     </button>
                   </div>
-                </Scroll>
+                </ScrollBody>
               </>
             )}
           </div>
