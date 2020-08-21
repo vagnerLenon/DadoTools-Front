@@ -203,11 +203,13 @@ function Categorizacao() {
                       key={String(scat.id)}
                       title={scat.descricao}
                       onClick={() => {
+                        setIdCategoriaEdicao(cat.id);
                         setNomeSubCategoria(scat.nome);
                         setDescSubCategoria(scat.descricao);
                         setSubCategoriaAtiva(scat.ativo);
                         setDiasPrazo(scat.dias_prazo);
                         setIdSubCategoriaEdicao(scat.id);
+                        setNomeCategoria(cat.nome);
                         setModalSubCategoriaOpen(true);
                       }}
                     >
@@ -373,6 +375,7 @@ function Categorizacao() {
               }}
             />
           </label>
+
           <label htmlFor="dias_prazo">
             Dias de prazo padrão
             <InputMask
@@ -386,7 +389,6 @@ function Categorizacao() {
               placeholder="Dias úteis de prazo"
             />
           </label>
-
           <label htmlFor="descSubcat">
             Descrição subcategoria:
             <textarea
@@ -399,7 +401,6 @@ function Categorizacao() {
               }}
             />
           </label>
-
           <div className="input-group">
             <label htmlFor="subCategoriaAtivo" className="checkbox">
               <input
@@ -413,7 +414,6 @@ function Categorizacao() {
               Ativo
             </label>
           </div>
-
           <div className="button-group">
             <button
               type="button"

@@ -24,4 +24,8 @@ div.avatar img.avatar-img{
   width: 48px;
   height: auto;
 }
-
+div.row{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}

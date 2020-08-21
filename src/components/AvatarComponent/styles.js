@@ -7,9 +7,9 @@ export const Container = styled.div`
   border-radius: 50%;
 
   img {
-    object-fit: cover;
+    object-fit: cover !important;
+
     max-width: ${p => p.size} !important;
-    max-height: ${p => p.size} !important;
   }
   div {
     display: flex;
@@ -19,7 +19,7 @@ export const Container = styled.div`
     justify-content: center;
     height: 100%;
     width: 100%;
-    font-size: calc(${p => p.size} / 2);
+    font-size: calc(${p => p.size} / 2.5);
     font-weight: normal;
   }
 `;

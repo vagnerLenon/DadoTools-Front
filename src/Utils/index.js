@@ -160,6 +160,23 @@ export function FormataDataFromIso(value, formato = 'dd/MM/yyyy') {
   return format(parseISO(value), formato);
 }
 
+export function Arredonda(valor, casas = 2) {
+  // eslint-disable-next-line no-restricted-globals
+  if (isNaN(valor) || isNaN(casas)) {
+    return Number(0).toFixed(2);
+  }
+  return Number(valor).toFixed(casas);
+}
+export function FormataPercentual(valor, multiplicaPorCem = true, casas = 2) {
+  // eslint-disable-next-line no-restricted-globals
+  if (isNaN(valor) || isNaN(casas)) {
+    return `${Number(0).toFixed(2)}%`;
+  }
+  const numero = multiplicaPorCem ? valor * 100 : valor;
+
+  return `${Number(numero).toFixed(casas)}%`;
+}
+
 export function IsEmail(email) {
   return validator.validate(email);
 }

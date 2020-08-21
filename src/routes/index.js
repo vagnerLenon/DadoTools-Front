@@ -17,6 +17,8 @@ import GestaoInbox from '~/pages/Tickets/Gestao/Inbox';
 import GestaoEnviados from '~/pages/Tickets/Gestao/Enviados';
 import GestaoConcluidos from '~/pages/Tickets/Gestao/Concluidos';
 import GestaoHistorico from '~/pages/Tickets/Gestao/Historico';
+import Simulador from '~/pages/Apps/Simulador';
+import Users from '~/pages/Apps/Users';
 import Tests from '~/pages/Tests';
 
 export default function Routes() {
@@ -78,6 +80,9 @@ export default function Routes() {
         component={GestaoHistorico}
         isPrivate
       />
+
+      <Route path="/simulador" component={Simulador} isPrivate />
+      <Route path="/Users" component={Users} isPrivate />
 
       <Route path="/" exact component={SignIn} />
     </Switch>
