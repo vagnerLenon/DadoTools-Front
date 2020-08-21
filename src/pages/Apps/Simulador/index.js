@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import NumberFormat from 'react-number-format';
 import { Container, Sidebar, SidebarMenu } from './styles';
 import { Arredonda, FormataPercentual } from '~/Utils';
-import { baseImpostos, baseProdutos, CalculoReverso, Pauta } from './utils';
+import { baseImpostos, baseProdutos, CalculoReverso } from './utils';
 
 const produtosObj = [
   {
