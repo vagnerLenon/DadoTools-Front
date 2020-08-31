@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useRef, useEffect } from 'react';
 import { useField } from '@rocketseat/unform';
+import { toast } from 'react-toastify';
 import api from '~/services/api';
-import Avatar from '~/components/Avatar';
+import AvatarComponent from '~/components/AvatarComponent';
 
 import { Container } from './styles';
 
@@ -43,12 +44,14 @@ export default function AvatarInput(props) {
         setFile(id);
         setPreview(url);
       } else {
-        alert(
-          'Você selecionou uma imagem inválida. Só são permitidas imagens .jpg, .jpeg ou .png'
-        );
+        toast.error('Problemas ao realizar este upload');
       }
       // undefined
-    } catch (err) {}
+    } catch (err) {
+      toast.error(
+        'Você selecionou uma imagem inválida. Só são permitidas imagens .jpg, .jpeg ou .png'
+      );
+    }
   }
 
   return (
@@ -56,7 +59,12 @@ export default function AvatarInput(props) {
       <label htmlFor="avatar">
         <div className="avatar_g">
           {!preview ? (
-            Avatar(profile.nome, profile.sobrenome)
+            <AvatarComponent
+              nome={profile.nome}
+              sobrenome={profile.sobrenome}
+              tamanho={120}
+              avatar={null}
+            />
           ) : (
             <img src={preview} alt="Alterar avatar" />
           )}

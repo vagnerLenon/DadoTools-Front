@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { FaBars } from 'react-icons/fa';
-import Avatar from '~/components/Avatar';
+import AvatarComponent from '~/components/AvatarComponent';
 
 import Notification from '~/components/Notifications';
 
@@ -19,7 +19,7 @@ export default function Header() {
 
   useEffect(() => {
     async function CarregaApps() {
-      const retorno = await api.get('userapps');
+      const retorno = await api.get('users/apps');
       setApps(retorno.data);
     }
 
@@ -51,14 +51,12 @@ export default function Header() {
 
         <Link to="/profile" onClick={hideSideBar}>
           <header>
-            <div className="avatar_g">
-              {profile.avatar === null ||
-              typeof profile.avatar.url === 'undefined' ? (
-                Avatar(profile.nome, profile.sobrenome)
-              ) : (
-                <img src={profile.avatar.url} alt={profile.nome} />
-              )}
-            </div>
+            <AvatarComponent
+              nome={profile.nome}
+              sobrenome={profile.sobrenome}
+              tamanho={64}
+              avatar={profile.avatar}
+            />
 
             <strong>{profile.nome}</strong>
             <span>{profile.cargo}</span>
@@ -111,14 +109,12 @@ export default function Header() {
               </Link>
             </div>
             <Link to="/profile">
-              <div className="avatar_p">
-                {profile.avatar === null ||
-                typeof profile.avatar.url === 'undefined' ? (
-                  Avatar(profile.nome, profile.sobrenome, 42)
-                ) : (
-                  <img src={profile.avatar.url} alt={profile.nome} />
-                )}
-              </div>
+              <AvatarComponent
+                nome={profile.nome}
+                sobrenome={profile.sobrenome}
+                tamanho={42}
+                avatar={profile.avatar}
+              />
             </Link>
           </Profile>
         </aside>

@@ -52,7 +52,7 @@ function Users() {
 
   useEffect(() => {
     async function CarregaNivel() {
-      const response = await api.get('userapps/users');
+      const response = await api.get('users/apps/users');
       const { data } = response;
       if (!data) {
         history.push('/');
@@ -133,7 +133,7 @@ function Users() {
         nivel: selectedNivel,
       });
 
-      await api.post('userapps', {
+      await api.post('users/apps', {
         id_usuario: idUser,
         id_app,
         nivel: selectedNivel,
@@ -149,7 +149,7 @@ function Users() {
 
   async function removeApp(idApp) {
     // Remover o App via API
-    await api.delete(`userapps?id_usuario=${idUser}&id_app=${idApp}`);
+    await api.delete(`users/apps?id_usuario=${idUser}&id_app=${idApp}`);
 
     // Adicionar o App na lista de apps disponivris
     setAppsUser(

@@ -5,6 +5,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { MdNotifications } from 'react-icons/md';
 import { parseISO, formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt';
+import { Link } from 'react-router-dom';
 import api from '~/services/api';
 import history from '~/services/history';
 import {
@@ -81,15 +82,17 @@ export default function Notifications() {
           {notifications.map(notification => (
             <Notification unread={!notification.read} key={notification._id}>
               <div>
-                <button
+                <Link
                   type="button"
                   className="mensagem"
+                  target="_blank"
+                  to={`/${notification.link}`}
                   onClick={() =>
                     handleLink(notification.link, notification._id)
                   }
                 >
                   {notification.content}
-                </button>
+                </Link>
                 <div>
                   <time>{notification.timeDistance}</time>
                   {!notification.read && (

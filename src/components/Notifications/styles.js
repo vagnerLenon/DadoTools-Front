@@ -77,7 +77,8 @@ export const Notification = styled.div`
     border-bottom: 0;
   }
 
-  button.mensagem {
+  a.mensagem {
+    text-decoration: none;
     text-align: left;
     font-size: 13px;
     line-height: 18px;

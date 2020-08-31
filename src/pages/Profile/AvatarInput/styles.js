@@ -17,6 +17,12 @@ export const Container = styled.div`
       margin-bottom: 10px;
       display: block;
 
+      div.avatar-container {
+        div {
+          justify-content: center;
+        }
+      }
+
       img {
         margin: auto;
         display: block;

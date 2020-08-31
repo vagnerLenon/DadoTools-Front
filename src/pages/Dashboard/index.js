@@ -15,7 +15,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     async function loadApps() {
-      const response = await api.get('userapps');
+      const response = await api.get('users/apps');
       SetApps(response.data);
       SetLoading(false);
     }

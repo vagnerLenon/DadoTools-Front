@@ -19,7 +19,7 @@ export const Container = styled.div`
     justify-content: center;
     height: 100%;
     width: 100%;
-    font-size: calc(${p => p.size} / 2.5);
+    font-size: calc(${p => p.size} / 2.2);
     font-weight: normal;
   }
 `;

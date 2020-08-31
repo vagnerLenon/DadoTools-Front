@@ -13,7 +13,7 @@ export const Sidebar = styled.div`
         display: inline-block;
       `}
 
-    /* For mobile phones: */     
+    /* For mobile phones: */
 
     border-radius: 0 0 0 8px;
     height: 500px;
@@ -44,40 +44,10 @@ export const Sidebar = styled.div`
       width: 250px;
       height: auto + 64px;
 
-      .avatar_g {
-        width: 64px;
-        height: 64px;
+      div.avatar-container {
         margin-bottom: 10px;
-        display: block;
-
-        img {
-          margin: auto;
-          display: block;
-          width: 64px;
-          height: 64px;
-          border-radius: 50%;
-          box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.3);
-        }
-
-        .circle {
-          margin: auto;
-          display: block;
-          background-color: #27ae60;
-          border-radius: 50%;
-          text-align: center;
-          width: 64px;
-          height: 64px;
-          box-shadow: 0 2px 2px 1px rgba(0, 0, 0, 0.2);
-
-          .initials {
-            color: #fff;
-            font-size: calc(64px / 2); /* 50% of parent */
-            line-height: 1;
-            position: relative;
-            top: calc(64px / 4); /* 25% of parent */
-          }
-        }
       }
+
       strong {
         margin: auto;
         display: block;
