@@ -2,7 +2,7 @@
 import React from 'react';
 import propTypes from 'prop-types';
 import { format, parseISO, formatDistance } from 'date-fns';
-import pt from 'date-fns/Locale/pt-BR';
+import pt from 'date-fns/locale/pt-BR';
 import Rater from 'react-rater';
 import 'react-rater/lib/react-rater.css';
 
