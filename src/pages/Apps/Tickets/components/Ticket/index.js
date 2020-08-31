@@ -18,7 +18,7 @@ import { EditorState, convertFromRaw } from 'draft-js';
 import ReactHtmlParser from 'react-html-parser';
 import { stateToHTML } from 'draft-js-export-html';
 
-import pt from 'date-fns/Locale/pt-BR';
+import pt from 'date-fns/locale/pt-BR';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import { toast } from 'react-toastify';
 import { ComboBoxComponent } from '@syncfusion/ej2-react-dropdowns';
