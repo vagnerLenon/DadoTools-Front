@@ -181,13 +181,12 @@ export const Sidebar = styled.div`
       }
       div.sintegraDasdos {
         transition: opacity 0.6s;
-        z-index: 3;
+        z-index: 99;
         opacity: 0;
         visibility: hidden;
         position: absolute;
-        top: 35px;
-        transform: translateX(50%);
-        right: 25px;
+        top: 5px;
+        left: -300px;
         height: auto;
         background: #fff;
         width: 300px;

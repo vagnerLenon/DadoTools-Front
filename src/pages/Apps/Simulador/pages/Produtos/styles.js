@@ -81,6 +81,11 @@ export const Container = styled.div`
       line-height: 20px;
     }
 
+    div.linha.botoes {
+      margin-top: 20px;
+      justify-content: flex-end;
+    }
+
     label {
       width: 100%;
       margin: 5px 0;
@@ -131,12 +136,88 @@ export const Container = styled.div`
       }
     }
     div.produtos-configurados {
-      background: blue;
+      background: #fff;
       width: 100%;
       margin-left: 10px;
       padding: 10px;
+      border: 1px solid #eee;
+      border-radius: 8px;
       @media only screen and (max-width: 1400px) {
         margin-left: 0;
+      }
+
+      div.produtos-configurados-header {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      div.produto {
+        position: relative;
+        background: #eee;
+        padding: 10px;
+        border-radius: 8px;
+        & + div.produto {
+          margin-top: 10px;
+        }
+      }
+
+      div.nome-produto {
+        max-width: calc(100% - 30px);
+        strong.nome-produto {
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+        }
+      }
+      button.botao-deletar {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        width: 25px;
+        height: 25px;
+        padding: 0;
+        border-radius: 4px;
+        svg {
+          display: block;
+          margin: auto;
+        }
+      }
+      div.linha {
+        margin-bottom: 10px;
+        span + strong {
+          margin-left: 10px;
+        }
+      }
+
+      div.pautas {
+        div.pauta {
+          background: #ccc;
+        }
+      }
+    }
+
+    div.pautas {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 10px;
+
+      div.pauta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        padding: 5px;
+        background: #eee;
+        border-radius: 4px;
+        button {
+          padding: 0;
+          width: 20px;
+          height: 20px;
+          border: 0;
+          border-radius: 4px;
+        }
       }
     }
   }
