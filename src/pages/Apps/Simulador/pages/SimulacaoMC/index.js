@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+/* eslint-disable no-unused-vars */
+/* eslint-disable jsx-a11y/control-has-associated-label */
+import React, { useState, useEffect } from 'react';
 
 import NumberFormat from 'react-number-format';
+import { toast } from 'react-toastify';
 import { Container } from './styles';
 import { Arredonda } from '~/Utils';
+import api from '~/services/api';
 
 // import { baseImpostos, baseProdutos, CalculoReverso } from '../../utils';
 
@@ -73,7 +77,32 @@ const produtosObj = [
 ];
 
 function SimulacaoMC() {
-  const [produtos, setProdutos] = useState(produtosObj);
+  const [getProdutos, setProdutos] = useState(produtosObj);
+
+  const [getProdutosBase, setProdutosBase] = useState(produtosObj);
+  const [getImpostos, setImpostos] = useState({});
+  const [getCustos, setCustos] = useState({});
+
+  const [getEstados, setEstados] = useState([]);
+
+  const [getAddProduto, setAddProduto] = useState('0');
+
+  useEffect(() => {
+    async function DadosBase() {
+      const { data } = await api.get('configs/parametros');
+      setProdutosBase(data.produtos.json_obj);
+      setImpostos(data.impostos.json_obj);
+      setCustos(data.custos.json_obj);
+      setEstados([
+        { uf: 'RS', nome: 'Rio Grande do Sul' },
+        { uf: 'SC', nome: 'Santa Catarina' },
+        { uf: 'PR', nome: 'Paraná' },
+      ]);
+    }
+
+    DadosBase();
+  }, []);
+
   function somaVolume(produto) {
     let volume = 0;
 
@@ -87,27 +116,64 @@ function SimulacaoMC() {
   }
 
   function onChangeSliderFrete(e, indexP, indexUf) {
-    const novoProd = [...produtos];
+    const novoProd = [...getProdutos];
     novoProd[indexP].estados[indexUf].distribuicaoP = Number(e.target.value);
     setProdutos(novoProd);
   }
 
   function onChangeSliderAtacado(e, indexP, indexUf) {
-    const novoProd = [...produtos];
+    const novoProd = [...getProdutos];
     novoProd[indexP].estados[indexUf].atacadoP = Number(e.target.value);
     setProdutos(novoProd);
   }
 
   function onChangeVolume(valorVar, indexP, indexUf) {
-    const novoProd = [...produtos];
+    const novoProd = [...getProdutos];
     novoProd[indexP].estados[indexUf].volume = valorVar;
     setProdutos(novoProd);
   }
 
   function onChangePreco(valorVar, indexP, indexUf) {
-    const novoProd = [...produtos];
+    const novoProd = [...getProdutos];
     novoProd[indexP].estados[indexUf].precoMed = valorVar;
     setProdutos(novoProd);
+  }
+
+  function addProduto() {
+    const [produto] = getProdutosBase.filter(prod => {
+      return prod.codigoCigam === getAddProduto;
+    });
+
+    if (produto === undefined) {
+      toast.error('Selecione um produto válido para inserir');
+      return;
+    }
+
+    const { nome, codigoCigam, volume, pautas } = produto;
+
+    const estados = pautas.map(pauta => {
+      return {
+        uf: pauta.uf,
+        pauta: pauta.valor,
+        atacadoP: 50,
+        distribuicaoP: 50,
+        volume: 0,
+        precoMed: 0,
+      };
+    });
+
+    const novoProduto = {
+      nome,
+      cod: codigoCigam,
+      volumeUnitario: volume / 1000,
+      estados,
+    };
+
+    const produtos = [...getProdutos];
+
+    produtos.push(novoProduto);
+
+    setProdutos(produtos);
   }
 
   return (
@@ -115,15 +181,48 @@ function SimulacaoMC() {
       <table>
         <thead>
           <tr>
-            <th className="produto">Add produto</th>
-            <th className="uf">RS</th>
-            <th className="uf">SC</th>
-            <th className="uf">PR</th>
+            <th className="produto">
+              <select
+                value={getAddProduto}
+                onChange={e => {
+                  setAddProduto(e.target.value);
+                }}
+              >
+                <option value="0">Selecione um produto</option>
+                {getProdutosBase
+                  .sort((a, b) => {
+                    if (a.nome < b.nome) {
+                      return -1;
+                    }
+                    if (a.nome > b.nome) {
+                      return 1;
+                    }
+                    return 0;
+                  })
+                  .map(produto => (
+                    <option key={produto.nome} value={produto.codigoCigam}>
+                      {produto.nome}
+                    </option>
+                  ))}
+              </select>
+              <button
+                type="button"
+                className="button btn-green"
+                onClick={addProduto}
+              >
+                Add
+              </button>
+            </th>
+            {getEstados.map(estado => (
+              <th key={estado.uf} className="uf">
+                {estado.uf}
+              </th>
+            ))}
             <th className="total">Total</th>
           </tr>
         </thead>
         <tbody>
-          {produtos.map((produto, indexP) => (
+          {getProdutos.map((produto, indexP) => (
             <tr key={String(produto.nome)}>
               <td className="produto">
                 <div className="produto">

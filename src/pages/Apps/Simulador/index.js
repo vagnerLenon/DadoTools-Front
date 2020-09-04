@@ -5,11 +5,13 @@ import React, { useState } from 'react';
 import SimulacaoMC from './pages/SimulacaoMC';
 import CalculoInverso from './pages/CalculoInverso';
 import Produtos from './pages/Produtos';
+import Impostos from './pages/Impostos';
+import Custos from './pages/Custos';
 
 import { Container, Sidebar, SidebarMenu } from './styles';
 
 function Simulador() {
-  const [GetPagina, SetPagina] = useState('produtos');
+  const [GetPagina, SetPagina] = useState('simuladorMC');
 
   function Renderpage() {
     switch (GetPagina) {
@@ -19,6 +21,10 @@ function Simulador() {
         return <CalculoInverso />;
       case 'produtos':
         return <Produtos />;
+      case 'impostos':
+        return <Impostos />;
+      case 'custos':
+        return <Custos />;
       default:
         return <h1>Simulador do Vagão</h1>;
     }
@@ -59,8 +65,23 @@ function Simulador() {
           >
             Produtos
           </SidebarMenu>
-          <SidebarMenu type="button" active={false}>
+          <SidebarMenu
+            type="button"
+            active={GetPagina === 'impostos'}
+            onClick={() => {
+              SetPagina('impostos');
+            }}
+          >
             Impostos
+          </SidebarMenu>
+          <SidebarMenu
+            type="button"
+            active={GetPagina === 'custos'}
+            onClick={() => {
+              SetPagina('custos');
+            }}
+          >
+            Custos
           </SidebarMenu>
         </div>
       </Sidebar>

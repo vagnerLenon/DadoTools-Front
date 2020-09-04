@@ -99,6 +99,15 @@ div.loader{
   }
 }
 
+div.linha{
+  display: flex;
+  align-items: center;
+}
+
+div.linha.espaco{
+  justify-content: space-between;
+}
+
 
 
 

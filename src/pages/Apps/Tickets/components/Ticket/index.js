@@ -667,7 +667,7 @@ function Ticket({ ticket, atualizaTicket, configs, destinatariosDisp }, ref) {
               </div>
             </div>
             <div className="linha">
-              <strong className="title">DUSCUSSÃO</strong>
+              <strong className="title">DISCUSSÃO</strong>
             </div>
             {configs.open && (
               <>

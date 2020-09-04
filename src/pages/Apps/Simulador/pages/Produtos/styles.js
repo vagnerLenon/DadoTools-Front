@@ -58,14 +58,16 @@ export const Container = styled.div`
   }
 
   div.div-responsivo {
+    max-height: calc(100%);
+    overflow: hidden;
     width: 66.7%;
     display: flex;
     flex-direction: row;
-    @media only screen and (max-width: 1400px) {
+    /* @media only screen and (max-width: 1400px) {
       width: 50%;
       flex-direction: column;
       margin-left: 10px;
-    }
+    } */
     h2 {
       font-size: 16px;
     }
@@ -140,6 +142,7 @@ export const Container = styled.div`
       width: 100%;
       margin-left: 10px;
       padding: 10px;
+      padding-right: 0;
       border: 1px solid #eee;
       border-radius: 8px;
       @media only screen and (max-width: 1400px) {
@@ -148,6 +151,7 @@ export const Container = styled.div`
 
       div.produtos-configurados-header {
         margin-bottom: 15px;
+        margin-right: 10px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -225,4 +229,10 @@ export const Container = styled.div`
 
 export const ScroollProd = styled(Scrollbar)`
   max-height: calc(100% - 40px);
+  padding-right: 10px;
+`;
+
+export const ScroollProdCad = styled(Scrollbar)`
+  max-height: calc(100% - 40px);
+  padding-right: 10px;
 `;

@@ -1,15 +1,96 @@
 import propTypes from 'prop-types';
 
+function CalculoInverso(
+  pauta,
+  receita_bruta,
+  aliquota_ST,
+  aliquota_FCP,
+  aliquota_ICMS,
+  aliquota_IPI,
+  aliquota_PIS,
+  aliquota_COFINS
+) {
+  const precoUnitario =
+    (receita_bruta - pauta * aliquota_ST - pauta * aliquota_FCP) /
+    (1 + aliquota_IPI - aliquota_ICMS);
+
+  const ipi = precoUnitario * aliquota_IPI;
+  const icms = precoUnitario * aliquota_ICMS;
+  const pis = precoUnitario * aliquota_PIS;
+  const cofins = precoUnitario * aliquota_COFINS;
+  const st = pauta * aliquota_ST - icms;
+  const fcp = pauta * aliquota_FCP;
+
+  const receitaLiquida = precoUnitario - icms - pis - cofins;
+
+  return {
+    receitaLiquida,
+    pis,
+    cofins,
+    icms,
+    precoUnitario,
+    ipi,
+    st,
+    fcp,
+    receitaBruta: receita_bruta,
+    pauta,
+    aliquotaST: aliquota_ST,
+    aliquotaFCP: aliquota_FCP,
+    aliquotaICMS: aliquota_ICMS,
+    aliquotaIPI: aliquota_IPI,
+    aliquotaPIS: aliquota_PIS,
+    aliquotaCOFINS: aliquota_COFINS,
+  };
+}
+
+function ReceitaBruta(
+  pauta,
+  receitaLiquida,
+  aliquota_ST,
+  aliquota_FCP,
+  aliquota_ICMS,
+  aliquota_IPI,
+  aliquota_PIS,
+  aliquota_COFINS
+) {
+  const BC_Icms_pis_cofins =
+    receitaLiquida / (1 - (aliquota_ICMS + aliquota_PIS + aliquota_COFINS));
+
+  const icms = BC_Icms_pis_cofins * aliquota_ICMS;
+  const pis = BC_Icms_pis_cofins * aliquota_PIS;
+  const cofins = BC_Icms_pis_cofins * aliquota_COFINS;
+
+  const precoUnitario = receitaLiquida + icms + pis + cofins;
+
+  const ipi = precoUnitario * aliquota_IPI;
+  const st = pauta * aliquota_ST - icms;
+  const fcp = pauta * aliquota_FCP;
+
+  const receitaBruta = precoUnitario + ipi + st + fcp;
+
+  return {
+    receitaLiquida,
+    icms,
+    pis,
+    cofins,
+    precoUnitario,
+    ipi,
+    st,
+    fcp,
+    receitaBruta,
+  };
+}
+
 /* Preciso realizar o cálculo inverso para encontrar o preço sem impostos de acordo com um valor bruto base
 Necessidades:
   * Pauta
   * Estado
   * Tipo de empresa
-
-
-
 */
 /*
+
+
+
 Função cálculo reverso
   Inputs:
     * produto
@@ -28,7 +109,7 @@ function CalculoReverso(produto, impostos, uf, atacado, precoUnitario) {
   const { pautas } = produto;
 
   const pautaF = pautas.filter(p => {
-    return p.estado === uf;
+    return p.uf === uf;
   });
 
   if (pautaF.length === 0) {
@@ -51,35 +132,27 @@ function CalculoReverso(produto, impostos, uf, atacado, precoUnitario) {
     throw new Error('Não existe ICMS ST FCP para este Estado.');
   }
 
-  const ICMSf = impostos.icms.filter(imp => {
-    return imp.rs === (uf === 'RS');
-  });
+  const ICMSf = uf === 'RS' ? impostos.icms.rs : impostos.icms.fora;
 
-  if (ICMSf.length === 0) {
+  if (ICMSf === undefined) {
     throw new Error('Não existe ICMS para este Estado.');
   }
 
-  const IPIf = impostos.ipi.filter(imp => {
-    return imp.atacado === atacado;
-  });
+  const IPIf = atacado ? impostos.ipi.atacado : impostos.ipi.varejo;
 
-  if (IPIf.length === 0) {
+  if (IPIf === undefined) {
     throw new Error('Não existe IPI para este Tipo de estabelecimento.');
   }
 
-  const PISf = impostos.pis.filter(imp => {
-    return imp.atacado === atacado;
-  });
+  const PISf = atacado ? impostos.pis.atacado : impostos.pis.varejo;
 
-  if (PISf.length === 0) {
+  if (PISf === undefined) {
     throw new Error('Não existe PIS para este Tipo de estabelecimento.');
   }
 
-  const COFINSf = impostos.cofins.filter(imp => {
-    return imp.atacado === atacado;
-  });
+  const COFINSf = atacado ? impostos.cofins.atacado : impostos.cofins.varejo;
 
-  if (COFINSf.length === 0) {
+  if (COFINSf === undefined) {
     throw new Error('Não existe COFINS para este Tipo de estabelecimento.');
   }
 
@@ -88,6 +161,20 @@ function CalculoReverso(produto, impostos, uf, atacado, precoUnitario) {
   // PAUTA base
   const pauta = pautaF[0].valor;
 
+  // Verificar se a pauta é maior do que o preço desejado, caso contrário retornar um erro
+  if (pauta <= precoUnitario) {
+    throw new Error(
+      `O preço unitário tem que ser menor que a pauta. Preço R$ ${precoUnitario.toLocaleString(
+        'pt-BR',
+        {
+          minimumFractionDigits: 2,
+        }
+      )}. Pauta: R$ ${pauta.toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+      })}`
+    );
+  }
+
   // ICMS ST aliquota
   const ICMSSt_aliquota = ICMSStF[0].aliquota;
 
@@ -95,52 +182,29 @@ function CalculoReverso(produto, impostos, uf, atacado, precoUnitario) {
   const FCP_aliquota = FCPf[0].aliquota;
 
   // ICMS aliquota
-  const ICMS_aliquota = Number(ICMSf[0].aliquota);
+  const ICMS_aliquota = Number(ICMSf);
 
   // IPI aliquota
-  const IPI_aliquota = Number(IPIf[0].aliquota);
+  const IPI_aliquota = Number(IPIf);
 
   // PIS aliquota
-  const PIS_aliquota = Number(PISf[0].aliquota);
+  const PIS_aliquota = Number(PISf);
 
   // COFINS aliquota
-  const COFINS_aliquota = Number(COFINSf[0].aliquota);
+  const COFINS_aliquota = Number(COFINSf);
 
-  // Primeiramente retiramos o ST e o FCP do valor total do produto visto que estes são ancorados na pauta
-
-  const ICMSSt = Number(pauta * ICMSSt_aliquota);
-  const FCP = Number(pauta * FCP_aliquota);
-  const precoFinal = Number(precoUnitario);
-
-  // PREÇO Target
-
-  const dividendo = precoFinal - (ICMSSt + FCP);
-  const divisor = Number(1 + IPI_aliquota - ICMS_aliquota);
-
-  const preco_unitario = dividendo / divisor;
-
-  const ICMS = ICMS_aliquota * preco_unitario;
-  const IPI = IPI_aliquota * preco_unitario;
-  const PIS = PIS_aliquota * preco_unitario;
-  const COFINS = COFINS_aliquota * preco_unitario;
-
-  return {
+  const calculo = CalculoInverso(
+    pauta,
+    precoUnitario,
     ICMSSt_aliquota,
     FCP_aliquota,
     ICMS_aliquota,
     IPI_aliquota,
     PIS_aliquota,
-    COFINS_aliquota,
-    precoLiquido: preco_unitario - ICMS - PIS - COFINS,
-    precoBase: preco_unitario,
-    ICMSSt: ICMSSt - ICMS,
-    FCP,
-    ICMS,
-    IPI,
-    PIS,
-    COFINS,
-    precoFinal: precoUnitario,
-  };
+    COFINS_aliquota
+  );
+
+  return calculo;
 }
 
 const baseImpostos = {
@@ -154,22 +218,22 @@ const baseImpostos = {
     { estado: 'SC', aliquota: 0 },
     { estado: 'PR', aliquota: 0.02 },
   ],
-  icms: [
-    { rs: true, aliquota: 0.25 },
-    { rs: false, aliquota: 0.12 },
-  ],
-  ipi: [
-    { atacado: true, aliquota: 0.06 },
-    { atacado: false, aliquota: 0.045 },
-  ],
-  pis: [
-    { atacado: true, aliquota: 0.0232 },
-    { atacado: false, aliquota: 0.0186 },
-  ],
-  cofins: [
-    { atacado: true, aliquota: 0.1068 },
-    { atacado: false, aliquota: 0.0854 },
-  ],
+  icms: {
+    rs: 0.25,
+    fora: 0.12,
+  },
+  ipi: {
+    atacado: 0.06,
+    vatejo: 0.045,
+  },
+  pis: {
+    atacado: 0.0232,
+    varejo: 0.0186,
+  },
+  cofins: {
+    atacado: 0.1068,
+    varejo: 0.0854,
+  },
 };
 
 const baseProdutos = [
@@ -263,4 +327,11 @@ function Pauta(produtos, codProduto, estado) {
   return pauta;
 }
 
-export { CalculoReverso, baseImpostos, baseProdutos, Pauta };
+export {
+  CalculoReverso,
+  baseImpostos,
+  baseProdutos,
+  Pauta,
+  ReceitaBruta,
+  CalculoInverso,
+};

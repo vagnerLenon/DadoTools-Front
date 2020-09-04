@@ -4,7 +4,7 @@ import NumberFormat from 'react-number-format';
 
 import { MdSearch, MdClose } from 'react-icons/md';
 import { toast } from 'react-toastify';
-import { Container, ScroollProd } from './styles';
+import { Container, ScroollProd, ScroollProdCad } from './styles';
 import api from '~/services/api';
 
 import { Ufs, AlteraDecimal } from '~/Utils';
@@ -26,6 +26,8 @@ function Produtos() {
     async function AtualizaDados() {
       const { data } = await api.get('configs/produtosBase');
       setProdutosBase(data.prodBase.json_obj.produtos);
+      const { data: dadosProdutos } = await api.get('configs/produtos');
+      setProdutos(dadosProdutos.produtos.json_obj);
     }
     AtualizaDados();
   }, []);
@@ -59,6 +61,7 @@ function Produtos() {
       })
     );
   }
+
   function TemPauta(uf) {
     const ufPautas = getPautas.map(p => p.uf);
     return ufPautas.includes(uf);
@@ -130,7 +133,48 @@ function Produtos() {
     setPauta(0);
     setNomeProduto('');
     setProdutoCodigo('');
+    setPautas([]);
     setVolume(0);
+  }
+
+  function handleRemoveProduto(produto) {
+    setProdutos(
+      getProdutos.filter(p => {
+        return p.codigoCigam !== produto.codigoCigam;
+      })
+    );
+
+    setProdutoEditando({
+      codigo: produto.codigoCigam,
+      nome: produto.nome,
+      volume: produto.volume,
+      codGrupo: '60',
+      nomeGrupo: 'PRODUTO ACABADO',
+      codSubGrupo: '',
+      nomeSubGrupo: '',
+    });
+    setNomeProduto(produto.nome);
+    setProdutoCodigo(produto.codigoCigam);
+    setVolume(produto.volume);
+    setPautas(produto.pautas);
+    setPauta('');
+    setUf('XX');
+  }
+
+  async function handleSave() {
+    await api.post('configs', {
+      nome_config: 'produtos',
+      json: JSON.stringify(getProdutos),
+    });
+
+    setProdutoEditando({});
+    setUf('XX');
+    setPauta(0);
+    setNomeProduto('');
+    setProdutoCodigo('');
+    setPautas([]);
+    setVolume(0);
+    toast.success('Produtos salvos com sucesso!');
   }
 
   return (
@@ -172,6 +216,7 @@ function Produtos() {
                       setNomeProduto(produto.nome);
                       setProdutoCodigo(produto.codigo);
                       setVolume(produto.volume);
+                      setPautas([]);
                       setPauta('');
                       setUf('XX');
                     }}
@@ -344,52 +389,65 @@ function Produtos() {
         <div className="produtos-configurados">
           <div className="produtos-configurados-header">
             <h2>Produtos configurados</h2>
-            <button className="button btn-green" type="button">
-              Salvar todos
+            <button
+              className="button btn-green"
+              type="button"
+              onClick={() => {
+                handleSave();
+              }}
+            >
+              Salvar
             </button>
           </div>
-          {getProdutos.map(prod => (
-            <div className="produto" key={prod.codigoCigam}>
-              <>
-                <button type="button" className="btn-red botao-deletar">
-                  <MdClose />
-                </button>
-                <div className="linha nome-produto">
-                  <strong className="nome-produto" title={prod.nome}>
-                    {prod.nome}
-                  </strong>
-                </div>
-                <div className="linha">
-                  <strong>Código:</strong>
-                  <span>{`${String(prod.codigoCigam).substr(0, 2)}.${String(
-                    prod.codigoCigam
-                  ).substr(2, 2)}.${String(prod.codigoCigam).substr(
-                    4,
-                    4
-                  )}`}</span>
-                  <strong>Volume:</strong> <span>{`${prod.volume}Ml`}</span>
-                </div>
-                <div className="linha">
-                  <strong>Pautas</strong>
-                </div>
+          <ScroollProdCad>
+            {getProdutos.map(prod => (
+              <div className="produto" key={prod.codigoCigam}>
+                <>
+                  <button
+                    type="button"
+                    className="btn-red botao-deletar"
+                    onClick={() => {
+                      handleRemoveProduto(prod);
+                    }}
+                  >
+                    <MdClose />
+                  </button>
+                  <div className="linha nome-produto">
+                    <strong className="nome-produto" title={prod.nome}>
+                      {prod.nome}
+                    </strong>
+                  </div>
+                  <div className="linha">
+                    <strong>Código:</strong>
+                    <span>{`${String(prod.codigoCigam).substr(0, 2)}.${String(
+                      prod.codigoCigam
+                    ).substr(2, 2)}.${String(prod.codigoCigam).substr(
+                      4,
+                      4
+                    )}`}</span>
+                    <strong>Volume:</strong> <span>{`${prod.volume}Ml`}</span>
+                  </div>
 
-                <div className="linha pautas">
-                  {prod.pautas.map(p => (
-                    <div key={`${p.uf}_2`} className="pauta">
-                      <div>
-                        <strong>{p.uf}:</strong>
-                        <span>
-                          {p.valor.toLocaleString('pt-BR', {
-                            minimumFractionDigits: 2,
-                          })}
-                        </span>
-                      </div>
+                  {prod.pautas.length > 0 && (
+                    <div className="linha pautas">
+                      {prod.pautas.map(p => (
+                        <div key={`${p.uf}_2`} className="pauta">
+                          <div>
+                            <strong>{p.uf}:</strong>
+                            <span>
+                              {p.valor.toLocaleString('pt-BR', {
+                                minimumFractionDigits: 2,
+                              })}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </>
-            </div>
-          ))}
+                  )}
+                </>
+              </div>
+            ))}
+          </ScroollProdCad>
         </div>
       </div>
       <ul />

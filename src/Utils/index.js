@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable no-plusplus */
 /* eslint-disable spaced-comment */
 import React from 'react';
@@ -216,4 +217,32 @@ export function AlteraDecimal(valor) {
   const numeroString = String(valor).replace(/,/g, '.');
 
   return parseFloat(numeroString);
+}
+
+export function deepEqual(object1, object2) {
+  const keys1 = Object.keys(object1);
+  const keys2 = Object.keys(object2);
+
+  if (keys1.length !== keys2.length) {
+    return false;
+  }
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key of keys1) {
+    const val1 = object1[key];
+    const val2 = object2[key];
+    const areObjects = isObject(val1) && isObject(val2);
+    if (
+      (areObjects && !deepEqual(val1, val2)) ||
+      (!areObjects && val1 !== val2)
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function isObject(object) {
+  return object != null && typeof object === 'object';
 }

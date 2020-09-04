@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   background: #fff;
+  height: 100%;
   padding: 10px;
   div.content {
     display: flex;
@@ -9,7 +10,8 @@ export const Container = styled.div`
     strong {
       margin-right: 5px;
     }
-    input {
+    input,
+    select {
       height: 30px;
       border: 1px solid #ccc;
       border-radius: 4px;

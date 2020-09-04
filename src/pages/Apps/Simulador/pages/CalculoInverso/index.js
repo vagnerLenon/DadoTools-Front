@@ -1,56 +1,100 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import NumberFormat from 'react-number-format';
+import { toast } from 'react-toastify';
 import { Container } from './styles';
-import { Arredonda, FormataPercentual } from '~/Utils';
-import { baseImpostos, baseProdutos, CalculoReverso } from '../../utils';
+import { Arredonda, FormataPercentual, Ufs, AlteraDecimal } from '~/Utils';
+import { CalculoReverso } from '../../utils';
+import api from '~/services/api';
 
 function CalculoInverso() {
+  const [dadosCalculados, SetDadosCalculados] = useState({});
+  const [getProdutos, setProdutos] = useState([]);
+  const [getImpostos, setImpostos] = useState({});
+
   const [valor, setValor] = useState('');
-  const [dadosCalculados, SetDadosCalculados] = useState({
-    ICMSSt_aliquota: 0,
-    FCP_aliquota: 0,
-    ICMS_aliquota: 0,
-    IPI_aliquota: 0,
-    PIS_aliquota: 0,
-    COFINS_aliquota: 0,
-    precoLiquido: 0,
-    precoBase: 0,
-    ICMSSt: 0,
-    FCP: 0,
-    ICMS: 0,
-    IPI: 0,
-    PIS: 0,
-    COFINS: 0,
-    precoFinal: 0,
-  });
+  const [getProduto, setProduto] = useState('0');
+  const [getEstado, setEstado] = useState('XX');
+  const [getTipo, setTipo] = useState('1');
+
+  useEffect(() => {
+    async function carregaParametros() {
+      const { data } = await api.get('configs/parametros');
+      setProdutos(data.produtos.json_obj);
+      setImpostos(data.impostos.json_obj);
+    }
+
+    carregaParametros();
+  }, []);
+
   function calcula() {
-    const produto = baseProdutos.filter(p => {
-      return p.nome === 'Lager Leve 473';
-    })[0];
-    const calculo = CalculoReverso(
-      produto,
-      baseImpostos,
-      'RS',
-      true,
-      valor.replace(',', '.')
-    );
-    SetDadosCalculados(calculo);
+    let sucesso = true;
+
+    // Verificar preenchimentos
+    if (getProduto === '0') {
+      toast.error('Selecione um produto!');
+      sucesso = false;
+    }
+    if (getEstado === 'XX') {
+      toast.error('Selecione um estado para onde deseja vender!');
+      sucesso = false;
+    }
+
+    if (valor === '' || AlteraDecimal(valor) === 0) {
+      toast.error('Insira um valor para calcular!');
+      sucesso = false;
+    }
+
+    if (!sucesso) return;
+
+    const [produto] = getProdutos.filter(p => {
+      return p.codigoCigam === getProduto;
+    });
+
+    try {
+      const calculo = CalculoReverso(
+        produto,
+        getImpostos,
+        getEstado,
+        getTipo === '1',
+        valor.replace(',', '.')
+      );
+      SetDadosCalculados(calculo);
+    } catch (err) {
+      toast.error(err.message);
+    }
   }
   return (
     <Container>
       <div className="content">
         <div className="linha">
           <strong>Produto: </strong>
-          <p>Lager Leve 473</p>
+          <select onChange={e => setProduto(e.target.value)} value={getProduto}>
+            <option value="0">Selecione um produto</option>
+            {getProdutos.map(produto => (
+              <option key={produto.codigoCigam} value={produto.codigoCigam}>
+                {produto.nome}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="linha">
           <strong>Estado: </strong>
-          <p>RS</p>
+          <select onChange={e => setEstado(e.target.value)} value={getEstado}>
+            <option value="XX">Selecione um estado</option>
+            {Ufs.map(uf => (
+              <option key={uf.uf} value={uf.uf}>
+                {uf.nome}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="linha">
           <strong>Tipo cliente: </strong>
-          <p>Atacado</p>
+          <select onChange={e => setTipo(e.target.value)} value={getTipo}>
+            <option value="1">Atacado</option>
+            <option value="0">Varejo</option>
+          </select>
         </div>
         <div className="linha">
           <NumberFormat
@@ -67,66 +111,71 @@ function CalculoInverso() {
           Calcular
         </button>
         <div className="linha">
+          <strong>Pauta</strong>
+          <p>R$ {Arredonda(dadosCalculados.pauta, 2)}</p>
+        </div>
+        <div className="linha">
           <strong>+Liquido:</strong>
-          <p>R$ {Arredonda(dadosCalculados.precoLiquido, 4)}</p>
+          <p>R$ {Arredonda(dadosCalculados.receitaLiquida, 4)}</p>
         </div>
         <div className="linha">
           <strong>+ Valor Icms:</strong>
-          <p>R$ {Arredonda(dadosCalculados.ICMS, 4)}</p>
+          <p>R$ {Arredonda(dadosCalculados.icms, 4)}</p>
         </div>
         <div className="linha">
           <strong>+Valor Pis:</strong>
-          <p>R$ {Arredonda(dadosCalculados.PIS, 4)}</p>
+          <p>R$ {Arredonda(dadosCalculados.pis, 4)}</p>
         </div>
+
         <div className="linha">
           <strong>+Valor Cofins:</strong>
-          <p>R$ {Arredonda(dadosCalculados.COFINS, 4)}</p>
+          <p>R$ {Arredonda(dadosCalculados.cofins, 4)}</p>
         </div>
         <div className="linha">
           <strong>=Valor produto:</strong>
-          <p>R$ {Arredonda(dadosCalculados.precoBase, 4)}</p>
+          <p>R$ {Arredonda(dadosCalculados.precoUnitario, 4)}</p>
         </div>
 
         <div className="linha">
           <strong>+Valor FCP:</strong>
-          <p>R$ {Arredonda(dadosCalculados.FCP, 4)}</p>
+          <p>R$ {Arredonda(dadosCalculados.fcp, 4)}</p>
         </div>
         <div className="linha">
           <strong>+Valor St:</strong>
-          <p>R$ {Arredonda(dadosCalculados.ICMSSt, 4)}</p>
+          <p>R$ {Arredonda(dadosCalculados.st, 4)}</p>
         </div>
         <div className="linha">
           <strong>+Valor Ipi:</strong>
-          <p>R$ {Arredonda(dadosCalculados.IPI, 4)}</p>
+          <p>R$ {Arredonda(dadosCalculados.ipi, 4)}</p>
         </div>
 
         <div className="linha">
           <strong>=Valor Total:</strong>
-          <p>R$ {Arredonda(dadosCalculados.precoFinal, 4)}</p>
+          <p>R$ {Arredonda(dadosCalculados.receitaBruta, 4)}</p>
         </div>
         <div className="linha">
           <strong>Icms ST Aliquota:</strong>
-          <p>{FormataPercentual(dadosCalculados.ICMSSt_aliquota, true, 0)}</p>
+          <p>{FormataPercentual(dadosCalculados.aliquotaST, true, 0)}</p>
         </div>
         <div className="linha">
           <strong>FCP Aliquota:</strong>
-          <p>{FormataPercentual(dadosCalculados.FCP_aliquota, true, 0)}</p>
+          <p>{FormataPercentual(dadosCalculados.aliquotaFCP, true, 0)}</p>
         </div>
         <div className="linha">
           <strong>Icms Aliquota:</strong>
-          <p>{FormataPercentual(dadosCalculados.ICMS_aliquota, true, 0)}</p>
+          <p>{FormataPercentual(dadosCalculados.aliquotaICMS, true, 0)}</p>
         </div>
         <div className="linha">
           <strong>IPI Aliquota:</strong>
-          <p>{FormataPercentual(dadosCalculados.IPI_aliquota, true, 2)}</p>
+          <p>{FormataPercentual(dadosCalculados.aliquotaIPI, true, 2)}</p>
         </div>
         <div className="linha">
           <strong>Pis aliquota:</strong>
-          <p>{FormataPercentual(dadosCalculados.PIS_aliquota, true, 2)}</p>
+          <p>{FormataPercentual(dadosCalculados.aliquotaPIS, true, 2)}</p>
         </div>
         <div className="linha">
           <strong>Cofins aliquota:</strong>
-          <p>{FormataPercentual(dadosCalculados.COFINS_aliquota, true, 2)}</p>
+          <p>{FormataPercentual(dadosCalculados.aliquotaCOFINS, true, 2)}</p>
         </div>
       </div>
     </Container>
