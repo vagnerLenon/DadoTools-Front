@@ -214,7 +214,7 @@ export const Ufs = [
 ];
 
 export function AlteraDecimal(valor) {
-  const numeroString = String(valor).replace(/,/g, '.');
+  const numeroString = String(replaceAll(valor, '.', '')).replace(/,/g, '.');
 
   return parseFloat(numeroString);
 }
@@ -245,4 +245,27 @@ export function deepEqual(object1, object2) {
 
 function isObject(object) {
   return object != null && typeof object === 'object';
+}
+
+export function mediaPonderada(valores) {
+  //Função que recebe uma array de valores e pesos e calcula a média ponerada
+  try {
+    //Suma-se a multiplicação de todos os valores pelo peso
+
+    let subtotal = 0;
+    let pesos = 0;
+
+    valores.forEach(item => {
+      subtotal += item.valor * item.peso;
+      pesos += item.peso;
+    });
+
+    return subtotal / pesos;
+  } catch (err) {
+    return 0;
+  }
+}
+
+export function replaceAll(string, search, replace) {
+  return string.split(search).join(replace);
 }

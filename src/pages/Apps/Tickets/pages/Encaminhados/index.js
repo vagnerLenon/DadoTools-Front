@@ -67,7 +67,7 @@ function Encaminhados() {
   async function funcaoAtualizaTicket(id) {
     // verificar seo ticket ainda consta na inbox, se sim atualizá-lo
 
-    const { data } = await api.get(`tickets/encaminhados/${id}`);
+    const { data } = await api.get(`tickets/encaminhados`);
     if (data.success) {
       const { ticket } = data;
       setTicketSelecionado(ticket);

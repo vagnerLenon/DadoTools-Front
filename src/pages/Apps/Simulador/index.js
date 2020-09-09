@@ -7,11 +7,13 @@ import CalculoInverso from './pages/CalculoInverso';
 import Produtos from './pages/Produtos';
 import Impostos from './pages/Impostos';
 import Custos from './pages/Custos';
+import Despesas from './pages/Despesas';
+import Fretes from './pages/Fretes';
 
 import { Container, Sidebar, SidebarMenu } from './styles';
 
 function Simulador() {
-  const [GetPagina, SetPagina] = useState('simuladorMC');
+  const [GetPagina, SetPagina] = useState('fretes');
 
   function Renderpage() {
     switch (GetPagina) {
@@ -25,6 +27,10 @@ function Simulador() {
         return <Impostos />;
       case 'custos':
         return <Custos />;
+      case 'despesas':
+        return <Despesas />;
+      case 'fretes':
+        return <Fretes />;
       default:
         return <h1>Simulador do Vagão</h1>;
     }
@@ -82,6 +88,24 @@ function Simulador() {
             }}
           >
             Custos
+          </SidebarMenu>
+          <SidebarMenu
+            type="button"
+            active={GetPagina === 'despesas'}
+            onClick={() => {
+              SetPagina('despesas');
+            }}
+          >
+            Despesas
+          </SidebarMenu>
+          <SidebarMenu
+            type="button"
+            active={GetPagina === 'fretes'}
+            onClick={() => {
+              SetPagina('fretes');
+            }}
+          >
+            Fretes
           </SidebarMenu>
         </div>
       </Sidebar>

@@ -91,6 +91,7 @@ Necessidades:
 
 
 
+
 Função cálculo reverso
   Inputs:
     * produto
@@ -327,6 +328,25 @@ function Pauta(produtos, codProduto, estado) {
   return pauta;
 }
 
+const reducer = (accumulator, currentValue) => accumulator + currentValue;
+
+function CalculaCustos(custos, cod) {
+  // Busca os custos do produto
+  const [produto] = custos.filter(c => {
+    return c.cod === cod;
+  });
+
+  try {
+    const valores = produto.valores.map(p => {
+      return p.valor;
+    });
+
+    return valores.reduce(reducer);
+  } catch (err) {
+    return 0;
+  }
+}
+
 export {
   CalculoReverso,
   baseImpostos,
@@ -334,4 +354,6 @@ export {
   Pauta,
   ReceitaBruta,
   CalculoInverso,
+  reducer,
+  CalculaCustos,
 };

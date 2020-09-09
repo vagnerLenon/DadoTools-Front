@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 
+import ScrollBar from 'react-perfect-scrollbar';
+
 export const Container = styled.div`
+  height: 100%;
   table {
     width: 100%;
     thead {
@@ -12,6 +15,19 @@ export const Container = styled.div`
 
     th.produto {
       width: 20%;
+      div.add-item {
+        display: flex;
+        padding: 10px;
+
+        select {
+          border: 1px solid #eee;
+          border-radius: 4px;
+          height: 30px;
+          padding: 5px;
+          width: 100%;
+          margin-right: 10px;
+        }
+      }
     }
     th.uf {
       width: 20%;
@@ -131,4 +147,8 @@ export const Container = styled.div`
       }
     }
   }
+`;
+
+export const Scroll = styled(ScrollBar)`
+  max-height: 100%;
 `;
