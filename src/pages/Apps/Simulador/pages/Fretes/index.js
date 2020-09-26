@@ -1,43 +1,84 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 
-import { MdSearch } from 'react-icons/md';
+import { MdSearch, MdEdit } from 'react-icons/md';
 
 import NumberFormat from 'react-number-format';
+import { toast } from 'react-toastify';
 import { Container, ScroollProd } from './styles';
 import api from '~/services/api';
-
-const obj_frete = [
-  {
-    cod: '60010007',
-    dir: 1.2,
-    dist: 1.1,
-  },
-];
+import { AlteraDecimal } from '~/Utils';
 
 function Fretes() {
   const [getBusca, setBusca] = useState('');
   const [getProdutosBase, setProdutosBase] = useState([]);
-  const [getFretes, setFretes] = useState(obj_frete);
+  const [getSalvando, setSalvando] = useState(false);
 
   useEffect(() => {
     async function AtualizaDados() {
-      const { data } = await api.get('configs/produtosBase');
-      setProdutosBase(
-        data.prodBase.json_obj.produtos.map(pb => {
-          return { ...pb, dir: 0, dis: 0 };
-        })
-      );
+      const { data: fretes } = await api.get('configs/fretes');
 
-      const { data: dadosProdutos } = await api.get('configs/fretes');
-      setFretes(dadosProdutos.fretes.json_obj);
-      // TODO remover
-      setFretes(obj_frete);
+      const { data } = await api.get('configs/produtosBase');
+      const dados = data.prodBase.json_obj.produtos.map(pb => {
+        const [prod] = fretes.fretes.json_obj.filter(of => {
+          return of.cod === pb.codigo;
+        });
+
+        if (prod)
+          return {
+            ...pb,
+            ...{ cod: pb.codigo, dir: prod.dir, dist: prod.dist, open: false },
+          };
+
+        return {
+          ...pb,
+          ...{ cod: pb.codigo, dir: 0, dist: 0, open: false },
+        };
+      });
+
+      setProdutosBase(dados);
     }
     AtualizaDados();
   }, []);
 
-  function salvarAlteracoes() {}
+  async function salvarAlteracoes() {
+    if (getSalvando) return;
+
+    setSalvando(true);
+    // Iterar entre os dados de getprodutosBase e pegar só o que tem valor
+    const dadosComValor = getProdutosBase.filter(pb => {
+      return pb.dir !== 0 || pb.dist !== 0;
+    });
+
+    if (dadosComValor.length > 0) {
+      const dados = dadosComValor.map(d => {
+        return { cod: d.codigo, dir: d.dir, dist: d.dist };
+      });
+
+      await api.post('configs', {
+        nome_config: 'fretes',
+        json: JSON.stringify(dados),
+      });
+
+      toast.success('Fretes salvos com sucesso!');
+      setSalvando(false);
+    }
+  }
+
+  function onChangeFreteDir(e, index) {
+    const valor = AlteraDecimal(e.target.value);
+
+    const novoProd = [...getProdutosBase];
+    novoProd[index].dir = valor;
+    setProdutosBase(novoProd);
+  }
+  function onChangeFreteDist(e, index) {
+    const valor = AlteraDecimal(e.target.value);
+
+    const novoProd = [...getProdutosBase];
+    novoProd[index].dist = valor;
+    setProdutosBase(novoProd);
+  }
 
   return (
     <Container>
@@ -56,7 +97,7 @@ function Fretes() {
           <button
             type="button"
             className="button btn-green"
-            onClick={salvarAlteracoes}
+            onClick={() => salvarAlteracoes()}
           >
             Salvar alterações
           </button>
@@ -69,7 +110,7 @@ function Fretes() {
                 new RegExp(getBusca, 'i').test(produto.codigo) ||
                 new RegExp(getBusca, 'i').test(produto.nomeSubGrupo)
             )
-            .map(produto => (
+            .map((produto, proIndex) => (
               <div className="produto" key={produto.codigo}>
                 <div className="linha espaco produto-header">
                   <div className="linha espaco">
@@ -77,6 +118,9 @@ function Fretes() {
                     <p>{`${String(produto.codigo).substr(0, 2)}.${String(
                       produto.codigo
                     ).substr(2, 2)}.${String(produto.codigo).substr(4, 4)}`}</p>
+                    <button className="button-edit" type="button">
+                      <MdEdit />
+                    </button>
                   </div>
                 </div>
                 <div className="linha espaco">
@@ -89,16 +133,20 @@ function Fretes() {
                     <NumberFormat
                       className="frete-direto"
                       placeholder="Valor"
-                      value={0}
-                      onChange={e => {}}
+                      value={produto.dir}
+                      onChange={e => {
+                        onChangeFreteDir(e, proIndex);
+                      }}
                       decimalSeparator=","
                       decimalScale={2}
                     />
                     <strong>Distribuição:</strong>
                     <NumberFormat
                       placeholder="Valor"
-                      value={0}
-                      onChange={e => {}}
+                      value={produto.dist}
+                      onChange={e => {
+                        onChangeFreteDist(e, proIndex);
+                      }}
                       decimalSeparator=","
                       decimalScale={2}
                     />

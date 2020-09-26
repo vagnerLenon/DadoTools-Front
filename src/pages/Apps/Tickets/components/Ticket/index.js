@@ -9,7 +9,9 @@ import 'react-rater/lib/react-rater.css';
 import { useSelector } from 'react-redux';
 
 import { format, parseISO, formatDistance } from 'date-fns';
-import { MdCloudUpload, MdClose, MdError } from 'react-icons/md';
+import { MdCloudUpload, MdClose, MdError, MdEdit } from 'react-icons/md';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 import fileSize from 'filesize';
 
@@ -28,7 +30,12 @@ import { Container, Scroll, ContainerEncerramento } from './styles';
 import AvatarComponent from '~/components/AvatarComponent';
 import Discussao from '../Discussao';
 
-import { extensoesValidas, ExtensaoValidaUpload, IsEmail } from '~/Utils';
+import {
+  extensoesValidas,
+  ExtensaoValidaUpload,
+  IsEmail,
+  AddWorkingDays,
+} from '~/Utils';
 
 function Ticket({ ticket, atualizaTicket, configs, destinatariosDisp }, ref) {
   const profile = useSelector(state => state.user.profile);
@@ -60,15 +67,20 @@ function Ticket({ ticket, atualizaTicket, configs, destinatariosDisp }, ref) {
 
   const [getEmailEncaminhar, setEmailEncaminhar] = useState('');
   const [getEncaminhando, setEncaminhando] = useState(false);
+  const [getAlterandoPrazo, setAlterandoPrazo] = useState(false);
+  const [getPrazo, setPrazo] = useState('');
+  const [getCarregandoCategorias, setCarregandoCategorias] = useState(false);
+  const [getCategorias, setCategorias] = useState([]);
+  const [getAlterandoPrazoAction, setAlterandoPrazoAction] = useState(false);
 
   useImperativeHandle(ref, () => ({
     CleanUp() {
       setAvaliacaoAvulsa(0);
       setCloseDialogVisible(false);
       setEncaminhando(false);
+      setAlterandoPrazo(false);
       setEmailEncaminhar('');
 
-      setEncaminhando(false);
       setTextoEncerramento('');
       // Limpa o texto do update
       setTextoUpdate('');
@@ -386,6 +398,82 @@ function Ticket({ ticket, atualizaTicket, configs, destinatariosDisp }, ref) {
     }
   }
 
+  function formataData(data) {
+    const dataAlt = new Date(
+      data.getFullYear(),
+      data.getMonth(),
+      data.getDate(),
+      23,
+      59,
+      59,
+      0
+    );
+    return dataAlt;
+  }
+
+  function DefineDataInicial() {
+    // Verificar se existe o estado das categorias
+    if (getCategorias.length > 0) {
+      // Verificar se a categoria do ticket está no estrado de categorias
+      const [cat] = getCategorias.filter(categoria => {
+        return categoria.nome === ticket.categoria;
+      });
+
+      if (cat.subcategorias !== undefined) {
+        const [sub] = cat.subcategorias.filter(subcat => {
+          return subcat.nome === ticket.subcategoria;
+        });
+
+        // Existe subcategoria e o sistema achou
+        if (sub !== undefined) {
+          const data = AddWorkingDays(new Date(), sub.dias_prazo);
+          return formataData(data);
+        }
+
+        let dias = 1;
+        cat.subcategorias.forEach(subcat => {
+          if (subcat.dias_prazo > dias) {
+            dias = subcat.dias_prazo;
+          }
+        });
+        const data = AddWorkingDays(new Date(), dias);
+        return formataData(data);
+      }
+    }
+    return formataData(AddWorkingDays(new Date(), 1));
+  }
+
+  async function CarregaCategorias() {
+    if (getCategorias.length === 0) {
+      setCarregandoCategorias(true);
+      const result = await api.get('/categorias');
+      setCategorias(result.data);
+      setCarregandoCategorias(false);
+    }
+  }
+
+  async function SalvaPrazo() {
+    if (getAlterandoPrazoAction) return;
+
+    setAlterandoPrazoAction(true);
+    // Verificar se foi inserido um prazo, caso contrário remove o prazo do ticket
+    const data = { id_ticket: ticket.id };
+
+    if (getPrazo !== '') {
+      data.prazo = getPrazo;
+    }
+    const retorno = await api.put('/tickets/prazo', data);
+    if (retorno.data.success) {
+      toast.success('Prazo alterado com sucesso');
+      atualizaTicket(ticket.id);
+    } else {
+      toast.error('Erro ao alterar prazo.');
+    }
+    setAlterandoPrazo(false);
+    setPrazo('');
+    setAlterandoPrazoAction(false);
+  }
+
   return (
     <Container>
       {ticket.id !== undefined && (
@@ -449,18 +537,72 @@ function Ticket({ ticket, atualizaTicket, configs, destinatariosDisp }, ref) {
                       </div>
                     </div>
                     <div className="coluna">
-                      <strong>PRAZO</strong>
+                      <div className="linha">
+                        <strong>PRAZO</strong>
+                        {configs.open &&
+                          profile.id === ticket.id_usuario &&
+                          !getAlterandoPrazo && (
+                            <button
+                              type="button"
+                              className="button-edit"
+                              onClick={() => {
+                                setAlterandoPrazo(true);
+                                CarregaCategorias();
+                              }}
+                            >
+                              <MdEdit />
+                            </button>
+                          )}
+                      </div>
                       <div className="linha-content">
-                        <p>
-                          {ticket.prazo &&
-                            format(
-                              parseISO(ticket.prazo),
-                              "EEE'.' dd 'de' LLL 'de' yyy",
-                              {
-                                locale: pt,
-                              }
-                            )}
-                        </p>
+                        {getAlterandoPrazo && !getCarregandoCategorias ? (
+                          <div className="linha">
+                            <DatePicker
+                              placeholderText="Sem prazo"
+                              onFocus={e => {
+                                if (e.target.value === '') {
+                                  DefineDataInicial();
+                                }
+                              }}
+                              onChange={date => setPrazo(date)}
+                              locale="pt-BR"
+                              selected={getPrazo}
+                              minDate={DefineDataInicial()}
+                              timeFormat="p"
+                              dateFormat="dd/MM/yyyy"
+                              peekNextMonth
+                              className="prazo"
+                            />
+                            <button
+                              type="button"
+                              className="button btn-white"
+                              onClick={() => {
+                                setPrazo('');
+                                setAlterandoPrazo(false);
+                              }}
+                            >
+                              Cancelar
+                            </button>
+                            <button
+                              type="button"
+                              className="button btn-green"
+                              onClick={SalvaPrazo}
+                            >
+                              Salvar
+                            </button>
+                          </div>
+                        ) : (
+                          <p>
+                            {ticket.prazo &&
+                              format(
+                                parseISO(ticket.prazo),
+                                "EEE'.' dd 'de' LLL 'de' yyy",
+                                {
+                                  locale: pt,
+                                }
+                              )}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="coluna">
@@ -478,8 +620,9 @@ function Ticket({ ticket, atualizaTicket, configs, destinatariosDisp }, ref) {
                       <div className="linha-content">
                         <p>
                           {`${ticket.categoria}${
-                            ticket.subcategoria !== '' &&
-                            ` | ${ticket.subcategoria}`
+                            ticket.subcategoria !== ''
+                              ? ` | ${ticket.subcategoria}`
+                              : ''
                           }`}
                         </p>
                       </div>

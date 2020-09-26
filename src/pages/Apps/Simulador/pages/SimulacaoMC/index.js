@@ -89,7 +89,13 @@ function SimulacaoMC() {
 
     const quant = volume / (produto.volume / 1000);
 
-    const preco_alt = AlteraDecimal(preco);
+    let preco_alt = 0;
+    try {
+      preco_alt = AlteraDecimal(preco);
+      // eslint-disable-next-line no-empty
+    } catch (err) {}
+
+    console.tron.log(preco_alt);
 
     const rlAtacado = CalculoReverso(produto, getImpostos, uf, true, preco_alt);
     const rlVarejo = CalculoReverso(produto, getImpostos, uf, false, preco_alt);
