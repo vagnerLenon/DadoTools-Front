@@ -15,7 +15,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     async function loadApps() {
-      const response = await api.get('users/apps');
+      const response = await api.get('apps');
       SetApps(response.data);
       SetLoading(false);
     }
@@ -47,7 +47,7 @@ export default function Dashboard() {
     }
   }
 
-  api.get('sessions');
+  // api.get('sessions');
   return (
     <Container>
       <AppList>
