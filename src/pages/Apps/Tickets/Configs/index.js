@@ -5,7 +5,6 @@
 import React, { useState, useEffect } from 'react';
 import Agrupamentos from './Fragments/Agrupamentos';
 import Categorizacao from './Fragments/Categorizacao';
-import Users from './Fragments/Users';
 
 import { Container } from './styles';
 import './styles.css';
@@ -16,7 +15,6 @@ export default function Configs() {
   // const profile = useSelector(state => state.user.profile);
 
   const [categVisible, setCategVisible] = useState(false);
-  const [userVisible, setUserVisible] = useState(true);
   const [grupoVisible, setGrupoVisible] = useState(false);
 
   useEffect(() => {
@@ -38,17 +36,13 @@ export default function Configs() {
     if (categVisible) {
       return <Categorizacao />;
     }
-    if (grupoVisible) {
-      return <Agrupamentos />;
-    }
 
-    return <Users />;
+    return <Agrupamentos />;
   }
 
   function AtivaMenu(nome) {
     setCategVisible(false);
     setGrupoVisible(false);
-    setUserVisible(false);
 
     switch (nome) {
       case 'categ':
@@ -56,9 +50,6 @@ export default function Configs() {
         break;
       case 'agrup':
         setGrupoVisible(true);
-        break;
-      case 'user':
-        setUserVisible(true);
         break;
       default:
         break;
@@ -73,12 +64,6 @@ export default function Configs() {
           onClick={() => AtivaMenu('categ')}
         >
           Categorização
-        </li>
-        <li
-          className={userVisible ? 'selected' : ''}
-          onClick={() => AtivaMenu('user')}
-        >
-          Usuários
         </li>
         <li
           className={grupoVisible ? 'selected' : ''}

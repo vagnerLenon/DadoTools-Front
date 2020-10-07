@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { MdSearch } from 'react-icons/md';
+import { toast } from 'react-toastify';
+import propTypes from 'prop-types';
 import api from '~/services/api';
 
 import { Container, Sidebar, Scroll, MainBar } from '../../Styles/styles';
@@ -9,12 +11,14 @@ import { Container, Sidebar, Scroll, MainBar } from '../../Styles/styles';
 import TicketMini from '../../components/TicketMini';
 import Ticket from '../../components/Ticket';
 
-function Encaminhados() {
+function Encaminhados({ idTicket }) {
   const [loadingSidebar, setLoadingSidebar] = useState(true);
   const [tickets, setTickets] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [ticketSelecionado, setTicketSelecionado] = useState(null);
   const [busca, setBusca] = useState('');
+  // eslint-disable-next-line no-unused-vars
+  const [destinatariosDisp, setDestinatariosDisp] = useState([]);
 
   // Ref para o Ticket
   const childRef = useRef();
@@ -42,7 +46,35 @@ function Encaminhados() {
     const response = await api.get('tickets/encaminhados');
     setTickets(response.data.tickets);
     setLoadingSidebar(false);
-    selecionaPrimeiro(response.data);
+
+    // Verificar se o id do Ticket existe na lista de tickets da tela.
+    const ticketDoId = response.data.tickets.filter(t => {
+      return t.id === idTicket;
+    });
+
+    if (ticketDoId.length > 0) {
+      setTicketSelecionado(ticketDoId[0]);
+      api.post('tickets/notifications', {
+        id_ticket: ticketDoId[0].id,
+      });
+      const not = response.data.notifications;
+
+      setNotifications(
+        not.filter(n => {
+          return n.ticket !== ticketDoId[0].id;
+        })
+      );
+    } else {
+      // Se não, exibir uma mensagem de erro e carregar o primeiro tícket da lista
+      selecionaPrimeiro(response.data);
+      if (idTicket > 0) {
+        toast.warn(
+          `O ticket de id ${idTicket} não foi encontrado nos enviados. Verifique se ele não está concluído.`
+        );
+      }
+    }
+    const usuarios = await api.get('/tickets/usuarios');
+    setDestinatariosDisp(usuarios.data);
   }
 
   useEffect(() => {
@@ -198,5 +230,12 @@ function Encaminhados() {
     </Container>
   );
 }
+
+Encaminhados.propTypes = {
+  idTicket: propTypes.number,
+};
+Encaminhados.defaultProps = {
+  idTicket: 0,
+};
 
 export default Encaminhados;

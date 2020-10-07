@@ -5,13 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import NumberFormat from 'react-number-format';
 
-import {
-  MdSearch,
-  MdClose,
-  MdChevronRight,
-  MdExpandMore,
-  MdEdit,
-} from 'react-icons/md';
+import { MdClose, MdChevronRight, MdExpandMore, MdEdit } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import { Container, ScroollProd } from './styles';
 import api from '~/services/api';
@@ -24,7 +18,6 @@ function Custos() {
   const [getProdutosBase, setProdutosBase] = useState([]);
 
   const [getCustos, setCustos] = useState([]);
-  const [getBusca, setBusca] = useState('');
 
   const [getNomeCusto, setNomeCusto] = useState('');
   const [getValorCusto, setValorCusto] = useState('');
@@ -208,16 +201,7 @@ function Custos() {
     <Container>
       <div className="produtos-disponiveis">
         <div className="linha-topo">
-          <div className="busca">
-            <MdSearch width={20} />
-            <input
-              placeholder="Busca nome, código (sem ponto) ou subgrupo "
-              value={getBusca}
-              onChange={e => {
-                setBusca(e.target.value);
-              }}
-            />
-          </div>
+          <div className="busca" />
           <button
             type="button"
             className="button btn-green"
@@ -227,82 +211,75 @@ function Custos() {
           </button>
         </div>
         <ScroollProd>
-          {getProdutosBase
-            .filter(
-              produto =>
-                new RegExp(getBusca, 'i').test(produto.nome) ||
-                new RegExp(getBusca, 'i').test(produto.codigo) ||
-                new RegExp(getBusca, 'i').test(produto.nomeSubGrupo)
-            )
-            .map(produto => (
-              <div className="produto" key={produto.codigo}>
-                <div className="linha espaco produto-header">
-                  <div className="linha">
-                    <button
-                      className="open-close"
-                      type="button"
-                      onClick={() => {
-                        alternaAbero(produto.codigo);
-                      }}
-                    >
-                      {produto.open ? <MdExpandMore /> : <MdChevronRight />}
-                      <strong>{produto.nome}</strong>
-                    </button>
-                  </div>
+          {getProdutosBase.map(produto => (
+            <div className="produto" key={produto.codigo}>
+              <div className="linha espaco produto-header">
+                <div className="linha">
                   <button
-                    className="editar"
+                    className="open-close"
                     type="button"
                     onClick={() => {
-                      editaItem(produto.codigo);
+                      alternaAbero(produto.codigo);
                     }}
                   >
-                    <MdEdit />
+                    {produto.open ? <MdExpandMore /> : <MdChevronRight />}
+                    <strong>{produto.nome}</strong>
                   </button>
                 </div>
-                <div className="linha espaco">
-                  <div className="linha">
-                    <strong>Código:</strong>
-                    <p>{`${String(produto.codigo).substr(0, 2)}.${String(
-                      produto.codigo
-                    ).substr(2, 2)}.${String(produto.codigo).substr(4, 4)}`}</p>
-                  </div>
-                  <div className="linha">
-                    <strong>Subgrupo</strong>
-                    <p>{produto.nomeSubGrupo}</p>
-                  </div>
-                  <div className="linha">
-                    <strong>Total custo (SKU):</strong>
-                    <p>
-                      {somaCustos(produto.codigo).toLocaleString('pt-BR', {
-                        minimumFractionDigits: 2,
-                      })}
-                    </p>
-                  </div>
-                </div>
-                {produto.open && (
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Nome</th>
-                        <th>Custo (R$)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {retornaCustos(produto.codigo).map(custo => (
-                        <tr key={`${produto.codigo}_${custo.nome}`}>
-                          <td>{custo.nome}:</td>
-                          <td>
-                            {custo.valor.toLocaleString('pt-BR', {
-                              minimumFractionDigits: 2,
-                            })}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
+                <button
+                  className="editar"
+                  type="button"
+                  onClick={() => {
+                    editaItem(produto.codigo);
+                  }}
+                >
+                  <MdEdit />
+                </button>
               </div>
-            ))}
+              <div className="linha espaco">
+                <div className="linha">
+                  <strong>Código:</strong>
+                  <p>{`${String(produto.codigo).substr(0, 2)}.${String(
+                    produto.codigo
+                  ).substr(2, 2)}.${String(produto.codigo).substr(4, 4)}`}</p>
+                </div>
+                <div className="linha">
+                  <strong>Subgrupo</strong>
+                  <p>{produto.nomeSubGrupo}</p>
+                </div>
+                <div className="linha">
+                  <strong>Total custo (SKU):</strong>
+                  <p>
+                    {somaCustos(produto.codigo).toLocaleString('pt-BR', {
+                      minimumFractionDigits: 2,
+                    })}
+                  </p>
+                </div>
+              </div>
+              {produto.open && (
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Nome</th>
+                      <th>Custo (R$)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {retornaCustos(produto.codigo).map(custo => (
+                      <tr key={`${produto.codigo}_${custo.nome}`}>
+                        <td>{custo.nome}:</td>
+                        <td>
+                          {custo.valor.toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2,
+                          })}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          ))}
         </ScroollProd>
       </div>
       <div className="editar-produto">

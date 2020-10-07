@@ -156,7 +156,7 @@ export default function Tickets(props) {
       return <Gestao />;
     }
     if (encaminhados) {
-      return <Encaminhados />;
+      return <Encaminhados idTicket={Number(id)} />;
     }
     if (inbox) {
       return <Inbox idTicket={Number(id)} />;

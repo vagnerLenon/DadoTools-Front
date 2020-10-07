@@ -14,6 +14,7 @@ export const Container = styled.div`
     @media only screen and (max-width: 1400px) {
       width: 50%;
     }
+
     div.linha-topo {
       display: flex;
       flex-direction: row;
@@ -29,7 +30,6 @@ export const Container = styled.div`
     div.busca {
       display: flex;
       flex-direction: row;
-      background: #eee;
       height: 30px;
       width: 100%;
       border-radius: 4px;
@@ -110,6 +110,7 @@ export const Container = styled.div`
       }
     }
   }
+
   div.edit {
     margin-top: 10px;
   }
@@ -149,7 +150,6 @@ export const Container = styled.div`
       }
     }
   }
-
 
   div.editar-produto {
     width: 50%;

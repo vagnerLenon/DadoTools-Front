@@ -283,6 +283,26 @@ export const Container = styled.div`
       padding: 5px;
     }
   }
+
+  button.button-edit {
+    width: 20px;
+    height: 20px;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    svg {
+      display: block;
+      margin: auto;
+    }
+  }
+
+  input.prazo {
+    border: 1px solid #eee;
+    height: 30px;
+    padding: 5px;
+    border-radius: 4px;
+    width: 100px;
+  }
 `;
 
 export const ContainerEncerramento = styled.div`

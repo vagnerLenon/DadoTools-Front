@@ -11,58 +11,48 @@ export const Container = styled.div`
         height: 60px;
         border-bottom: 2px solid #00000020;
       }
-    }
+      th.produto {
+        width: 25%;
+        div.add-item {
+          display: flex;
+          padding: 10px;
 
-    th.produto {
-      width: 20%;
-      div.add-item {
-        display: flex;
-        padding: 10px;
-
-        select {
-          border: 1px solid #eee;
-          border-radius: 4px;
-          height: 30px;
-          padding: 5px;
-          width: 100%;
-          margin-right: 10px;
+          select {
+            border: 1px solid #eee;
+            border-radius: 4px;
+            height: 30px;
+            padding: 5px;
+            width: 100%;
+            margin-right: 10px;
+          }
         }
       }
+      th.uf {
+        width: 20%;
+      }
+      th.total {
+        width: 20%;
+      }
     }
-    th.uf {
-      width: 20%;
-    }
-    th.total {
-      width: 20%;
-    }
-
     th.uf,
     td.uf {
       background: #cccccc40;
       border-left: 1px solid #bbb;
+      vertical-align: top;
     }
 
     th.total,
     td.total {
       border-left: 1px solid #bbb;
     }
-
-    div.produto {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      flex-direction: column;
-
-      strong {
-        margin-right: 10px;
-        font-size: 13px;
-      }
-      p {
-        font-size: 13px;
+    tbody {
+      tr {
+        td.produto {
+          vertical-align: top;
+        }
       }
     }
+
     div.produto-uf {
       width: 100%;
       height: 100%;
@@ -151,4 +141,38 @@ export const Container = styled.div`
 
 export const Scroll = styled(ScrollBar)`
   max-height: 100%;
+`;
+
+export const LineTitle = styled.div`
+  button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: transparent;
+    border: 0;
+    svg {
+      margin-right: 5px;
+    }
+    h3 {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    margin-bottom: 10px;
+  }
+
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+
+  strong {
+    margin-right: 10px;
+    font-size: 13px;
+  }
+  p {
+    font-size: 13px;
+  }
 `;

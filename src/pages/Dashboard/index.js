@@ -47,7 +47,7 @@ export default function Dashboard() {
     }
   }
 
-  api.get('sessions');
+  // api.get('sessions');
   return (
     <Container>
       <AppList>
