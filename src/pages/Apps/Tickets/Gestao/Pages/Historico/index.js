@@ -105,6 +105,7 @@ function Inbox(props) {
         setTicketSelecionado({});
       }
       setLoadingSidebar(false);
+      // oi
     }
   }
 
