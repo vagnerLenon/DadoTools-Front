@@ -40,7 +40,7 @@ export default function Tickets(props) {
   const [permissaoTicket, setPermissaoTicket] = useState(0);
 
   const params = new URLSearchParams(search);
-  const tela = params.get('tela') || 'enviados'; // bar
+  const tela = params.get('tela') || 'inbox'; // bar
   const id = params.get('id') || 0; // bar
 
   useEffect(() => {
@@ -156,7 +156,7 @@ export default function Tickets(props) {
       return <Gestao />;
     }
     if (encaminhados) {
-      return <Encaminhados />;
+      return <Encaminhados idTicket={Number(id)} />;
     }
     if (inbox) {
       return <Inbox idTicket={Number(id)} />;

@@ -6,6 +6,7 @@ export const Container = styled.div`
   background: #fff;
   height: 100%;
   display: flex;
+  width:100%;
   flex: 1;
   padding: 10px;
   div.produtos-disponiveis {
@@ -29,7 +30,7 @@ export const Container = styled.div`
     div.busca {
       display: flex;
       flex-direction: row;
-      background: #eee;
+
       height: 30px;
       width: 100%;
       border-radius: 4px;
@@ -95,6 +96,9 @@ export const Container = styled.div`
       margin-bottom: 5px;
       align-items: center;
       button.open-close {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
         display: flex;
         align-items: center;
         padding: 0;
@@ -102,11 +106,11 @@ export const Container = styled.div`
         height: 30px;
         margin-right: 5px;
         border: 0;
-        background: #eee;
+        background: transparent;
 
         svg {
           display: block;
-          margin: auto;
+          margin-right: 5px;
         }
       }
       button.editar {
@@ -175,36 +179,65 @@ export const Container = styled.div`
     border: 1px solid #eee;
     padding: 10px;
     border-radius: 8px;
-    max-width: 450px;
+    width:100%;
     line-height: 25px;
     strong + span {
       margin-left: 10px;
     }
 
-    input {
-      height: 30px;
-      border: 1px solid #eee;
-      border-radius: 4px;
-      padding: 5px;
+    table {
+      thead{
+        th.estado{
+          width: 40%;
+        }
+        th.direto{
+          width: 30%;
+        }
+        th.distrib{
+          width: 30%;
+        }
+        th.add{
+          width: 30px;
+        }
+        th.uf-frete{
+          width: 20%;
+        }
+        th.valor-custo{
+          width: 40%;
+        }
+        th.remove-custo{
+          width: 30px;
+        }
+      }
+      tbody{
+        tr{
+          td{
+            input, select  {
+              height: 30px;
+              border: 1px solid #eee;
+              border-radius: 4px;
+              padding: 5px;
+              width: 100%;
+            }
+            button.btn-add-custo {
+              width: 100%;
+              margin-left: 10px;
+            }
+
+            button.btn-salvar {
+              margin-left: auto;
+              margin-top: 10px;
+            }
+          }
+        }
+      }
     }
 
-    input.nome-custo {
-      width: 60%;
-    }
 
-    input.valor-custo {
-      width: 30%;
-      margin-left: 10px;
-    }
-    button.btn-add-custo {
-      width: 10%;
-      margin-left: 10px;
-    }
 
-    button.btn-salvar {
-      margin-left: auto;
-      margin-top: 10px;
-    }
+
+
+
 `;
 
 export const ScroollProd = styled(Scrollbar)`

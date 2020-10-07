@@ -13,7 +13,7 @@ import Fretes from './pages/Fretes';
 import { Container, Sidebar, SidebarMenu } from './styles';
 
 function Simulador() {
-  const [GetPagina, SetPagina] = useState('fretes');
+  const [GetPagina, SetPagina] = useState('simuladorMC');
 
   function Renderpage() {
     switch (GetPagina) {

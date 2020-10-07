@@ -1,76 +1,62 @@
+/* eslint-disable react/destructuring-assignment */
 /* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/prop-types */
+
 import React, { useState, useEffect, useRef } from 'react';
-import { MdSearch } from 'react-icons/md';
-import { toast } from 'react-toastify';
+import { MdArrowBack, MdSearch } from 'react-icons/md';
 import propTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import api from '~/services/api';
 
-import { Container, Sidebar, Scroll, MainBar } from '../../Styles/styles';
+import { Container, Sidebar, Scroll, MainBar } from '../Styles/styles';
 
-import TicketMini from '../../components/TicketMini';
-import Ticket from '../../components/Ticket';
+import TicketMini from '../../../components/TicketMini';
+import Ticket from '../../../components/Ticket';
 
-function Enviados({ idTicket }) {
+function Inbox(props) {
+  const idUsuario =
+    props.match.params.id === undefined ? 0 : props.match.params.id;
   const [loadingSidebar, setLoadingSidebar] = useState(true);
   const [tickets, setTickets] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [ticketSelecionado, setTicketSelecionado] = useState(null);
   const [busca, setBusca] = useState('');
   const [destinatariosDisp, setDestinatariosDisp] = useState([]);
+  const [getNomeUsuario, setNomeUsuario] = useState('');
 
   // Ref para o Ticket
-  const childRefEnviados = useRef();
+  const childRef = useRef();
 
   function selecionaPrimeiro(data) {
     const tic = data.tickets;
-    const not = data.notifications;
 
     if (tic.length > 0) {
       setTicketSelecionado(tic[0]);
-      api.post('tickets/notifications', {
-        id_ticket: tic[0].id,
-      });
-      setNotifications(
-        not.filter(n => {
-          return n.ticket !== tic[0].id;
-        })
-      );
-    } else {
-      setNotifications(not);
     }
   }
 
   async function CarregaTickets() {
-    const response = await api.get('tickets/enviados');
-    setTickets(response.data.tickets);
+    const { data: ticketData } = await api.get(
+      `tickets/gestao/inbox/${idUsuario}`
+    );
+    setTickets(ticketData.tickets);
     setLoadingSidebar(false);
 
-    // Verificar se o id do Ticket existe na lista de tickets da tela.
-    const ticketDoId = response.data.tickets.filter(t => {
-      return t.id === idTicket;
-    });
+    try {
+      setNomeUsuario(ticketData.usuario.nome);
+    } catch (err) {
+      setNomeUsuario(' ');
+    }
 
+    // Verificar se o id do Ticket existe na lista de tickets da tela.
+    const ticketDoId = ticketData.tickets;
     if (ticketDoId.length > 0) {
       setTicketSelecionado(ticketDoId[0]);
-      api.post('tickets/notifications', {
-        id_ticket: ticketDoId[0].id,
-      });
-      const not = response.data.notifications;
-
-      setNotifications(
-        not.filter(n => {
-          return n.ticket !== ticketDoId[0].id;
-        })
-      );
     } else {
       // Se não, exibir uma mensagem de erro e carregar o primeiro tícket da lista
-      selecionaPrimeiro(response.data);
-      if (idTicket > 0) {
-        toast.warn(
-          `O ticket de id ${idTicket} não foi encontrado nos enviados. Verifique se ele não está concluído.`
-        );
-      }
+      selecionaPrimeiro(ticketData);
     }
+
     const usuarios = await api.get('/tickets/usuarios');
     setDestinatariosDisp(usuarios.data);
   }
@@ -89,7 +75,7 @@ function Enviados({ idTicket }) {
   }
 
   function selecionaTicket(ticket) {
-    childRefEnviados.current.CleanUp();
+    childRef.current.CleanUp();
     removeNotificacao(ticket.id);
     setTicketSelecionado(ticket);
   }
@@ -97,7 +83,7 @@ function Enviados({ idTicket }) {
   async function funcaoAtualizaTicket(id) {
     // verificar seo ticket ainda consta na inbox, se sim atualizá-lo
 
-    const { data } = await api.get(`tickets/enviados/${id}`);
+    const { data } = await api.get(`tickets/gestao/inbox/${id}`);
     if (data.success) {
       const { ticket } = data;
       setTicketSelecionado(ticket);
@@ -126,8 +112,11 @@ function Enviados({ idTicket }) {
     <Container>
       <Sidebar>
         <div className="ticket-title">
-          <h2>Enviados</h2>
-          <span>(Tíckets enviados por você e que ainda estão abertos)</span>
+          <Link to="/tickets?tela=gestao">
+            <MdArrowBack /> <strong>Voltar</strong>
+          </Link>
+
+          <h2>Inbox de {getNomeUsuario}</h2>
         </div>
         <div className="busca">
           <MdSearch />
@@ -207,12 +196,12 @@ function Enviados({ idTicket }) {
             ticket={ticketSelecionado}
             atualizaTicket={funcaoAtualizaTicket}
             configs={{
-              open: true,
-              podeEncerrar: true,
-              podeAvaliar: true,
+              open: false,
+              podeEncerrar: false,
+              podeAvaliar: false,
             }}
             destinatariosDisp={destinatariosDisp}
-            ref={childRefEnviados}
+            ref={childRef}
           />
         )}
       </MainBar>
@@ -220,11 +209,18 @@ function Enviados({ idTicket }) {
   );
 }
 
-Enviados.propTypes = {
-  idTicket: propTypes.number,
-};
-Enviados.defaultProps = {
-  idTicket: 0,
+Inbox.propTypes = {
+  props: propTypes.shape({
+    location: propTypes.shape({
+      search: propTypes.string,
+    }),
+  }),
 };
 
-export default Enviados;
+Inbox.defaultProps = {
+  props: {
+    location: { search: '' },
+  },
+};
+
+export default Inbox;

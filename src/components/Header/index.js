@@ -19,7 +19,7 @@ export default function Header() {
 
   useEffect(() => {
     async function CarregaApps() {
-      const retorno = await api.get('apps');
+      const retorno = await api.get('users/apps');
       setApps(retorno.data);
     }
 

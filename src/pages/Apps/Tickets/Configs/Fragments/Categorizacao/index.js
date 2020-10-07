@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -9,13 +10,14 @@ import InputMask from 'react-input-mask';
 import { toast } from 'react-toastify';
 
 import './styles.css';
-import { MdAdd } from 'react-icons/md';
+import { MdAdd, MdClose } from 'react-icons/md';
+import { ComboBoxComponent } from '@syncfusion/ej2-react-dropdowns';
 import api from '~/services/api';
 
 const estiloModalCategoria = {
   content: {
     width: '500px',
-    height: '360px',
+    height: '90%',
     marginRight: 'auto',
     marginLeft: 'auto',
   },
@@ -46,11 +48,19 @@ function Categorizacao() {
   const [idCategoriaEdicao, setIdCategoriaEdicao] = useState(0);
   const [idSubCategoriaEdicao, setIdSubCategoriaEdicao] = useState(0);
 
+  const [getDestinatariosDisp, setDestinatariosDisp] = useState([]);
+  const [getDestinatario, setDestinatario] = useState('');
+  const [getDestinatarioSelecionados, setDestinatarioSelecionados] = useState(
+    []
+  );
+
   useEffect(() => {
     async function CarregarCategorias() {
       const response = await api.get('/categorias');
       const cat = response.data;
       setCategorias(cat);
+      const usuarios = await api.get('/tickets/usuarios');
+      setDestinatariosDisp(usuarios.data);
     }
 
     CarregarCategorias();
@@ -69,6 +79,7 @@ function Categorizacao() {
         nome: nomeCategoria,
         descricao: descCategoria,
         ativo: categoriaAtiva,
+        encaminhamentos: getDestinatarioSelecionados,
       });
 
       setCategorias(response.data);
@@ -78,6 +89,7 @@ function Categorizacao() {
         nome: nomeCategoria,
         descricao: descCategoria,
         ativo: categoriaAtiva,
+        encaminhamentos: getDestinatarioSelecionados,
       });
       setCategorias(responseEdit.data);
     }
@@ -170,6 +182,40 @@ function Categorizacao() {
     setConfirmaDelete(false);
   }
 
+  function GetMailList() {
+    const mails = getDestinatariosDisp.map(dest => dest.email);
+
+    return mails;
+  }
+
+  function adicionaDest() {
+    // Verificar se o destinatário está na lista dos destinatários disponíveis
+    if (getDestinatario === '') {
+      toast.error('Digite um e-mail para cadastrar.');
+      return;
+    }
+    const emailsDisp = GetMailList();
+    if (!emailsDisp.includes(getDestinatario)) {
+      toast.error('Email inválido. Por favor, verifique.');
+      return;
+    }
+
+    if (getDestinatarioSelecionados.length > 0) {
+      const emailsSel = getDestinatarioSelecionados.map(e => {
+        return e.email;
+      });
+      if (emailsSel.includes(getDestinatario)) {
+        toast.error('Email já cadastrado. Por favor, verifique.');
+        return;
+      }
+    }
+
+    const emails = [...getDestinatarioSelecionados, { email: getDestinatario }];
+
+    setDestinatarioSelecionados(emails);
+    setDestinatario('');
+  }
+
   return (
     <>
       <div className="content">
@@ -184,6 +230,14 @@ function Categorizacao() {
                   setDescCategoria(cat.descricao);
                   setIdCategoriaEdicao(cat.id);
                   setCategoriaAtiva(cat.ativo);
+                  if (cat.encaminhamentos && cat.encaminhamentos.length > 0) {
+                    const encaminhamentos = cat.encaminhamentos.map(enc => {
+                      return { email: enc.usuario_enc.email };
+                    });
+                    setDestinatarioSelecionados(encaminhamentos);
+                  } else {
+                    setDestinatarioSelecionados([]);
+                  }
                 }}
               >
                 {cat.nome}
@@ -265,42 +319,105 @@ function Categorizacao() {
         </h2>
 
         <form onSubmit={criarCategoria}>
-          <label htmlFor="nomeCategoria">
-            Nome categoria:
-            <input
-              id="nomeCategoria"
-              placeholder="Nome"
-              value={nomeCategoria}
-              maxLength="30"
-              onChange={e => {
-                setNomeCategoria(e.target.value);
-              }}
-            />
-          </label>
-          <label htmlFor="descCategoria">
-            Descrição categoria:
-            <textarea
-              id="descCategoria"
-              placeholder="Descrição"
-              value={descCategoria}
-              maxLength="255"
-              onChange={e => {
-                setDescCategoria(e.target.value);
-              }}
-            />
-          </label>
-          <div className="input-group">
-            <label htmlFor="ativo" className="checkbox">
-              <input
-                type="checkbox"
-                id="ativo"
-                checked={categoriaAtiva}
-                onChange={() => {
-                  setCategoriaAtiva(!categoriaAtiva);
+          <div className="form-content">
+            <div className="input-group">
+              <label htmlFor="nomeCategoria">
+                Nome categoria:
+                <input
+                  id="nomeCategoria"
+                  placeholder="Nome"
+                  value={nomeCategoria}
+                  maxLength="30"
+                  onChange={e => {
+                    setNomeCategoria(e.target.value);
+                  }}
+                />
+              </label>
+              <label htmlFor="ativo" className="checkbox">
+                <input
+                  type="checkbox"
+                  id="ativo"
+                  checked={categoriaAtiva}
+                  onChange={() => {
+                    setCategoriaAtiva(!categoriaAtiva);
+                  }}
+                />
+                Ativo
+              </label>
+            </div>
+            <label htmlFor="descCategoria">
+              Descrição categoria:
+              <textarea
+                id="descCategoria"
+                placeholder="Descrição"
+                value={descCategoria}
+                maxLength="255"
+                onChange={e => {
+                  setDescCategoria(e.target.value);
                 }}
               />
-              Ativo
             </label>
+
+            <div className="input-group">
+              <label>
+                Encaminhar automaticamente para:
+                <ComboBoxComponent
+                  id="dest-ticket"
+                  placeholder="Selecione um destinatário"
+                  autofill
+                  value={getDestinatario}
+                  dataSource={GetMailList()}
+                  name={`destinatario ${Math.random()}`}
+                  change={e => {
+                    if (e.itemData) {
+                      const { value = '' } = e.itemData;
+                      setDestinatario(value);
+                    } else {
+                      setDestinatario('');
+                    }
+                  }}
+                />
+              </label>
+              <button
+                type="button"
+                id="addUserButton"
+                className="button btn-green"
+                onClick={adicionaDest}
+              >
+                Add
+              </button>
+            </div>
+            <table id="users-to-enc">
+              <thead>
+                <tr>
+                  <th>E-mail</th>
+                  <th />
+                </tr>
+              </thead>
+              <tbody>
+                {getDestinatarioSelecionados.map(dest => (
+                  <tr key={dest.email}>
+                    <td>{dest.email}</td>
+                    <td>
+                      <button
+                        type="button"
+                        id="button-remove-user"
+                        className="btn-red"
+                        onClick={() => {
+                          setDestinatarioSelecionados(
+                            getDestinatarioSelecionados.filter(des => {
+                              return des.email !== dest.email;
+                            })
+                          );
+                        }}
+                      >
+                        <MdClose />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
           <div className="button-group">
@@ -313,6 +430,7 @@ function Categorizacao() {
                 setDescCategoria('');
                 setIdCategoriaEdicao(0);
                 setConfirmaDelete(false);
+                setDestinatarioSelecionados([]);
               }}
             >
               Cancelar

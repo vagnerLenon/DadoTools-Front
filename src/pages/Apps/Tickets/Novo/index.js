@@ -116,7 +116,10 @@ export default function Novo() {
   useEffect(() => {
     async function atualizaDadosIniciais() {
       const result = await api.get('/categorias');
-      setCategorias(result.data);
+      const cats = result.data.filter(c => {
+        return c.ativo;
+      });
+      setCategorias(cats);
       const usuarios = await api.get('/tickets/usuarios');
       setDestinatariosDisp(usuarios.data);
       setExtensoesValidas(ext.map(i => `.${i}`).join(','));

@@ -347,6 +347,37 @@ function CalculaCustos(custos, cod) {
   }
 }
 
+function BuscaFretes(freteList, codigo, uf) {
+  try {
+    const fretesProd = freteList.filter(f => {
+      return f.cod === codigo;
+    });
+
+    if (fretesProd.length === 0) {
+      return { dir: 0, dist: 0 };
+    }
+
+    if (fretesProd[0].ufs !== undefined) {
+      const fretesEstado = fretesProd[0].ufs.filter(f => {
+        return f.uf === uf;
+      });
+
+      if (fretesEstado.length === 0) {
+        return { dir: fretesProd[0].dir, dist: fretesProd[0].dist };
+      }
+      return { dir: fretesEstado[0].dir, dist: fretesEstado[0].dist };
+    }
+    return { dir: fretesProd[0].dir, dist: fretesProd[0].dist };
+  } catch (err) {
+    return { dir: 0, dist: 0 };
+  }
+}
+
+function CalculaDespesasVenda(despesas) {
+  const aliquotas = despesas.reduce((a, b) => a.valor + b.valor);
+  return aliquotas / 100;
+}
+
 export {
   CalculoReverso,
   baseImpostos,
@@ -356,4 +387,6 @@ export {
   CalculoInverso,
   reducer,
   CalculaCustos,
+  BuscaFretes,
+  CalculaDespesasVenda,
 };
