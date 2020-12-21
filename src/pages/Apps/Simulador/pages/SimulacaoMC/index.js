@@ -97,6 +97,7 @@ const modoTela = {
   Abrir: 'Abrir',
   SalvarComo: 'SalvarComo',
 };
+// aaaa
 
 function SimulacaoMC() {
   const [getExportDialogOpen, setExportDialogOpen] = useState(false);
