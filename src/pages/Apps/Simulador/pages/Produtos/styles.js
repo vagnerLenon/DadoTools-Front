@@ -9,23 +9,14 @@ export const Container = styled.div`
   flex: 1;
   padding: 10px;
   div.produtos-disponiveis {
-    width: 33.3%;
+    width: 100%;
+    max-width: 400px;
     @media only screen and (max-width: 1400px) {
       width: 50%;
     }
     table {
       width: 100%;
       thead {
-        th.codigo {
-          width: 80px;
-        }
-        th.subgrupo {
-          width: 130px;
-        }
-        th.descricao {
-          width: calc(100% - 80px - 130px);
-        }
-
         font-size: 14px;
         font-weight: bold;
       }
@@ -33,8 +24,11 @@ export const Container = styled.div`
         tr {
           cursor: pointer;
         }
+        tr:hover {
+          background: #eee;
+        }
         width: 100%;
-        font-size: 12px;
+        font-size: 10px;
       }
     }
     div.busca {
@@ -60,7 +54,7 @@ export const Container = styled.div`
   div.div-responsivo {
     max-height: calc(100%);
     overflow: hidden;
-    width: 66.7%;
+    width: 75%;
     display: flex;
     flex-direction: row;
     /* @media only screen and (max-width: 1400px) {
@@ -81,6 +75,10 @@ export const Container = styled.div`
       display: flex;
       align-items: center;
       line-height: 20px;
+      strong.titulo-mes {
+        background: #eee;
+        width: 100%;
+      }
     }
 
     div.linha.botoes {
@@ -125,6 +123,11 @@ export const Container = styled.div`
     strong {
       margin-right: 5px;
     }
+    p.nomeMes {
+      width: 100px;
+
+      font-weight: bold;
+    }
 
     div.config-produto {
       background: #fff;
@@ -133,6 +136,18 @@ export const Container = styled.div`
       padding: 10px;
       border: 1px solid #eee;
       border-radius: 8px;
+      p {
+        font-size: 11px;
+      }
+      strong {
+        font-size: 12px;
+        max-width: 70px;
+        width: 100%;
+      }
+      input,
+      select {
+        font-size: 12px;
+      }
       @media only screen and (max-width: 1400px) {
         margin-left: 0;
       }

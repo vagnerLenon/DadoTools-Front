@@ -3,16 +3,16 @@ import styled from 'styled-components';
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  width: calc(100% - 260px);
+  width: calc(100% - 200px);
   height: calc(100% - 48px);
   flex: 1;
   background: #eee;
-  margin-left: 260px;
+  margin-left: 200px;
 `;
 
 export const Sidebar = styled.div`
   background: #595959;
-  width: 260px;
+  width: 200px;
   position: absolute;
   top: 48px;
   left: 0;

@@ -18,6 +18,27 @@ import api from '~/services/api';
 import { AlteraDecimal, Ufs } from '~/Utils';
 // #endregion
 
+// TODO Criar tabela que salva os dados nesse formato
+const fretes = [
+  {
+    mes: 1,
+    uf: 'RS',
+    direto: 0.1,
+    distribuicao: 0.37,
+  },
+  {
+    mes: 1,
+    uf: 'SC',
+    direto: 0.155,
+    distribuicao: 0.69,
+  },
+  {
+    mes: 1,
+    uf: 'PR',
+    direto: 0.26,
+    distribuicao: 0.87,
+  },
+];
 function Fretes() {
   // #region Hooks
 
@@ -33,35 +54,31 @@ function Fretes() {
 
   useEffect(() => {
     async function AtualizaDados() {
-      const { data: fretes } = await api.get('configs/fretes');
-
-      const { data } = await api.get('configs/produtosBase');
-      const dados = data.prodBase.json_obj.produtos.map(pb => {
-        const [prod] = fretes.fretes.json_obj.filter(of => {
-          return of.cod === pb.codigo;
-        });
-
-        if (prod) {
-          const { ufs = [] } = prod;
-          return {
-            ...pb,
-            ...{
-              cod: pb.codigo,
-              dir: prod.dir,
-              dist: prod.dist,
-              ufs,
-              open: false,
-            },
-          };
-        }
-
-        return {
-          ...pb,
-          ...{ cod: pb.codigo, dir: 0, dist: 0, ufs: [], open: false },
-        };
-      });
-
-      setProdutosBase(dados);
+      // const { data: fretes } = await api.get('configs/fretes');
+      // const { data } = await api.get('configs/produtosBase');
+      // const dados = data.prodBase.json_obj.produtos.map(pb => {
+      //   const [prod] = fretes.fretes.json_obj.filter(of => {
+      //     return of.cod === pb.codigo;
+      //   });
+      //   if (prod) {
+      //     const { ufs = [] } = prod;
+      //     return {
+      //       ...pb,
+      //       ...{
+      //         cod: pb.codigo,
+      //         dir: prod.dir,
+      //         dist: prod.dist,
+      //         ufs,
+      //         open: false,
+      //       },
+      //     };
+      //   }
+      //   return {
+      //     ...pb,
+      //     ...{ cod: pb.codigo, dir: 0, dist: 0, ufs: [], open: false },
+      //   };
+      // });
+      // setProdutosBase(dados);
     }
     AtualizaDados();
   }, []);
@@ -72,24 +89,26 @@ function Fretes() {
     if (getSalvando) return;
 
     setSalvando(true);
-    // Iterar entre os dados de getprodutosBase e pegar só o que tem valor
-    const dadosComValor = getProdutosBase.filter(pb => {
-      return pb.dir !== 0 || pb.dist !== 0 || pb.ufs.length > 0;
+
+    await api.post('configs', {
+      nome_config: 'fretes',
+      json: JSON.stringify(fretes),
     });
 
-    if (dadosComValor.length > 0) {
-      const dados = dadosComValor.map(d => {
-        return { cod: d.codigo, dir: d.dir, dist: d.dist, ufs: d.ufs };
-      });
+    toast.success('Fretes salvos com sucesso!');
+    setSalvando(false);
 
-      await api.post('configs', {
-        nome_config: 'fretes',
-        json: JSON.stringify(dados),
-      });
+    // Iterar entre os dados de getprodutosBase e pegar só o que tem valor
+    // const dadosComValor = getProdutosBase.filter(pb => {
+    //   return pb.dir !== 0 || pb.dist !== 0 || pb.ufs.length > 0;
+    // });
 
-      toast.success('Fretes salvos com sucesso!');
-      setSalvando(false);
-    }
+    // if (dadosComValor.length > 0) {
+    //   // const dados = dadosComValor.map(d => {
+    //   //   return { cod: d.codigo, dir: d.dir, dist: d.dist, ufs: d.ufs };
+    //   // });
+
+    // }
   }
 
   function onChangeFreteDir(e, index) {
@@ -224,8 +243,6 @@ function Fretes() {
     setProdutoEditando({});
 
     setProdutosBase(dados);
-
-    console.tron.log(dados);
   }
 
   // #endregion
