@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-plusplus */
 /* eslint-disable spaced-comment */
@@ -266,6 +267,37 @@ export function mediaPonderada(valores) {
   }
 }
 
+export function SomaArray(arr) {
+  if (!arr || arr.length === 0) {
+    return 0;
+  }
+  const valor = arr.reduce((p, c) => {
+    return p + c;
+  });
+  return valor;
+}
+
 export function replaceAll(string, search, replace) {
   return string.split(search).join(replace);
+}
+
+export function DecimalPtEng(valor) {
+  // Iimportante, primeiro fazer as trocas de decimap e depois verificar se o valor é numro
+  const novoValor = String(valor).split('.').join('').split(',').join('.');
+  const numero = isNaN(Number(novoValor)) ? 0 : Number(novoValor);
+  return numero;
+}
+export function DecimalengPt(valor, decimais = 0) {
+  // Iimportante, primeiro fazer as trocas de decimap e depois verificar se o valor é numro
+  const valorRetorno = isNaN(valor)
+    ? Number(0).toLocaleString('pt-BR', {
+        minimumFractionDigits: decimais,
+        maximumFractionDigits: decimais,
+      })
+    : valor.toLocaleString('pt-BR', {
+        minimumFractionDigits: decimais,
+        maximumFractionDigits: decimais,
+      });
+
+  return valorRetorno;
 }

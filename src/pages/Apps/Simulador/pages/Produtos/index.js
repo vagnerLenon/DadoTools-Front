@@ -9,9 +9,895 @@ import api from '~/services/api';
 
 import { Ufs, AlteraDecimal } from '~/Utils';
 
+const Produtoss = [
+  {
+    nome: 'Amber Ale 600',
+    codigoCigam: '60050024',
+    volume: 600,
+    pautas: [
+      {
+        mes: 1,
+        uf: 'RS',
+        valor: 12.23,
+      },
+      {
+        mes: 1,
+        uf: 'SC',
+        valor: 6.99,
+      },
+      {
+        mes: 1,
+        uf: 'PR',
+        valor: 11.2,
+      },
+      {
+        mes: 3,
+        uf: 'RS',
+        valor: 11.91,
+      },
+      {
+        mes: 3,
+        uf: 'SC',
+        valor: 7.7,
+      },
+      {
+        mes: 3,
+        uf: 'PR',
+        valor: 11.46,
+      },
+      {
+        mes: 11,
+        uf: 'RS',
+        valor: 11.6,
+      },
+      {
+        mes: 11,
+        uf: 'SC',
+        valor: 8.49,
+      },
+      {
+        mes: 11,
+        uf: 'PR',
+        valor: 11.72,
+      },
+    ],
+  },
+  {
+    nome: 'Belgian Ale 600',
+    codigoCigam: '60050003',
+    volume: 600,
+    pautas: [
+      {
+        mes: 1,
+        uf: 'RS',
+        valor: 11.12,
+      },
+      {
+        mes: 1,
+        uf: 'SC',
+        valor: 6.99,
+      },
+      {
+        mes: 1,
+        uf: 'PR',
+        valor: 11.2,
+      },
+      {
+        mes: 3,
+        uf: 'RS',
+        valor: 10.83,
+      },
+      {
+        mes: 3,
+        uf: 'SC',
+        valor: 7.7,
+      },
+      {
+        mes: 3,
+        uf: 'PR',
+        valor: 11.46,
+      },
+      {
+        mes: 11,
+        uf: 'RS',
+        valor: 10.55,
+      },
+      {
+        mes: 11,
+        uf: 'SC',
+        valor: 8.49,
+      },
+      {
+        mes: 11,
+        uf: 'PR',
+        valor: 11.72,
+      },
+    ],
+  },
+  {
+    nome: 'Ipa 600',
+    codigoCigam: '60050023',
+    volume: 600,
+    pautas: [
+      {
+        mes: 1,
+        uf: 'RS',
+        valor: 14.78,
+      },
+      {
+        mes: 1,
+        uf: 'SC',
+        valor: 6.99,
+      },
+      {
+        mes: 1,
+        uf: 'PR',
+        valor: 11.2,
+      },
+      {
+        mes: 3,
+        uf: 'RS',
+        valor: 14.4,
+      },
+      {
+        mes: 3,
+        uf: 'SC',
+        valor: 7.7,
+      },
+      {
+        mes: 3,
+        uf: 'PR',
+        valor: 11.46,
+      },
+      {
+        mes: 11,
+        uf: 'RS',
+        valor: 14.02,
+      },
+      {
+        mes: 11,
+        uf: 'SC',
+        valor: 8.49,
+      },
+      {
+        mes: 11,
+        uf: 'PR',
+        valor: 11.72,
+      },
+    ],
+  },
+  {
+    nome: 'Red Ale 600',
+    codigoCigam: '60050005',
+    volume: 600,
+    pautas: [
+      {
+        mes: 1,
+        uf: 'RS',
+        valor: 11.16,
+      },
+      {
+        mes: 1,
+        uf: 'SC',
+        valor: 6.99,
+      },
+      {
+        mes: 1,
+        uf: 'PR',
+        valor: 11.2,
+      },
+      {
+        mes: 3,
+        uf: 'RS',
+        valor: 10.87,
+      },
+      {
+        mes: 3,
+        uf: 'SC',
+        valor: 7.7,
+      },
+      {
+        mes: 3,
+        uf: 'PR',
+        valor: 11.46,
+      },
+      {
+        mes: 11,
+        uf: 'RS',
+        valor: 10.59,
+      },
+      {
+        mes: 11,
+        uf: 'SC',
+        valor: 8.49,
+      },
+      {
+        mes: 11,
+        uf: 'PR',
+        valor: 11.72,
+      },
+    ],
+  },
+  {
+    nome: 'Royal Black 600',
+    codigoCigam: '60050007',
+    volume: 600,
+    pautas: [
+      {
+        mes: 1,
+        uf: 'RS',
+        valor: 10.98,
+      },
+      {
+        mes: 1,
+        uf: 'SC',
+        valor: 6.99,
+      },
+      {
+        mes: 1,
+        uf: 'PR',
+        valor: 11.2,
+      },
+      {
+        mes: 3,
+        uf: 'RS',
+        valor: 10.69,
+      },
+      {
+        mes: 3,
+        uf: 'SC',
+        valor: 7.7,
+      },
+      {
+        mes: 3,
+        uf: 'PR',
+        valor: 11.46,
+      },
+      {
+        mes: 11,
+        uf: 'RS',
+        valor: 10.42,
+      },
+      {
+        mes: 11,
+        uf: 'SC',
+        valor: 8.49,
+      },
+      {
+        mes: 11,
+        uf: 'PR',
+        valor: 11.72,
+      },
+    ],
+  },
+  {
+    nome: 'Weiss 600',
+    codigoCigam: '60050009',
+    volume: 600,
+    pautas: [
+      {
+        mes: 1,
+        uf: 'RS',
+        valor: 10.98,
+      },
+      {
+        mes: 1,
+        uf: 'SC',
+        valor: 6.99,
+      },
+      {
+        mes: 1,
+        uf: 'PR',
+        valor: 11.2,
+      },
+      {
+        mes: 3,
+        uf: 'RS',
+        valor: 10.69,
+      },
+      {
+        mes: 3,
+        uf: 'SC',
+        valor: 7.7,
+      },
+      {
+        mes: 3,
+        uf: 'PR',
+        valor: 11.46,
+      },
+      {
+        mes: 11,
+        uf: 'RS',
+        valor: 10.42,
+      },
+      {
+        mes: 11,
+        uf: 'SC',
+        valor: 8.49,
+      },
+      {
+        mes: 11,
+        uf: 'PR',
+        valor: 11.72,
+      },
+    ],
+  },
+  {
+    nome: 'Sleek outras 350',
+    codigoCigam: '99999999',
+    volume: 350,
+    pautas: [
+      {
+        mes: 1,
+        uf: 'RS',
+        valor: 4.81,
+      },
+      {
+        mes: 1,
+        uf: 'SC',
+        valor: 5.24,
+      },
+      {
+        mes: 1,
+        uf: 'PR',
+        valor: 4.64,
+      },
+      {
+        mes: 3,
+        uf: 'RS',
+        valor: 4.94,
+      },
+      {
+        mes: 3,
+        uf: 'SC',
+        valor: 5.35,
+      },
+      {
+        mes: 3,
+        uf: 'PR',
+        valor: 4.32,
+      },
+      {
+        mes: 11,
+        uf: 'RS',
+        valor: 5.08,
+      },
+      {
+        mes: 11,
+        uf: 'SC',
+        valor: 5.46,
+      },
+      {
+        mes: 11,
+        uf: 'PR',
+        valor: 4.01,
+      },
+    ],
+  },
+  {
+    nome: 'Session Ipa Sleek 350',
+    codigoCigam: '60050015',
+    volume: 350,
+    pautas: [
+      {
+        mes: 1,
+        uf: 'RS',
+        valor: 4.81,
+      },
+      {
+        mes: 1,
+        uf: 'SC',
+        valor: 5.24,
+      },
+      {
+        mes: 1,
+        uf: 'PR',
+        valor: 4.64,
+      },
+      {
+        mes: 3,
+        uf: 'RS',
+        valor: 4.94,
+      },
+      {
+        mes: 3,
+        uf: 'SC',
+        valor: 5.35,
+      },
+      {
+        mes: 3,
+        uf: 'PR',
+        valor: 4.32,
+      },
+      {
+        mes: 11,
+        uf: 'RS',
+        valor: 5.08,
+      },
+      {
+        mes: 11,
+        uf: 'SC',
+        valor: 5.46,
+      },
+      {
+        mes: 11,
+        uf: 'PR',
+        valor: 4.01,
+      },
+    ],
+  },
+  {
+    nome: 'Weiss Sleek 350',
+    codigoCigam: '60050014',
+    volume: 350,
+    pautas: [
+      {
+        mes: 1,
+        uf: 'RS',
+        valor: 4.98,
+      },
+      {
+        mes: 1,
+        uf: 'SC',
+        valor: 5.24,
+      },
+      {
+        mes: 1,
+        uf: 'PR',
+        valor: 4.64,
+      },
+      {
+        mes: 3,
+        uf: 'RS',
+        valor: 5.11944,
+      },
+      {
+        mes: 3,
+        uf: 'SC',
+        valor: 5.35,
+      },
+      {
+        mes: 3,
+        uf: 'PR',
+        valor: 4.32,
+      },
+      {
+        mes: 11,
+        uf: 'RS',
+        valor: 5.26278432,
+      },
+      {
+        mes: 11,
+        uf: 'SC',
+        valor: 5.46,
+      },
+      {
+        mes: 11,
+        uf: 'PR',
+        valor: 4.01,
+      },
+    ],
+  },
+  {
+    nome: 'Lager Leve 350',
+    codigoCigam: '60010019',
+    volume: 350,
+    pautas: [
+      {
+        mes: 1,
+        uf: 'RS',
+        valor: 2.31,
+      },
+      {
+        mes: 1,
+        uf: 'SC',
+        valor: 2.69,
+      },
+      {
+        mes: 1,
+        uf: 'PR',
+        valor: 2.46,
+      },
+      {
+        mes: 3,
+        uf: 'RS',
+        valor: 2.37237,
+      },
+      {
+        mes: 3,
+        uf: 'SC',
+        valor: 2.75,
+      },
+      {
+        mes: 3,
+        uf: 'PR',
+        valor: 2.45,
+      },
+      {
+        mes: 11,
+        uf: 'RS',
+        valor: 2.43642399,
+      },
+      {
+        mes: 11,
+        uf: 'SC',
+        valor: 2.81,
+      },
+      {
+        mes: 11,
+        uf: 'PR',
+        valor: 2.44,
+      },
+    ],
+  },
+  {
+    nome: 'Lager Leve 473',
+    codigoCigam: '60010010',
+    volume: 473,
+    pautas: [
+      {
+        mes: 1,
+        uf: 'RS',
+        valor: 3.21,
+      },
+      {
+        mes: 1,
+        uf: 'SC',
+        valor: 3.26,
+      },
+      {
+        mes: 1,
+        uf: 'PR',
+        valor: 3.16,
+      },
+      {
+        mes: 3,
+        uf: 'RS',
+        valor: 3.3,
+      },
+      {
+        mes: 3,
+        uf: 'SC',
+        valor: 3.33,
+      },
+      {
+        mes: 3,
+        uf: 'PR',
+        valor: 3.14,
+      },
+      {
+        mes: 11,
+        uf: 'RS',
+        valor: 3.39,
+      },
+      {
+        mes: 11,
+        uf: 'SC',
+        valor: 3.41,
+      },
+      {
+        mes: 11,
+        uf: 'PR',
+        valor: 3.13,
+      },
+    ],
+  },
+  {
+    nome: 'Lager Leve 710',
+    codigoCigam: '60010012',
+    volume: 710,
+    pautas: [
+      {
+        mes: 1,
+        uf: 'RS',
+        valor: 5.98,
+      },
+      {
+        mes: 1,
+        uf: 'SC',
+        valor: 6.41,
+      },
+      {
+        mes: 1,
+        uf: 'PR',
+        valor: 5.23,
+      },
+      {
+        mes: 3,
+        uf: 'RS',
+        valor: 6.14146,
+      },
+      {
+        mes: 3,
+        uf: 'SC',
+        valor: 6.55,
+      },
+      {
+        mes: 3,
+        uf: 'PR',
+        valor: 5.2,
+      },
+      {
+        mes: 11,
+        uf: 'RS',
+        valor: 6.30727942,
+      },
+      {
+        mes: 11,
+        uf: 'SC',
+        valor: 6.7,
+      },
+      {
+        mes: 11,
+        uf: 'PR',
+        valor: 5.18,
+      },
+    ],
+  },
+  {
+    nome: 'Lager Leve Sleek 350',
+    codigoCigam: '60010007',
+    volume: 350,
+    pautas: [
+      {
+        mes: 1,
+        uf: 'RS',
+        valor: 2.31,
+      },
+      {
+        mes: 1,
+        uf: 'SC',
+        valor: 2.69,
+      },
+      {
+        mes: 1,
+        uf: 'PR',
+        valor: 2.46,
+      },
+      {
+        mes: 3,
+        uf: 'RS',
+        valor: 2.37237,
+      },
+      {
+        mes: 3,
+        uf: 'SC',
+        valor: 2.75,
+      },
+      {
+        mes: 3,
+        uf: 'PR',
+        valor: 2.45,
+      },
+      {
+        mes: 11,
+        uf: 'RS',
+        valor: 2.43642399,
+      },
+      {
+        mes: 11,
+        uf: 'SC',
+        valor: 2.81,
+      },
+      {
+        mes: 11,
+        uf: 'PR',
+        valor: 2.44,
+      },
+    ],
+  },
+  {
+    nome: 'Lager PM 473',
+    codigoCigam: '60010005',
+    volume: 473,
+    pautas: [
+      {
+        mes: 1,
+        uf: 'RS',
+        valor: 3.42,
+      },
+      {
+        mes: 1,
+        uf: 'SC',
+        valor: 3.46,
+      },
+      {
+        mes: 1,
+        uf: 'PR',
+        valor: 4.67,
+      },
+      {
+        mes: 3,
+        uf: 'RS',
+        valor: 3.52,
+      },
+      {
+        mes: 3,
+        uf: 'SC',
+        valor: 3.51,
+      },
+      {
+        mes: 3,
+        uf: 'PR',
+        valor: 4.69,
+      },
+      {
+        mes: 11,
+        uf: 'RS',
+        valor: 3.61,
+      },
+      {
+        mes: 11,
+        uf: 'SC',
+        valor: 3.56,
+      },
+      {
+        mes: 11,
+        uf: 'PR',
+        valor: 4.72,
+      },
+    ],
+  },
+  {
+    nome: 'Lager PM 710',
+    codigoCigam: '60010006',
+    volume: 710,
+    pautas: [
+      {
+        mes: 1,
+        uf: 'RS',
+        valor: 6.02,
+      },
+      {
+        mes: 1,
+        uf: 'SC',
+        valor: 7.12,
+      },
+      {
+        mes: 1,
+        uf: 'PR',
+        valor: 5.5,
+      },
+      {
+        mes: 3,
+        uf: 'RS',
+        valor: 6.19,
+      },
+      {
+        mes: 3,
+        uf: 'SC',
+        valor: 7.23,
+      },
+      {
+        mes: 3,
+        uf: 'PR',
+        valor: 5.53,
+      },
+      {
+        mes: 11,
+        uf: 'RS',
+        valor: 6.36,
+      },
+      {
+        mes: 11,
+        uf: 'SC',
+        valor: 7.34,
+      },
+      {
+        mes: 11,
+        uf: 'PR',
+        valor: 5.56,
+      },
+    ],
+  },
+  {
+    nome: 'Lager PM Long Neck',
+    codigoCigam: '60010016',
+    volume: 355,
+    pautas: [
+      {
+        mes: 1,
+        uf: 'RS',
+        valor: 6.29,
+      },
+      {
+        mes: 1,
+        uf: 'SC',
+        valor: 6.99,
+      },
+      {
+        mes: 1,
+        uf: 'PR',
+        valor: 5.97,
+      },
+      {
+        mes: 3,
+        uf: 'RS',
+        valor: 6.47,
+      },
+      {
+        mes: 3,
+        uf: 'SC',
+        valor: 7.09,
+      },
+      {
+        mes: 3,
+        uf: 'PR',
+        valor: 6,
+      },
+      {
+        mes: 11,
+        uf: 'RS',
+        valor: 6.65,
+      },
+      {
+        mes: 11,
+        uf: 'SC',
+        valor: 7.2,
+      },
+      {
+        mes: 11,
+        uf: 'PR',
+        valor: 6.03,
+      },
+    ],
+  },
+  {
+    nome: 'Lager PM Sleek 350',
+    codigoCigam: '60010018',
+    volume: 350,
+    pautas: [
+      {
+        mes: 1,
+        uf: 'RS',
+        valor: 2.51,
+      },
+      {
+        mes: 1,
+        uf: 'SC',
+        valor: 2.52,
+      },
+      {
+        mes: 1,
+        uf: 'PR',
+        valor: 4.67,
+      },
+      {
+        mes: 3,
+        uf: 'RS',
+        valor: 2.58,
+      },
+      {
+        mes: 3,
+        uf: 'SC',
+        valor: 2.56,
+      },
+      {
+        mes: 3,
+        uf: 'PR',
+        valor: 4.69,
+      },
+      {
+        mes: 11,
+        uf: 'RS',
+        valor: 2.65,
+      },
+      {
+        mes: 11,
+        uf: 'SC',
+        valor: 2.6,
+      },
+      {
+        mes: 11,
+        uf: 'PR',
+        valor: 4.72,
+      },
+    ],
+  },
+];
 function Produtos() {
   const [getProdutosBase, setProdutosBase] = useState([]);
-  const [getProdutos, setProdutos] = useState([]);
+  const [getProdutos, setProdutos] = useState(Produtoss);
   const [getProdutoEditando, setProdutoEditando] = useState({});
   const [getBusca, setBusca] = useState('');
 
@@ -21,13 +907,14 @@ function Produtos() {
   const [getUf, setUf] = useState('XX');
   const [getpauta, setPauta] = useState('');
   const [getPautas, setPautas] = useState([]);
+  const [getMes, setMes] = useState(0);
 
   useEffect(() => {
     async function AtualizaDados() {
       const { data } = await api.get('configs/produtosBase');
       setProdutosBase(data.prodBase.json_obj.produtos);
-      const { data: dadosProdutos } = await api.get('configs/produtos');
-      setProdutos(dadosProdutos.produtos.json_obj);
+      // const { data: dadosProdutos } = await api.get('configs/produtos');
+      // setProdutos(dadosProdutos.produtos.json_obj);
     }
     AtualizaDados();
   }, []);
@@ -45,9 +932,14 @@ function Produtos() {
       return;
     }
 
+    if (getMes === '0') {
+      toast.error('Defina um mês inicial para a pauta.');
+      return;
+    }
+
     const pautasTemp = [...getPautas];
 
-    pautasTemp.push({ uf: getUf, valor });
+    pautasTemp.push({ mes: getMes, uf: getUf, valor });
 
     setPautas(pautasTemp);
     setPauta('');
@@ -63,7 +955,11 @@ function Produtos() {
   }
 
   function TemPauta(uf) {
-    const ufPautas = getPautas.map(p => p.uf);
+    const ufPautas = getPautas
+      .filter(e => {
+        return e.mes === getMes;
+      })
+      .map(p => p.uf);
     return ufPautas.includes(uf);
   }
 
@@ -239,7 +1135,7 @@ function Produtos() {
         <div className="config-produto">
           <h2>Configurações produto</h2>
           {getProdutoEditando.nome !== undefined && (
-            <>
+            <ScroollProd>
               <h3>Produto no CIGAM</h3>
               <div className="linha">
                 <strong>Nome produto: </strong>
@@ -262,8 +1158,6 @@ function Produtos() {
                 <strong>Subgrupo: </strong>
                 <p>{getProdutoEditando.nomeSubGrupo}</p>
               </div>
-              <h3>Configuração</h3>
-              linha<h3>Produto no CIGAM</h3>
               <div className="linha">
                 <label htmlFor="nome">
                   <p>Nome:</p>
@@ -306,9 +1200,25 @@ function Produtos() {
                 </label>
               </div>
               <h3>Pautas</h3>
+
+              <label
+                htmlFor="mes-pauta"
+                onChange={e => {
+                  setMes(Number(e.target.value));
+                }}
+              >
+                <p className="nomeMes">Mês pauta:</p>
+                <select name="" id="mes-pauta">
+                  <option value="0">Selecione o mês</option>
+                  <option value="1">Janeiro</option>
+                  <option value="3">Março</option>
+                  <option value="11">Novembro</option>
+                </select>
+              </label>
+
               <div className="linha">
                 <label htmlFor="estado">
-                  <p className="fit">UF:</p>
+                  <strong className="">UF:</strong>
                   <select
                     id="estado"
                     value={getUf}
@@ -349,28 +1259,95 @@ function Produtos() {
                   Inserir
                 </button>
               </div>
+              <div className="linha">
+                <strong className="titulo-mes">janeiro</strong>
+              </div>
               <div className="linha pautas">
-                {getPautas.map(pauta => (
-                  <div key={pauta.uf} className="pauta">
-                    <div>
-                      <strong>{pauta.uf}:</strong>
-                      <span>
-                        {pauta.valor.toLocaleString('pt-BR', {
-                          minimumFractionDigits: 2,
-                        })}
-                      </span>
+                {getPautas
+                  .filter(m => {
+                    return m.mes === 1;
+                  })
+                  .map(pauta => (
+                    <div key={pauta.uf} className="pauta">
+                      <div>
+                        <strong>{pauta.uf}:</strong>
+                        <span>
+                          {pauta.valor.toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2,
+                          })}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        className="btn-red"
+                        onClick={() => {
+                          removePauta(pauta.uf);
+                        }}
+                      >
+                        <MdClose size={10} />
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      className="btn-red"
-                      onClick={() => {
-                        removePauta(pauta.uf);
-                      }}
-                    >
-                      <MdClose size={10} />
-                    </button>
-                  </div>
-                ))}
+                  ))}
+              </div>
+              <div className="linha">
+                <strong className="titulo-mes">Março</strong>
+              </div>
+              <div className="linha pautas">
+                {getPautas
+                  .filter(m => {
+                    return m.mes === 3;
+                  })
+                  .map(pauta => (
+                    <div key={pauta.uf} className="pauta">
+                      <div>
+                        <strong>{pauta.uf}:</strong>
+                        <span>
+                          {pauta.valor.toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2,
+                          })}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        className="btn-red"
+                        onClick={() => {
+                          removePauta(pauta.uf);
+                        }}
+                      >
+                        <MdClose size={10} />
+                      </button>
+                    </div>
+                  ))}
+              </div>
+              <div className="linha">
+                <strong className="titulo-mes">Novembro</strong>
+              </div>
+              <div className="linha pautas">
+                {getPautas
+                  .filter(m => {
+                    return m.mes === 11;
+                  })
+                  .map(pauta => (
+                    <div key={pauta.uf} className="pauta">
+                      <div>
+                        <strong>{pauta.uf}:</strong>
+                        <span>
+                          {pauta.valor.toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2,
+                          })}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        className="btn-red"
+                        onClick={() => {
+                          removePauta(pauta.uf);
+                        }}
+                      >
+                        <MdClose size={10} />
+                      </button>
+                    </div>
+                  ))}
               </div>
               <div className="linha botoes">
                 <button
@@ -383,7 +1360,7 @@ function Produtos() {
                   Adicionar produto
                 </button>
               </div>
-            </>
+            </ScroollProd>
           )}
         </div>
         <div className="produtos-configurados">
@@ -427,22 +1404,66 @@ function Produtos() {
                     )}`}</span>
                     <strong>Volume:</strong> <span>{`${prod.volume}Ml`}</span>
                   </div>
-
                   {prod.pautas.length > 0 && (
-                    <div className="linha pautas">
-                      {prod.pautas.map(p => (
-                        <div key={`${p.uf}_2`} className="pauta">
-                          <div>
-                            <strong>{p.uf}:</strong>
-                            <span>
-                              {p.valor.toLocaleString('pt-BR', {
-                                minimumFractionDigits: 2,
-                              })}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                    <>
+                      <div className="linha pautas">
+                        <strong>JAN:</strong>
+                        {prod.pautas
+                          .filter(e => {
+                            return e.mes === 1;
+                          })
+                          .map(p => (
+                            <div key={`${p.uf}_2`} className="pauta">
+                              <div>
+                                <strong>{p.uf}:</strong>
+                                <span>
+                                  {p.valor.toLocaleString('pt-BR', {
+                                    minimumFractionDigits: 2,
+                                  })}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                      <div className="linha pautas">
+                        <strong>MAR:</strong>
+                        {prod.pautas
+                          .filter(e => {
+                            return e.mes === 3;
+                          })
+                          .map(p => (
+                            <div key={`${p.uf}_2`} className="pauta">
+                              <div>
+                                <strong>{p.uf}:</strong>
+                                <span>
+                                  {p.valor.toLocaleString('pt-BR', {
+                                    minimumFractionDigits: 2,
+                                  })}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                      <div className="linha pautas">
+                        <strong>NOV:</strong>
+                        {prod.pautas
+                          .filter(e => {
+                            return e.mes === 11;
+                          })
+                          .map(p => (
+                            <div key={`${p.uf}_2`} className="pauta">
+                              <div>
+                                <strong>{p.uf}:</strong>
+                                <span>
+                                  {p.valor.toLocaleString('pt-BR', {
+                                    minimumFractionDigits: 2,
+                                  })}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    </>
                   )}
                 </>
               </div>

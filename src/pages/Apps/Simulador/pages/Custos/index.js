@@ -5,22 +5,119 @@
 import React, { useState, useEffect } from 'react';
 import NumberFormat from 'react-number-format';
 
-import { MdClose, MdChevronRight, MdExpandMore, MdEdit } from 'react-icons/md';
+import {
+  MdClose,
+  MdChevronRight,
+  MdExpandMore,
+  MdEdit,
+  MdCheck,
+  MdSave,
+} from 'react-icons/md';
 import { toast } from 'react-toastify';
 import { Container, ScroollProd } from './styles';
 import api from '~/services/api';
 
 import { AlteraDecimal } from '~/Utils';
 
+const custosBase = [
+  {
+    mes: 1,
+    cod: '60050024',
+    custos: { ft: [{ item: 'ft', valor: 2.3927 }], ggf: 0.594, perdas: 0 },
+  },
+  {
+    mes: 1,
+    cod: '60050003',
+    custos: { ft: [{ item: 'ft', valor: 3.0376 }], ggf: 0.594, perdas: 0 },
+  },
+  {
+    mes: 1,
+    cod: '60050023',
+    custos: { ft: [{ item: 'ft', valor: 2.2868 }], ggf: 0.594, perdas: 0 },
+  },
+  {
+    mes: 1,
+    cod: '60050005',
+    custos: { ft: [{ item: 'ft', valor: 2.9135 }], ggf: 0.594, perdas: 0 },
+  },
+  {
+    mes: 1,
+    cod: '60050007',
+    custos: { ft: [{ item: 'ft', valor: 3.1023 }], ggf: 0.594, perdas: 0 },
+  },
+  {
+    mes: 1,
+    cod: '60050009',
+    custos: { ft: [{ item: 'ft', valor: 1.7897 }], ggf: 0.594, perdas: 0 },
+  },
+  {
+    mes: 1,
+    cod: '99999999',
+    custos: { ft: [{ item: 'ft', valor: 1.4685 }], ggf: 0.2695, perdas: 0 },
+  },
+  {
+    mes: 1,
+    cod: '60050015',
+    custos: { ft: [{ item: 'ft', valor: 1.4685 }], ggf: 0.2695, perdas: 0 },
+  },
+  {
+    mes: 1,
+    cod: '60050014',
+    custos: { ft: [{ item: 'ft', valor: 1.2502 }], ggf: 0.2695, perdas: 0 },
+  },
+  {
+    mes: 1,
+    cod: '60010019',
+    custos: { ft: [{ item: 'ft', valor: 0.7419 }], ggf: 0.1995, perdas: 0 },
+  },
+  {
+    mes: 1,
+    cod: '60010010',
+    custos: { ft: [{ item: 'ft', valor: 0.9342 }], ggf: 0.2696, perdas: 0 },
+  },
+  {
+    mes: 1,
+    cod: '60010012',
+    custos: { ft: [{ item: 'ft', valor: 1.6623 }], ggf: 0.7029, perdas: 0 },
+  },
+  {
+    mes: 1,
+    cod: '60010007',
+    custos: { ft: [{ item: 'ft', valor: 0.7994 }], ggf: 0.1995, perdas: 0 },
+  },
+  {
+    mes: 1,
+    cod: '60010005',
+    custos: { ft: [{ item: 'ft', valor: 1.0489 }], ggf: 0.2696, perdas: 0 },
+  },
+  {
+    mes: 1,
+    cod: '60010006',
+    custos: { ft: [{ item: 'ft', valor: 1.2398 }], ggf: 0.7029, perdas: 0 },
+  },
+  {
+    mes: 1,
+    cod: '60010016',
+    custos: { ft: [{ item: 'ft', valor: 0.9897 }], ggf: 0.3018, perdas: 0 },
+  },
+  {
+    mes: 1,
+    cod: '60010018',
+    custos: { ft: [{ item: 'ft', valor: 0.901 }], ggf: 0.1995, perdas: 0 },
+  },
+];
+
 const reducer = (accumulator, currentValue) => accumulator + currentValue;
 
 function Custos() {
   const [getProdutosBase, setProdutosBase] = useState([]);
 
-  const [getCustos, setCustos] = useState([]);
+  const [getCustos, setCustos] = useState(custosBase);
+  const [getPerdaSalva, setPerdaSalva] = useState(false);
 
   const [getNomeCusto, setNomeCusto] = useState('');
   const [getValorCusto, setValorCusto] = useState('');
+  const [getValorPerda, setValorPerda] = useState('');
 
   const [getProdutoEditando, setProdutoEditando] = useState({});
 
@@ -32,8 +129,8 @@ function Custos() {
           return { ...pb, open: false };
         })
       );
-      const { data: dadosProdutos } = await api.get('configs/custos');
-      setCustos(dadosProdutos.custos.json_obj);
+      // const { data: dadosProdutos } = await api.get('configs/custos');
+      // setCustos(dadosProdutos.custos.json_obj);
     }
     AtualizaDados();
   }, []);
@@ -52,11 +149,12 @@ function Custos() {
     });
 
     if (custos.length > 0) {
-      const valores = custos[0].valores.map(cus => {
-        return cus.valor;
-      });
-
-      return valores.reduce(reducer);
+      if (custos[0].valores) {
+        const valores = custos[0].valores.map(cus => {
+          return cus.valor;
+        });
+        return valores.reduce(reducer);
+      }
     }
     return 0;
   }
@@ -82,11 +180,21 @@ function Custos() {
 
     setNomeCusto('');
     setValorCusto('');
+    setValorPerda('');
+    setPerdaSalva(true);
 
     setProdutoEditando({
       nome: item[0].nome,
       cod: item[0].codigo,
     });
+
+    const [custo] = getCustos.filter(cus => {
+      return cus.cod === cod;
+    });
+
+    if (custo) {
+      setValorPerda(custo.perda || '');
+    }
   }
 
   function addCusto() {
@@ -150,6 +258,37 @@ function Custos() {
     setValorCusto('');
   }
 
+  function salvaPerda() {
+    const valorInserido =
+      getValorPerda === '' ? 0 : AlteraDecimal(getValorPerda);
+
+    // Pega o produto atual que estamos editando
+    const { cod } = getProdutoEditando;
+
+    const [produtoAtual] = getCustos.filter(cus => {
+      return cus.cod === cod;
+    });
+
+    let produto = {};
+    if (!produtoAtual) {
+      produto = {
+        cod,
+        perda: valorInserido,
+      };
+    } else {
+      produto = { ...produtoAtual, perda: valorInserido };
+    }
+
+    const produtos = getCustos.filter(cus => {
+      return cus.cod !== cod;
+    });
+
+    produtos.push(produto);
+
+    setCustos(produtos);
+    setPerdaSalva(true);
+  }
+
   function removeCusto(index) {
     const { cod } = getProdutoEditando;
     const produto = getCustos.filter(cus => {
@@ -187,7 +326,7 @@ function Custos() {
     api
       .post('configs', {
         nome_config: 'custos',
-        json: JSON.stringify(getCustos),
+        json: JSON.stringify(custosBase),
       })
       .then(() => {
         toast.success('Custos salvos com sucesso');
@@ -195,6 +334,13 @@ function Custos() {
       .catch(() => {
         toast.error('Erro ao salvar custos.');
       });
+  }
+
+  function textoBotaoSalvarPerdas() {
+    if (getPerdaSalva) {
+      return <MdCheck />;
+    }
+    return <MdSave />;
   }
 
   return (
@@ -297,13 +443,39 @@ function Custos() {
                 4
               )}`}</span>
             </div>
-            <div className="linha">
-              <strong>Custo total (SKU):</strong>
-              <span>
-                {somaCustos(getProdutoEditando.cod).toLocaleString('pt-BR', {
-                  minimumFractionDigits: 2,
-                })}
-              </span>
+            <div className="linha espaco">
+              <div className="linha">
+                <strong>Custo total (SKU):</strong>
+                <span>
+                  {somaCustos(getProdutoEditando.cod).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                  })}
+                </span>
+              </div>
+              <div className="grupo-perda">
+                <strong>Perda total (%)</strong>
+                <div className="linha">
+                  <NumberFormat
+                    className="pe-perda"
+                    id="pauta"
+                    placeholder="Valor"
+                    value={getValorPerda}
+                    onChange={e => {
+                      setPerdaSalva(false);
+                      setValorPerda(e.target.value);
+                    }}
+                    decimalSeparator=","
+                    decimalScale={2}
+                  />
+                  <button
+                    type="button"
+                    className="button btn-green"
+                    onClick={salvaPerda}
+                  >
+                    {textoBotaoSalvarPerdas()}
+                  </button>
+                </div>
+              </div>
             </div>
             <div className="edit">
               <div className="linha">

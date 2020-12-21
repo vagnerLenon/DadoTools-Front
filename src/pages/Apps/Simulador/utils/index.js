@@ -16,8 +16,8 @@ function CalculoInverso(
 
   const ipi = precoUnitario * aliquota_IPI;
   const icms = precoUnitario * aliquota_ICMS;
-  const pis = precoUnitario * aliquota_PIS;
-  const cofins = precoUnitario * aliquota_COFINS;
+  const pis = (precoUnitario - icms) * aliquota_PIS;
+  const cofins = (precoUnitario - icms) * aliquota_COFINS;
   const st = pauta * aliquota_ST - icms;
   const fcp = pauta * aliquota_FCP;
 
@@ -161,6 +161,101 @@ function CalculoReverso(produto, impostos, uf, atacado, precoUnitario) {
 
   // PAUTA base
   const pauta = pautaF[0].valor;
+
+  // Verificar se a pauta é maior do que o preço desejado, caso contrário retornar um erro
+  if (pauta <= precoUnitario) {
+    throw new Error(
+      `O preço unitário tem que ser menor que a pauta. Preço R$ ${precoUnitario.toLocaleString(
+        'pt-BR',
+        {
+          minimumFractionDigits: 2,
+        }
+      )}. Pauta: R$ ${pauta.toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+      })}`
+    );
+  }
+
+  // ICMS ST aliquota
+  const ICMSSt_aliquota = ICMSStF[0].aliquota;
+
+  // ICMS ST FCP aliquota
+  const FCP_aliquota = FCPf[0].aliquota;
+
+  // ICMS aliquota
+  const ICMS_aliquota = Number(ICMSf);
+
+  // IPI aliquota
+  const IPI_aliquota = Number(IPIf);
+
+  // PIS aliquota
+  const PIS_aliquota = Number(PISf);
+
+  // COFINS aliquota
+  const COFINS_aliquota = Number(COFINSf);
+
+  const calculo = CalculoInverso(
+    pauta,
+    precoUnitario,
+    ICMSSt_aliquota,
+    FCP_aliquota,
+    ICMS_aliquota,
+    IPI_aliquota,
+    PIS_aliquota,
+    COFINS_aliquota
+  );
+
+  return calculo;
+}
+
+function CalculoReverso_novo(pauta, impostos, uf, atacado, precoUnitario) {
+  if (pauta === 0) {
+    throw new Error('Não existe pauta cadastrada para este Produto/Estado.');
+  }
+
+  const ICMSStF = impostos.icmsSt.filter(imp => {
+    return imp.estado === uf;
+  });
+
+  if (ICMSStF.length === 0) {
+    throw new Error('Não existe ICMS ST para este Estado.');
+  }
+
+  const FCPf = impostos.icmsStFcp.filter(imp => {
+    return imp.estado === uf;
+  });
+
+  if (FCPf.length === 0) {
+    throw new Error('Não existe ICMS ST FCP para este Estado.');
+  }
+
+  const ICMSf = uf === 'RS' ? impostos.icms.rs : impostos.icms.fora;
+
+  if (ICMSf === undefined) {
+    throw new Error('Não existe ICMS para este Estado.');
+  }
+
+  const IPIf = atacado ? impostos.ipi.atacado : impostos.ipi.varejo;
+
+  if (IPIf === undefined) {
+    throw new Error('Não existe IPI para este Tipo de estabelecimento.');
+  }
+
+  const PISf = atacado ? impostos.pis.atacado : impostos.pis.varejo;
+
+  if (PISf === undefined) {
+    throw new Error('Não existe PIS para este Tipo de estabelecimento.');
+  }
+
+  const COFINSf = atacado ? impostos.cofins.atacado : impostos.cofins.varejo;
+
+  if (COFINSf === undefined) {
+    throw new Error('Não existe COFINS para este Tipo de estabelecimento.');
+  }
+
+  // Base dos impostos
+
+  // PAUTA base
 
   // Verificar se a pauta é maior do que o preço desejado, caso contrário retornar um erro
   if (pauta <= precoUnitario) {
@@ -389,4 +484,5 @@ export {
   CalculaCustos,
   BuscaFretes,
   CalculaDespesasVenda,
+  CalculoReverso_novo,
 };

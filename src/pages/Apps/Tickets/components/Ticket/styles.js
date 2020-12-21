@@ -41,7 +41,7 @@ export const Container = styled.div`
     align-items: center;
     justify-content: space-between;
     & + div.linha {
-      margin-top: 15px;
+      margin-top: 8px;
     }
   }
 
@@ -75,7 +75,7 @@ export const Container = styled.div`
     height: 75px;
     background: #f8f8f8;
     border-radius: 4px;
-    padding: 10px;
+    padding: 0 10px;
   }
 
   div.col-gruoup {

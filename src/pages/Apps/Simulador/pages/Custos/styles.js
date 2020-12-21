@@ -67,7 +67,7 @@ export const Container = styled.div`
     }
 
     div.linha {
-      strong {
+      width: strong {
         margin-right: 5px;
       }
     }
@@ -119,14 +119,14 @@ export const Container = styled.div`
     margin-top: 10px;
     width: 100%;
 
-    button.remove-custo{
-      display:block;
+    button.remove-custo {
+      display: block;
       width: 25px;
       height: 25px;
       padding: 0;
       margin: auto;
       border-radius: 4px;
-      svg{
+      svg {
         display: block;
         margin: auto;
       }
@@ -147,7 +147,6 @@ export const Container = styled.div`
 
     thead tr th.remove-custo {
       min-width: 40px;
-      }
     }
   }
 
@@ -177,6 +176,10 @@ export const Container = styled.div`
       width: 30%;
       margin-left: 10px;
     }
+    input.pe-perda {
+      width: 100%;
+    }
+
     button.btn-add-custo {
       width: 10%;
       margin-left: 10px;
@@ -185,6 +188,13 @@ export const Container = styled.div`
     button.btn-salvar {
       margin-left: auto;
       margin-top: 10px;
+    }
+    div.grupo-perda {
+      flex-direction: column;
+      max-width: 150px;
+      button {
+        margin-left: 10px;
+      }
     }
   }
 `;
