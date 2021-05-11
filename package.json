@@ -21,7 +21,7 @@
     "filesize": "^6.1.0",
     "history": "^4.10.1",
     "immer": "^6.0.3",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "medium-draft": "^0.5.18",
     "moment": "^2.24.0",
     "polished": "^3.5.1",
