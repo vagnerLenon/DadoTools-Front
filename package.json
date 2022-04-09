@@ -23,7 +23,7 @@
     "immer": "^6.0.3",
     "lodash": "^4.17.15",
     "medium-draft": "^0.5.18",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "polished": "^3.5.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
